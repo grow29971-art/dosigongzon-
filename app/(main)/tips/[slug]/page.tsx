@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink, Eye, Clock, ChevronRight, List as ListIcon } from "lucide-react";
+import { ArrowLeft, ExternalLink, Eye, Clock, ChevronRight, List as ListIcon, Sparkles } from "lucide-react";
 import {
   getTipBySlugServer,
   getRelatedTipsServer,
@@ -166,7 +166,7 @@ export default async function TipDetailPage({ params }: Params) {
   };
 
   return (
-    <article className="pb-12" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <article className="pb-12" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -192,12 +192,6 @@ export default async function TipDetailPage({ params }: Params) {
             sizes="(max-width: 720px) 100vw, 720px"
             style={{ objectFit: "cover" }}
           />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: "linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 50%)",
-            }}
-          />
           <Link
             href="/tips"
             className="absolute top-12 left-4 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center press-strong transition-transform"
@@ -210,8 +204,7 @@ export default async function TipDetailPage({ params }: Params) {
         <div className="px-4 pt-12">
           <Link
             href="/tips"
-            className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-            style={{ boxShadow: "var(--shadow-raised)" }}
+            className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
             aria-label="꿀팁 매거진"
           >
             <ArrowLeft size={18} className="text-text-main" />
@@ -223,8 +216,8 @@ export default async function TipDetailPage({ params }: Params) {
       <div className={photo ? "px-4 -mt-6 relative" : "px-4 mt-4"}>
         {/* 헤더 카드 */}
         <header
-          className="bg-white rounded-2xl p-5 mb-4"
-          style={{ boxShadow: "var(--shadow-card)" }}
+          className="bg-white rounded-xl p-5 mb-4"
+          style={{ border: "1px solid var(--color-border)" }}
         >
           {tip.tags.length > 0 && (
             <div className="flex gap-1.5 mb-2.5 flex-wrap">
@@ -233,7 +226,7 @@ export default async function TipDetailPage({ params }: Params) {
                   key={tag}
                   href={`/tips?tag=${encodeURIComponent(tag)}`}
                   className="text-[11px] font-bold px-2 py-0.5 rounded-md"
-                  style={{ background: "#F2EBE0", color: "#8B6F4E" }}
+                  style={{ background: "var(--color-gray-100)", color: "var(--color-text-sub)" }}
                 >
                   #{tag}
                 </Link>
@@ -269,9 +262,9 @@ export default async function TipDetailPage({ params }: Params) {
         {/* 자동 목차 */}
         {toc.length >= 2 && (
           <nav
-            className="bg-white rounded-2xl p-4 mb-4"
+            className="bg-white rounded-xl p-4 mb-4"
             aria-label="목차"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            style={{ border: "1px solid var(--color-border)" }}
           >
             <p className="text-[13px] font-bold text-text-sub mb-2 inline-flex items-center gap-1.5">
               <ListIcon size={13} />
@@ -298,8 +291,8 @@ export default async function TipDetailPage({ params }: Params) {
 
         {/* 본문 카드 */}
         <div
-          className="bg-white rounded-2xl p-6 mb-4"
-          style={{ boxShadow: "var(--shadow-card)" }}
+          className="bg-white rounded-xl p-6 mb-4"
+          style={{ border: "1px solid var(--color-border)" }}
         >
           <div
             className="tip-body text-text-main"
@@ -313,8 +306,8 @@ export default async function TipDetailPage({ params }: Params) {
             href={sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 p-4 rounded-2xl bg-white mb-4 press transition-transform"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            className="flex items-center gap-2 p-4 rounded-xl bg-white mb-4 press transition-transform"
+            style={{ border: "1px solid var(--color-border)" }}
           >
             <ExternalLink size={16} className="text-text-sub shrink-0" />
             <div className="flex-1 min-w-0">
@@ -329,8 +322,8 @@ export default async function TipDetailPage({ params }: Params) {
 
         {/* 공유 */}
         <div
-          className="bg-white rounded-2xl p-4 mb-4"
-          style={{ boxShadow: "var(--shadow-card)" }}
+          className="bg-white rounded-xl p-4 mb-4"
+          style={{ border: "1px solid var(--color-border)" }}
         >
           <p className="text-[13px] font-bold text-text-sub mb-2.5">이 글 공유하기</p>
           <TipShareButtons url={url} title={tip.title} description={description} />
@@ -339,11 +332,11 @@ export default async function TipDetailPage({ params }: Params) {
         {/* 관련 글 */}
         {related.length > 0 && (
           <section
-            className="bg-white rounded-2xl p-4 mb-4"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            className="bg-white rounded-xl p-4 mb-4"
+            style={{ border: "1px solid var(--color-border)" }}
           >
             <p className="text-[13px] font-bold text-text-sub mb-2.5">관련 꿀팁</p>
-            <div className="space-y-2">
+            <div>
               {related.map((r) => (
                 <RelatedRow key={r.id} tip={r} />
               ))}
@@ -353,10 +346,10 @@ export default async function TipDetailPage({ params }: Params) {
 
         {/* 도시공존 미니 소개 */}
         <div
-          className="p-5 rounded-2xl"
+          className="p-5 rounded-xl"
           style={{
-            background: "#FBF8F3",
-            border: "1px solid rgba(176, 92, 54,0.15)",
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
           }}
         >
           <p className="text-[13px] font-bold text-primary mb-1.5">도시공존이란?</p>
@@ -383,7 +376,7 @@ function RelatedRow({ tip }: { tip: Tip }) {
   return (
     <Link
       href={`/tips/${tip.slug}`}
-      className="flex gap-3 items-center press transition-transform"
+      className="flex gap-3 items-center py-2 border-b border-divider last:border-b-0 press transition-transform"
     >
       {photo ? (
         <div className="relative shrink-0 rounded-lg overflow-hidden" style={{ width: 56, height: 56 }}>
@@ -392,9 +385,9 @@ function RelatedRow({ tip }: { tip: Tip }) {
       ) : (
         <div
           className="shrink-0 rounded-lg flex items-center justify-center"
-          style={{ width: 56, height: 56, background: "#F2EBE0" }}
+          style={{ width: 56, height: 56, background: "var(--color-gray-100)" }}
         >
-          <span className="text-primary text-[20px]">✨</span>
+          <Sparkles size={18} strokeWidth={1.4} className="text-text-light" />
         </div>
       )}
       <div className="flex-1 min-w-0">

@@ -9,7 +9,6 @@ import {
   Stethoscope,
   Pin,
   Loader2,
-  Heart,
 } from "lucide-react";
 import {
   listRescueHospitals,
@@ -71,31 +70,16 @@ export default function HospitalsPage() {
             구조동물 치료 도움병원
           </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <div
-            className="w-5 h-[2px] rounded-full"
-            style={{ backgroundColor: "var(--color-primary)", opacity: 0.6 }}
-          />
-          <p className="text-[13px] font-bold text-text-sub">
-            길 위의 아이들 치료를 도와주시는 병원
-          </p>
-          <span
-            className="text-[9px] font-bold tracking-[0.15em]"
-            style={{ color: "var(--color-primary)", opacity: 0.5 }}
-          >
-            RESCUE VETS
-          </span>
-        </div>
+        <p className="text-[13px] text-text-sub">길 위의 아이들 치료를 도와주시는 병원</p>
       </div>
 
       {/* ── 검색 ── */}
       <div
         className="flex items-center gap-2 px-4 py-3 mb-3"
         style={{
-          background: "#FFFFFF",
+          background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
-          boxShadow: "var(--shadow-card)",
-          border: "1px solid var(--color-divider)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <Search size={18} className="text-text-muted shrink-0" />
@@ -116,12 +100,11 @@ export default function HospitalsPage() {
               <button
                 key={c}
                 onClick={() => setCityFilter(c)}
-                className="shrink-0 px-4 py-2 rounded-full text-[13px] font-bold transition-all"
+                className="shrink-0 h-8 px-3 chip-square text-[13px] font-semibold press"
                 style={{
-                  backgroundColor: active ? "var(--color-primary)" : "#FFFFFF",
-                  color: active ? "#FFFFFF" : "#A38E7A",
-                  border: `1.5px solid ${active ? "var(--color-primary)" : "var(--color-gray-200)"}`,
-                  boxShadow: active ? "0 4px 12px rgba(176, 92, 54,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
+                  backgroundColor: active ? "var(--color-primary)" : "var(--color-surface)",
+                  color: active ? "var(--color-surface)" : "var(--color-text-sub)",
+                  border: `1px solid ${active ? "var(--color-primary)" : "var(--color-border)"}`,
                 }}
               >
                 {c}
@@ -160,10 +143,6 @@ export default function HospitalsPage() {
             <section key={group.city}>
               {/* 시 헤더 */}
               <div className="flex items-center gap-2 mb-3 px-1">
-                <div
-                  className="w-1 h-4 rounded-full"
-                  style={{ backgroundColor: "var(--color-primary)" }}
-                />
                 <h2 className="text-[15px] font-bold text-text-main tracking-tight">
                   {group.city}
                 </h2>
@@ -184,7 +163,7 @@ export default function HospitalsPage() {
                       <MapPin size={11} className="text-text-light" />
                       {d.district}
                     </h3>
-                    <div className="space-y-2.5">
+                    <div>
                       {d.hospitals.map((h) => (
                         <HospitalCard key={h.id} hospital={h} />
                       ))}
@@ -203,41 +182,20 @@ export default function HospitalsPage() {
 /* ═══ 병원 카드 ═══ */
 function HospitalCard({ hospital }: { hospital: RescueHospital }) {
   return (
-    <div
-      className="p-4"
-      style={{
-        background: "#FFFFFF",
-        borderRadius: "var(--radius-card)",
-        boxShadow: hospital.pinned
-          ? "0 8px 24px rgba(176, 92, 54,0.14), 0 1px 3px rgba(0,0,0,0.03)"
-          : "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02)",
-        border: hospital.pinned
-          ? "1.5px solid rgba(176, 92, 54,0.25)"
-          : "1px solid var(--color-divider)",
-      }}
-    >
+    <div className="py-3 border-b border-divider last:border-b-0">
       {/* 헤더: 이름 + 고정 마크 + 전화 버튼 */}
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
             {hospital.pinned && (
               <span
-                className="text-[9px] font-bold px-1.5 py-0.5 rounded-md flex items-center gap-0.5"
+                className="text-[11px] font-semibold px-1.5 py-0.5 rounded-md flex items-center gap-0.5"
                 style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
               >
                 <Pin size={9} /> 추천
               </span>
             )}
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center"
-              style={{
-                background: "var(--color-like)",
-                boxShadow: "0 3px 8px var(--color-like-soft), inset 0 1px 0 rgba(255,255,255,0.4)",
-              }}
-            >
-              <Heart size={12} color="#fff" strokeWidth={2.3} fill="#fff" />
-            </div>
-            <h4 className="text-[15px] font-bold text-text-main tracking-tight">
+            <h4 className="text-[15px] font-semibold text-text-main tracking-tight">
               {hospital.name}
             </h4>
           </div>
@@ -245,13 +203,11 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
         {hospital.phone && (
           <a
             href={`tel:${hospital.phone}`}
-            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 press-strong transition-transform"
-            style={{
-              background: "#6B8E6F",
-              boxShadow: "0 4px 10px rgba(107,142,111,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
-            }}
+            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 press-strong transition-transform"
+            style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)" }}
+            aria-label="전화 걸기"
           >
-            <Phone size={16} color="#fff" strokeWidth={2.3} />
+            <Phone size={16} strokeWidth={2} />
           </a>
         )}
       </div>
@@ -263,7 +219,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
             <span
               key={tag}
               className="text-[11px] font-bold px-2 py-0.5 rounded-md"
-              style={{ backgroundColor: "var(--color-gray-50)", color: "#8B6F5A" }}
+              style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-text-sub)" }}
             >
               {tag}
             </span>
@@ -291,7 +247,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
       {hospital.note && (
         <div
           className="mt-2 px-3 py-2 rounded-lg text-[11px] leading-relaxed"
-          style={{ backgroundColor: "var(--color-gray-50)", color: "#4A3F35" }}
+          style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-main)" }}
         >
           {hospital.note}
         </div>

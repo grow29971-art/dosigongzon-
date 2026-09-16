@@ -78,19 +78,16 @@ export default async function TipsIndexPage() {
   };
 
   return (
-    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       <PageIntroModal
         storageKey="dosigongzon_intro_tips"
         badge="AI 집사"
-        headerEmoji="🤖"
+        headerEmoji=""
         title="궁금한 건 AI 집사에게 물어보세요"
-        headerBg="linear-gradient(160deg, var(--color-sage-soft) 0%, #DBEEDD 100%)"
-        accent="#22A366"
-        accentDark="#1B7D50"
         items={[
-          { emoji: "💬", text: <>응급처치·TNR·사료·겨울나기… 무엇이든 <b className="text-text-main">24시간</b> 답해줘요.</> },
-          { emoji: "📖", text: <>상황별 보호 가이드도 이 곳에 모여 있어요.</> },
-          { emoji: "⚠️", text: <>급하거나 의료 판단이 필요하면 꼭 <b className="text-text-main">실제 수의사</b>와 상의하세요.</> },
+          { emoji: "", text: <>응급처치·TNR·사료·겨울나기… 무엇이든 <b className="text-text-main">24시간</b> 답해줘요.</> },
+          { emoji: "", text: <>상황별 보호 가이드도 이 곳에 모여 있어요.</> },
+          { emoji: "", text: <>급하거나 의료 판단이 필요하면 꼭 <b className="text-text-main">실제 수의사</b>와 상의하세요.</> },
         ]}
       />
       <script
@@ -107,100 +104,72 @@ export default async function TipsIndexPage() {
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div>
           <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-1.5">
-            <Bot size={18} className="text-primary" />
+            <Bot size={18} className="text-text-sub" />
             AI집사
           </h1>
           <p className="text-[11px] text-text-sub">궁금한 건 AI 집사에게 — 구조 매뉴얼·꿀팁 매거진도 한곳에</p>
         </div>
       </div>
 
-      {/* ── 🤖 AI 집사 — 탭 이름이 AI집사라 최상단 배치 (2026-07-11) ── */}
+      {/* ── AI 집사 — 탭 이름이 AI집사라 최상단 배치 (2026-07-11) ── */}
       <TipsAIButler />
 
-      {/* ── 🚨 보호지침 매뉴얼 (꿀팁과 통합) — 위급할 땐 여기 펼치기 ── */}
+      {/* ── 보호지침 매뉴얼 (꿀팁과 통합) — 위급할 땐 여기 펼치기 ── */}
       <div className="px-4 mb-5">
-        <div
-          className="relative overflow-hidden p-4 pt-4"
-          style={{
-            background: "#FFE6E0",
-            borderRadius: "var(--radius-card)",
-            border: "1.5px solid rgba(216,85,85,0.25)",
-            boxShadow: "0 8px 24px rgba(216,85,85,0.15), 0 2px 6px rgba(176, 92, 54,0.10)",
-          }}
-        >
-          <div
-            aria-hidden
-            style={{
-              position: "absolute",
-              top: -40,
-              right: -30,
-              width: 160,
-              height: 160,
-              borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(216,85,85,0.18) 0%, rgba(216,85,85,0) 70%)",
-            }}
-          />
+        <div className="px-1">
 
           {/* 헤더 */}
           <div className="flex items-center justify-between mb-1.5">
             <div className="flex items-center gap-1.5">
-              <AlertTriangle size={15} style={{ color: "#B83A2A" }} />
-              <h2 className="text-[15px] font-bold tracking-tight" style={{ color: "#5C2A1E" }}>
+              <AlertTriangle size={15} style={{ color: "var(--color-error)" }} />
+              <h2 className="text-[17px] font-bold tracking-tight text-text-main">
                 위급할 땐 여기로
               </h2>
             </div>
-            <span
-              className="text-[9px] font-bold px-1.5 py-0.5 rounded-md tracking-wider"
-              style={{ background: "rgba(216,85,85,0.18)", color: "#A8392A" }}
-            >
-              구조 매뉴얼
-            </span>
+            <span className="text-[11px] font-medium text-text-light">구조 매뉴얼</span>
           </div>
-          <p className="text-[13px] leading-snug mb-3" style={{ color: "rgba(92,42,30,0.80)" }}>
+          <p className="text-[13px] leading-snug mb-3 text-text-sub">
             응급·새끼 발견·TNR·법률까지 — 한 발 빠른 대처가 한 생명을 살려요
           </p>
 
           {/* 3×3 카테고리 grid */}
           <div className="grid grid-cols-3 gap-2 mb-3">
             {[
-              { href: "/protection/emergency-guide", label: "응급처치", sub: "다쳤을 때", Icon: Siren, color: "#D85555" },
-              { href: "/protection/kitten-guide", label: "새끼 발견", sub: "이런 땐 데려와요", Icon: Baby, color: "#E88D5A" },
-              { href: "/protection/disease-guide", label: "질병 신호", sub: "증상 체크", Icon: Heart, color: "var(--color-like)" },
-              { href: "/protection/trapping-guide", label: "TNR·포획", sub: "안전한 절차", Icon: Stethoscope, color: "#8B65B8" },
-              { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles, color: "#48A59E" },
-              { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake, color: "#5A8AC4" },
-              { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill, color: "#6B8E6F" },
-              { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone, color: "var(--color-primary-dark)" },
-              { href: "/protection/legal", label: "법률·신고", sub: "학대 대응", Icon: Scale, color: "#7A6B8E" },
+              { href: "/protection/emergency-guide", label: "응급처치", sub: "다쳤을 때", Icon: Siren },
+              { href: "/protection/kitten-guide", label: "새끼 발견", sub: "이런 땐 데려와요", Icon: Baby },
+              { href: "/protection/disease-guide", label: "질병 신호", sub: "증상 체크", Icon: Heart },
+              { href: "/protection/trapping-guide", label: "TNR·포획", sub: "안전한 절차", Icon: Stethoscope },
+              { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles },
+              { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake },
+              { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill },
+              { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone },
+              { href: "/protection/legal", label: "법률·신고", sub: "학대 대응", Icon: Scale },
             ].map((cat) => (
               <Link
                 key={cat.href}
                 href={cat.href}
-                className="rounded-2xl px-2 py-2.5 flex flex-col items-center gap-1 press-strong transition-transform"
+                className="rounded-xl px-2 py-2.5 flex flex-col items-center gap-1 press-strong transition-transform"
                 style={{
-                  background: "#FFFFFF",
-                  boxShadow: "var(--shadow-card)",
-                  border: "1px solid rgba(255,255,255,0.6)",
+                  background: "var(--color-surface)",
+                  border: "1px solid var(--color-border)",
                 }}
               >
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{ background: `${cat.color}18` }}
+                  className="w-9 h-9 flex items-center justify-center shrink-0 text-text-sub"
                 >
-                  <cat.Icon size={16} style={{ color: cat.color }} strokeWidth={2.3} />
+                  <cat.Icon size={18} strokeWidth={1.8} />
                 </div>
                 <span className="text-[11px] font-bold text-text-main leading-none">
                   {cat.label}
                 </span>
-                <span className="text-[11px] font-bold text-text-light leading-none">
+                <span className="text-[11px] text-text-light leading-none">
                   {cat.sub}
                 </span>
               </Link>
@@ -210,11 +179,7 @@ export default async function TipsIndexPage() {
           {/* 강한 CTA — 무조건 누를 수 있는 톤 */}
           <Link
             href="/protection"
-            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold text-white press transition-transform"
-            style={{
-              background: "#D85555",
-              boxShadow: "var(--shadow-fab)",
-            }}
+            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-lg text-[13px] font-semibold bg-gray-100 text-text-main press transition-transform"
           >
             <BookOpen size={14} />
             구조 매뉴얼 전체 펼치기
@@ -226,7 +191,7 @@ export default async function TipsIndexPage() {
       {/* ── 꿀팁 매거진 헤더 (토스식 17px 위계) ── */}
       <div className="px-4 mb-2.5">
         <div className="flex items-center gap-1.5 px-1">
-          <Sparkles size={15} className="text-primary" />
+          <Sparkles size={15} className="text-text-sub" />
           <h2 className="text-[17px] font-bold text-text-main tracking-tight">
             도시공존 꿀팁 매거진
           </h2>
@@ -241,7 +206,7 @@ export default async function TipsIndexPage() {
               <Link
                 key={tag}
                 href={`/tips?tag=${encodeURIComponent(tag)}`}
-                className="shrink-0 text-[13px] font-bold px-2.5 py-1 chip-square bg-white text-text-sub border border-black/[0.04] press-strong transition-transform"
+                className="shrink-0 text-[13px] font-bold px-2.5 py-1 chip-square bg-white text-text-sub border border-border press-strong transition-transform"
               >
                 #{tag}
               </Link>
@@ -254,8 +219,8 @@ export default async function TipsIndexPage() {
       <div className="px-4">
         {items.length === 0 ? (
           <div
-            className="text-center py-16 rounded-2xl bg-white"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            className="text-center py-16 rounded-xl bg-white"
+            style={{ border: "1px solid var(--color-border)" }}
           >
             <Sparkles size={36} strokeWidth={1.2} className="mx-auto mb-3 text-text-light opacity-30" />
             <p className="text-[13px] text-text-sub font-semibold">아직 등록된 꿀팁이 없어요</p>
@@ -264,7 +229,7 @@ export default async function TipsIndexPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div>
             {items.map((tip) => (
               <TipCard key={tip.id} tip={tip} />
             ))}
@@ -273,10 +238,10 @@ export default async function TipsIndexPage() {
 
         {/* ── 도시공존 미니 소개 ── */}
         <div
-          className="mt-6 p-5 rounded-2xl"
+          className="mt-6 p-5 rounded-xl"
           style={{
-            background: "#FBF8F3",
-            border: "1px solid rgba(176, 92, 54,0.15)",
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
           }}
         >
           <p className="text-[13px] font-bold text-primary mb-1.5">도시공존이란?</p>
@@ -297,86 +262,68 @@ export default async function TipsIndexPage() {
   );
 }
 
-// 모든 글에 동일한 큰 카드. featured/pinned는 뱃지로만 구분.
+// 구분선 리스트 행 — 썸네일 8px 둥근 사각(72px) + 제목/요약/메타. featured/pinned는 작은 텍스트 배지.
 function TipCard({ tip }: { tip: Tip }) {
   const photo = sanitizeImageUrl(tip.thumbnail_url, "");
   const reading = estimateReadingMinutes(tip.body);
 
   return (
-    <Link href={`/tips/${tip.slug}`} className="block">
-      <article
-        className="rounded-2xl overflow-hidden bg-white press transition-transform"
-        style={{ boxShadow: "var(--shadow-card)" }}
-      >
-        <div className="relative w-full aspect-[16/9] bg-[var(--color-gray-100)]">
-          {photo ? (
-            <Image
-              src={photo}
-              alt={tip.title}
-              fill
-              sizes="(max-width: 720px) 100vw, 720px"
-              style={{ objectFit: "cover" }}
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Sparkles size={42} strokeWidth={1.4} className="text-primary opacity-40" />
-            </div>
-          )}
-          {tip.featured && (
-            <span
-              className="absolute top-3 left-3 text-[11px] font-bold px-2 py-0.5 rounded-md text-white"
-              style={{ background: "rgba(176, 92, 54,0.95)" }}
-            >
-              ✨ 추천
-            </span>
-          )}
-          {tip.pinned && (
-            <span className="absolute top-3 right-3 text-[11px] font-bold px-2 py-0.5 rounded-md bg-white/90 text-primary inline-flex items-center gap-0.5">
-              <Pin size={10} /> 고정
-            </span>
-          )}
-        </div>
-        <div className="p-4">
-          {tip.tags.length > 0 && (
-            <div className="flex gap-1 mb-1.5 flex-wrap">
-              {tip.tags.slice(0, 3).map((tag) => (
-                <span
-                  key={tag}
-                  className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
-                  style={{ background: "#F2EBE0", color: "#8B6F4E" }}
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
-          <h2 className="text-[17px] font-bold text-text-main leading-snug line-clamp-2">
-            {tip.title}
-          </h2>
-          {tip.description && (
-            <p className="text-[13px] text-text-sub line-clamp-2 mt-1.5 leading-snug">
-              {tip.description}
-            </p>
-          )}
-          <div className="flex items-center gap-2 mt-2.5 text-[11px] text-text-light">
-            <span>{formatDate(tip.published_at)}</span>
-            <span>·</span>
-            <span className="inline-flex items-center gap-0.5">
-              <Clock size={11} /> {reading}분
-            </span>
-            <span>·</span>
-            <span className="inline-flex items-center gap-0.5">
-              <Eye size={11} /> {tip.view_count}
-            </span>
-            {tip.source_url && (
-              <span className="inline-flex items-center gap-0.5 ml-auto">
-                <ExternalLink size={11} />
-                출처 있음
+    <Link
+      href={`/tips/${tip.slug}`}
+      className="flex gap-3 py-3 border-b border-divider last:border-b-0 press transition-transform"
+    >
+      <div className="flex-1 min-w-0">
+        {(tip.featured || tip.pinned || tip.tags.length > 0) && (
+          <div className="flex gap-1.5 mb-1 flex-wrap items-center">
+            {tip.pinned && (
+              <span className="text-[11px] font-semibold text-text-light inline-flex items-center gap-0.5">
+                <Pin size={10} /> 고정
               </span>
             )}
+            {tip.featured && (
+              <span className="text-[11px] font-semibold" style={{ color: "var(--color-primary)" }}>추천</span>
+            )}
+            {tip.tags.slice(0, 3).map((tag) => (
+              <span key={tag} className="text-[11px] text-text-light">#{tag}</span>
+            ))}
           </div>
+        )}
+        <h2 className="text-[15px] font-semibold text-text-main leading-snug line-clamp-2">
+          {tip.title}
+        </h2>
+        {tip.description && (
+          <p className="text-[13px] text-text-sub line-clamp-2 mt-1 leading-snug">
+            {tip.description}
+          </p>
+        )}
+        <div className="flex items-center gap-2 mt-1.5 text-[11px] text-text-light">
+          <span>{formatDate(tip.published_at)}</span>
+          <span>·</span>
+          <span className="inline-flex items-center gap-0.5">
+            <Clock size={11} /> {reading}분
+          </span>
+          <span>·</span>
+          <span className="inline-flex items-center gap-0.5">
+            <Eye size={11} /> {tip.view_count}
+          </span>
+          {tip.source_url && (
+            <span className="inline-flex items-center gap-0.5 ml-auto">
+              <ExternalLink size={11} />
+              출처 있음
+            </span>
+          )}
         </div>
-      </article>
+      </div>
+      <div
+        className="relative shrink-0 overflow-hidden rounded-lg flex items-center justify-center"
+        style={{ width: 72, height: 72, background: "var(--color-gray-100)" }}
+      >
+        {photo ? (
+          <Image src={photo} alt={tip.title} fill sizes="72px" style={{ objectFit: "cover" }} />
+        ) : (
+          <Sparkles size={20} strokeWidth={1.4} className="text-text-light" />
+        )}
+      </div>
     </Link>
   );
 }

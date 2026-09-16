@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Phone, Search, Building2 } from "lucide-react";
+import { ArrowLeft, Phone, Search, Building2, Globe } from "lucide-react";
 import GuideReadMarker from "@/app/components/GuideReadMarker";
 
 interface Contact {
@@ -136,7 +136,7 @@ export default function DistrictContactsPage() {
       <div className="flex items-center gap-3 mb-5">
         <Link
           href="/protection"
-          className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center press-strong transition-transform"
+          className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
         >
           <ArrowLeft size={18} className="text-text-sub" />
         </Link>
@@ -175,7 +175,7 @@ export default function DistrictContactsPage() {
       </div>
 
       {/* 목록 */}
-      <div className="space-y-2">
+      <div>
         {filtered.length === 0 && (
           <p className="text-center text-[13px] text-text-sub py-8">
             검색 결과가 없어요.
@@ -185,18 +185,12 @@ export default function DistrictContactsPage() {
           <a
             key={i}
             href={`tel:${c.tel.replace(/-/g, "")}`}
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid var(--color-divider)",
-              boxShadow: "var(--shadow-card)",
-            }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
             <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-              style={{ backgroundColor: "rgba(91,168,118,0.1)" }}
+              className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub"
             >
-              <Building2 size={18} style={{ color: "var(--color-sage)" }} />
+              <Building2 size={20} strokeWidth={1.8} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
@@ -222,23 +216,17 @@ export default function DistrictContactsPage() {
             길고양이 급식소 커뮤니티
           </h2>
         </div>
-        <div className="space-y-2">
+        <div>
           <a
             href="https://cafe.naver.com/icfc0520"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid var(--color-divider)",
-              boxShadow: "var(--shadow-card)",
-            }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
             <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-              style={{ backgroundColor: "rgba(3,199,90,0.1)" }}
+              className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub"
             >
-              <span className="text-[17px]">🍚</span>
+              <Globe size={18} className="shrink-0 text-text-sub" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[15px] font-bold text-text-main">길냥이 급식소</p>
@@ -250,18 +238,12 @@ export default function DistrictContactsPage() {
             href="https://cafe.naver.com/caretaker"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid var(--color-divider)",
-              boxShadow: "var(--shadow-card)",
-            }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
             <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-              style={{ backgroundColor: "rgba(3,199,90,0.1)" }}
+              className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub"
             >
-              <span className="text-[17px]">🐱</span>
+              <Globe size={18} className="shrink-0 text-text-sub" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[15px] font-bold text-text-main">길고양이 급식소</p>

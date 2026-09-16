@@ -56,7 +56,7 @@ export default function TipShareButtons({ url, title, description }: Props) {
       <button
         type="button"
         onClick={onCopy}
-        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white text-[13px] font-bold text-text-main border border-black/[0.06] press-strong transition-transform"
+        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white text-[13px] font-bold text-text-main border border-border press-strong transition-transform"
       >
         {copied ? <Check size={14} className="text-primary" /> : <Link2 size={14} />}
         {copied ? "복사됨" : "URL 복사"}
@@ -66,9 +66,9 @@ export default function TipShareButtons({ url, title, description }: Props) {
         type="button"
         onClick={onKakao}
         className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13px] font-bold press-strong transition-transform"
-        style={{ background: "#FEE500", color: "#3C1E1E" }}
+        style={{ background: "#FEE500", color: "var(--color-text-main)" }}
       >
-        <span>💬</span> 카카오톡
+        카카오톡
       </button>
 
       <a
@@ -86,9 +86,9 @@ export default function TipShareButtons({ url, title, description }: Props) {
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13px] font-bold text-white press-strong transition-transform"
-        style={{ background: "#000" }}
+        style={{ background: "var(--color-text-main)" }}
       >
-        𝕏 트위터
+        X (트위터)
       </a>
     </div>
   );

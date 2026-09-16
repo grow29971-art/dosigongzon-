@@ -66,14 +66,10 @@ export default function ShareNewsButton({ newsId, title, description, badgeLabel
       type="button"
       onClick={handleShare}
       disabled={loading}
-      className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl press transition-transform disabled:opacity-70"
+      className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl press transition-transform disabled:opacity-70"
       style={{
-        backgroundColor: status === "idle" ? "#FEE500" : "var(--color-sage-soft)",
-        color: status === "idle" ? "#191919" : "#2E7D32",
-        boxShadow:
-          status === "idle"
-            ? "0 4px 14px rgba(254,229,0,0.35)"
-            : "0 2px 8px rgba(46,125,50,0.18)",
+        backgroundColor: status === "idle" ? "#FEE500" : "var(--color-gray-100)",
+        color: status === "idle" ? "var(--color-text-main)" : "var(--color-sage)",
       }}
     >
       {status === "idle" ? <Share2 size={16} aria-hidden="true" /> : <Check size={16} aria-hidden="true" />}

@@ -110,7 +110,7 @@ export default function KeyringEventPage() {
       const cat = myCats?.find((c) => c.id === selectedCatId);
       setDone(true);
       setEnteredCatName(cat?.name ?? null);
-      toast.success(`${cat?.name ?? "고양이"} 모양 키링 응모 완료! 🎁`);
+      toast.success(`${cat?.name ?? "고양이"} 모양 키링 응모 완료!`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "응모 중 오류 발생");
     } finally {
@@ -132,19 +132,18 @@ export default function KeyringEventPage() {
   const isLoadingCats = myCats === null;
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-3 flex items-center gap-3">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <h1 className="text-[20px] font-bold text-text-main flex items-center gap-1.5">
-          <Gift size={16} style={{ color: "var(--color-primary)" }} />
+          <Gift size={16} className="text-text-sub" />
           1000명 이벤트 응모
         </h1>
       </div>
@@ -152,14 +151,14 @@ export default function KeyringEventPage() {
       {/* 안내 카드 — 컨셉 갱신 */}
       <div className="px-4 mt-2 mb-4">
         <div
-          className="rounded-2xl p-4"
+          className="rounded-xl p-4"
           style={{
-            background: "#FFF8F2",
-            border: "1.5px solid rgba(176, 92, 54,0.25)",
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
           }}
         >
-          <p className="text-[11px] font-bold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
-            🎁 내가 돌보는 아이 모양 커스텀 키링
+          <p className="text-[11px] font-semibold mb-1 text-text-light">
+            내가 돌보는 아이 모양 커스텀 키링
           </p>
           <p className="text-[15px] font-bold text-text-main leading-tight mb-1">
             가입자 1,000명 달성 시 20명 추첨
@@ -175,12 +174,12 @@ export default function KeyringEventPage() {
       {memberCount !== null && memberCount < 1000 && (
         <div className="px-4 mb-4">
           <div
-            className="rounded-2xl p-4"
-            style={{ background: "#FFF", border: "1px solid rgba(176, 92, 54,0.18)", boxShadow: "var(--shadow-card)" }}
+            className="rounded-xl p-4"
+            style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
-                <TrendingUp size={13} style={{ color: "var(--color-primary)" }} />
+                <TrendingUp size={13} className="text-text-sub" />
                 <span className="text-[13px] font-bold text-text-main">이벤트 진행도</span>
               </div>
               <span className="text-[11px] font-bold" style={{ color: "var(--color-primary)" }}>
@@ -188,11 +187,9 @@ export default function KeyringEventPage() {
               </span>
             </div>
             <div
-              className="w-full h-2 rounded-full overflow-hidden"
-              style={{ background: "rgba(176, 92, 54,0.15)" }}
+              className="progress-bar"
             >
               <div
-                className="h-full rounded-full transition-all"
                 style={{
                   width: `${Math.min((memberCount / 1000) * 100, 100)}%`,
                   background: "var(--color-primary)",
@@ -200,7 +197,7 @@ export default function KeyringEventPage() {
               />
             </div>
             <p className="text-[11px] text-text-sub mt-2 leading-relaxed">
-              {1000 - memberCount}명만 더 모이면 추첨이 시작돼요. 친구를 초대하면 더 빨리 달성해요 🎁
+              {1000 - memberCount}명만 더 모이면 추첨이 시작돼요. 친구를 초대하면 더 빨리 달성해요
             </p>
           </div>
         </div>
@@ -210,23 +207,23 @@ export default function KeyringEventPage() {
       <div className="px-4">
         {done || alreadyEntered ? (
           <div
-            className="rounded-2xl p-6 text-center"
+            className="rounded-xl p-6 text-center"
             style={{
-              background: done ? "#E8ECE5" : "var(--color-warning-soft)",
-              border: `1px solid ${done ? "#D6DCD2" : "#F5DAB0"}`,
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
             }}
           >
             {done ? (
-              <Check size={36} className="mx-auto mb-3" style={{ color: "#6B8E6F" }} />
+              <Check size={36} className="mx-auto mb-3 text-text-sub" />
             ) : (
-              <Gift size={36} className="mx-auto mb-3" style={{ color: "#B07A1C" }} />
+              <Gift size={36} className="mx-auto mb-3 text-text-main" />
             )}
             <p className="text-[17px] font-bold text-text-main mb-2">
               {done ? "응모 완료!" : "이미 응모하셨어요"}
             </p>
             {enteredCatName && (
               <p className="text-[13px] font-bold mb-1" style={{ color: "var(--color-primary)" }}>
-                🐾 {enteredCatName} 모양 키링 응모
+                {enteredCatName} 모양 키링 응모
               </p>
             )}
             <p className="text-[13px] text-text-sub leading-relaxed">
@@ -250,14 +247,14 @@ export default function KeyringEventPage() {
         ) : hasNoCats ? (
           // 자격 미달: 등록한 고양이 0마리
           <div
-            className="rounded-2xl p-6 text-center"
-            style={{ background: "#FFF", border: "1px dashed rgba(176, 92, 54,0.35)" }}
+            className="rounded-xl p-6 text-center"
+            style={{ background: "var(--color-surface)", border: "1px dashed var(--color-border)" }}
           >
             <div
               className="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3"
-              style={{ background: "rgba(176, 92, 54,0.12)" }}
+              style={{ background: "var(--color-gray-100)" }}
             >
-              <PawPrint size={26} style={{ color: "var(--color-primary)" }} />
+              <PawPrint size={26} className="text-text-sub" />
             </div>
             <p className="text-[15px] font-bold text-text-main mb-1.5">
               먼저 돌보는 아이를 등록해주세요
@@ -269,8 +266,7 @@ export default function KeyringEventPage() {
             </p>
             <Link
               href="/map"
-              className="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-white text-[15px] font-bold press-strong transition-transform"
-              style={{ boxShadow: "var(--shadow-primary)" }}
+              className="inline-flex items-center gap-1.5 px-5 py-3 rounded-xl bg-primary text-white text-[15px] font-bold press-strong transition-transform"
             >
               <PlusCircle size={16} />
               지도에서 첫 아이 등록하기
@@ -279,51 +275,49 @@ export default function KeyringEventPage() {
         ) : (
           <div className="space-y-3">
             {error && (
-              <div className="rounded-xl px-4 py-3" style={{ background: "var(--color-error-soft)" }}>
-                <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
+              <div className="rounded-xl px-4 py-3" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+                <p className="text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>{error}</p>
               </div>
             )}
 
             {/* 고양이 선택 */}
             <div>
               <p className="text-[13px] font-bold text-text-main mb-2 flex items-center gap-1.5">
-                <PawPrint size={13} style={{ color: "var(--color-primary)" }} />
+                <PawPrint size={13} className="text-text-sub" />
                 키링으로 만들 아이를 골라주세요
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {(myCats ?? []).map((cat) => {
-                  const photo = sanitizeImageUrl(
-                    cat.photo_url,
-                    "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F",
-                  );
+                  const photo = sanitizeImageUrl(cat.photo_url, "");
                   const selected = cat.id === selectedCatId;
                   return (
                     <button
                       key={cat.id}
                       type="button"
                       onClick={() => setSelectedCatId(cat.id)}
-                      className="relative block rounded-2xl overflow-hidden bg-white text-left press transition-transform"
+                      className="relative block rounded-xl overflow-hidden bg-white text-left press transition-transform"
                       style={{
-                        boxShadow: selected
-                          ? "0 8px 22px rgba(176, 92, 54,0.35)"
-                          : "var(--shadow-raised)",
-                        border: selected ? "2.5px solid var(--color-primary)" : "2.5px solid transparent",
+                        border: selected ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
                       }}
                     >
-                      <div className="relative" style={{ aspectRatio: "1 / 1" }}>
-                        <Image
-                          src={photo}
-                          alt={cat.name}
-                          fill
-                          sizes="(max-width: 640px) 50vw, 200px"
-                          style={{ objectFit: "cover" }}
-                        />
+                      <div className="relative flex items-center justify-center" style={{ aspectRatio: "1 / 1", background: "var(--color-gray-100)" }}>
+                        {photo ? (
+                          <Image
+                            src={photo}
+                            alt={cat.name}
+                            fill
+                            sizes="(max-width: 640px) 50vw, 200px"
+                            style={{ objectFit: "cover" }}
+                          />
+                        ) : (
+                          <PawPrint size={28} className="text-text-light" />
+                        )}
                         {selected && (
                           <div
                             className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center"
-                            style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-card)" }}
+                            style={{ background: "var(--color-primary)" }}
                           >
-                            <Check size={13} color="#fff" strokeWidth={3} />
+                            <Check size={13} color="var(--color-surface)" strokeWidth={3} />
                           </div>
                         )}
                       </div>
@@ -348,8 +342,7 @@ export default function KeyringEventPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting || !selectedCatId}
-              className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold disabled:opacity-50 press-strong flex items-center justify-center gap-2"
-              style={{ boxShadow: "var(--shadow-primary)" }}
+              className="w-full py-4 rounded-xl bg-primary text-white text-[15px] font-bold disabled:opacity-50 press-strong flex items-center justify-center gap-2"
             >
               {submitting ? <Loader2 size={18} className="animate-spin" /> : <Gift size={18} />}
               {submitting
@@ -370,7 +363,6 @@ export default function KeyringEventPage() {
       {/* 친구 초대 */}
       <div className="px-4 mt-6">
         <div className="mb-2 flex items-start gap-2">
-          <span className="text-[15px]">📣</span>
           <p className="text-[13px] text-text-sub leading-relaxed">
             <b className="text-text-main">친구를 초대해주세요.</b> 가입자 1,000명이 빨리 모일수록 추첨이 빨라지고,
             친구가 많으면 동네 길고양이가 더 안전해져요.

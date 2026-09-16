@@ -28,11 +28,11 @@ export default function TipsAdminFab() {
     <Link
       href="/admin/tips"
       aria-label="꿀팁 작성"
-      className="fixed z-40 flex items-center gap-1.5 px-4 py-3 rounded-full bg-primary text-white text-[13px] font-bold press-strong transition-transform"
+      className="fixed z-40 flex items-center gap-1.5 px-4 py-3 rounded-xl bg-primary text-white text-[13px] font-bold press-strong transition-transform"
       style={{
         right: 16,
         bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",
-        boxShadow: "0 8px 24px rgba(176, 92, 54,0.45), 0 2px 6px rgba(0,0,0,0.1)",
+        boxShadow: "var(--shadow-fab)",
       }}
     >
       <Plus size={18} strokeWidth={3} />

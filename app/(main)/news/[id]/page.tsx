@@ -65,7 +65,7 @@ export default function NewsDetailPage({
       {/* ── 대표 이미지 영역 ── */}
       <div
         className="relative aspect-[16/9] overflow-hidden"
-        style={{ background: preset.gradient }}
+        style={{ background: "var(--color-gray-100)" }}
       >
         {news.image_url && (
           <Image
@@ -77,14 +77,6 @@ export default function NewsDetailPage({
             style={{ objectFit: "cover" }}
           />
         )}
-        {/* 하단 그라데이션 */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)",
-          }}
-        />
 
         {/* 뒤로가기 */}
         <button
@@ -100,28 +92,16 @@ export default function NewsDetailPage({
         {ddayLabel && (
           <div className="absolute top-12 right-4">
             <span
-              className="text-[13px] font-bold px-3 py-1.5 rounded-xl backdrop-blur-sm"
+              className="text-[13px] font-semibold px-3 py-1.5 rounded-lg"
               style={{
-                color: isEnded ? "#8B7562" : isToday ? "#fff" : isUpcoming ? "#B84545" : "#6B8E6F",
-                backgroundColor: isEnded
-                  ? "rgba(230,222,214,0.9)"
-                  : isToday
-                  ? "rgba(216,85,85,0.95)"
-                  : isUpcoming
-                  ? "rgba(238,227,222,0.9)"
-                  : "rgba(232,236,229,0.9)",
+                color: isEnded ? "var(--color-text-sub)" : isToday || isUpcoming ? "var(--color-error)" : "var(--color-text-sub)",
+                backgroundColor: "var(--color-surface)",
+                border: "1px solid var(--color-border)",
               }}
             >
               {ddayLabel}
             </span>
           </div>
-        )}
-
-        {/* 이미지 위 설명 */}
-        {news.description && (
-          <p className="absolute bottom-4 left-5 right-5 text-white text-[15px] font-semibold leading-snug drop-shadow-md">
-            {news.description}
-          </p>
         )}
       </div>
 
@@ -132,7 +112,7 @@ export default function NewsDetailPage({
           <div className="flex items-center gap-2 mb-3">
             <span
               className="text-[11px] font-bold px-2.5 py-1 rounded-lg"
-              style={{ color: preset.color, backgroundColor: preset.bg }}
+              style={{ color: "var(--color-text-sub)", backgroundColor: "var(--color-gray-100)" }}
             >
               {preset.label}
             </span>
@@ -177,8 +157,7 @@ export default function NewsDetailPage({
             href={sanitizeHttpUrl(news.external_url)}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold press-strong transition-transform"
-            style={{ boxShadow: "var(--shadow-primary)" }}
+            className="flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-primary text-white text-[15px] font-bold press-strong transition-transform"
           >
             <ExternalLink size={18} />
             {news.external_label || "관련 홈페이지 바로가기"}

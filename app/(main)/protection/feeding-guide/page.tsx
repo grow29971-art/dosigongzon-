@@ -164,8 +164,7 @@ export default function FeedingGuidePage() {
       <div className="flex items-center gap-2 mb-5">
         <Link
           href="/protection"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
           aria-label="보호지침으로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -182,10 +181,10 @@ export default function FeedingGuidePage() {
 
       {/* 요약 */}
       <div
-        className="rounded-2xl p-5 mb-6"
+        className="rounded-xl p-5 mb-6"
         style={{
-          background: "#FFF4E8",
-          border: "1px solid rgba(232,141,90,0.18)",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <p className="text-[13px] leading-relaxed text-text-main">
@@ -197,7 +196,7 @@ export default function FeedingGuidePage() {
       </div>
 
       {/* 목차 */}
-      <nav aria-label="목차" className="rounded-2xl bg-white p-4 mb-6" style={{ border: "1px solid var(--color-divider)" }}>
+      <nav aria-label="목차" className="rounded-xl bg-white p-4 mb-6" style={{ border: "1px solid var(--color-border)" }}>
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#bad" className="hover:underline">절대 주면 안 되는 음식 10가지</a></li>
@@ -217,16 +216,14 @@ export default function FeedingGuidePage() {
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
           아래 음식은 <strong>소량으로도 응급 상황</strong>을 만들 수 있어요. "조금은 괜찮겠지" 하지 마세요.
         </p>
-        <div className="grid grid-cols-1 gap-2">
+        <div>
           {BAD_FOODS.map((f) => (
             <div
               key={f.name}
-              className="rounded-xl p-3 flex items-start gap-3"
-              style={{ background: "var(--color-error-soft)", border: "1px solid rgba(216,85,85,0.15)" }}
+              className="py-3 flex items-start gap-3 border-b border-divider last:border-b-0"
             >
-              <span style={{ fontSize: 24, lineHeight: 1 }} className="shrink-0">{f.emoji}</span>
               <div>
-                <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>{f.name}</p>
+                <p className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>{f.name}</p>
                 <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{f.reason}</p>
               </div>
             </div>
@@ -237,19 +234,17 @@ export default function FeedingGuidePage() {
       {/* 안전 음식 */}
       <section id="good" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Utensils size={20} color="var(--color-sage)" />
+          <Utensils size={20} className="text-text-sub" />
           안전하고 권장되는 음식
         </h2>
-        <div className="grid grid-cols-1 gap-2">
+        <div>
           {GOOD_FOODS.map((f) => (
             <div
               key={f.name}
-              className="rounded-xl p-3 flex items-start gap-3"
-              style={{ background: "var(--color-sage-soft)", border: "1px solid rgba(107,142,111,0.18)" }}
+              className="py-3 flex items-start gap-3 border-b border-divider last:border-b-0"
             >
-              <span style={{ fontSize: 24, lineHeight: 1 }} className="shrink-0">{f.emoji}</span>
               <div>
-                <p className="text-[13px] font-bold" style={{ color: "#2E5A34" }}>{f.name}</p>
+                <p className="text-[13px] font-bold text-text-main">{f.name}</p>
                 <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{f.tip}</p>
               </div>
             </div>
@@ -260,19 +255,17 @@ export default function FeedingGuidePage() {
       {/* 급식 5원칙 */}
       <section id="rules" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <BookOpen size={20} color="#B05C36" />
+          <BookOpen size={20} className="text-text-sub" />
           급식 5원칙
         </h2>
-        <div className="space-y-2">
+        <div>
           {STEPS.map(({ icon: Icon, title, desc }) => (
             <div
               key={title}
-              className="rounded-2xl bg-white p-4 flex items-start gap-3"
-              style={{ boxShadow: "var(--shadow-card)" }}
+              className="py-3 flex items-start gap-3 border-b border-divider last:border-b-0"
             >
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: "rgba(176, 92, 54,0.12)" }}
+                className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub"
               >
                 <Icon size={18} style={{ color: "var(--color-primary)" }} />
               </div>
@@ -288,12 +281,12 @@ export default function FeedingGuidePage() {
       {/* 계절별 */}
       <section id="seasons" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <AlertTriangle size={20} color="var(--color-care)" />
+          <AlertTriangle size={20} className="text-text-sub" />
           계절별 주의사항
         </h2>
         <div className="space-y-2.5">
-          <div className="rounded-2xl p-4" style={{ background: "var(--color-care-soft)", border: "1px solid #F2D4A5" }}>
-            <p className="text-[13px] font-bold" style={{ color: "#B56A1A" }}>여름 (6~8월)</p>
+          <div className="rounded-xl p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+            <p className="text-[13px] font-bold text-text-main">여름 (6~8월)</p>
             <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>건사료는 2시간 내 변질 — 소량 자주 교체</li>
               <li>습식은 직사광선 피해 그늘에, 1시간 내 회수</li>
@@ -301,8 +294,8 @@ export default function FeedingGuidePage() {
               <li>폭염 시 젖은 수건을 쉼터 그늘에 깔아주면 체온 조절에 도움</li>
             </ul>
           </div>
-          <div className="rounded-2xl p-4" style={{ background: "#E3F2FD", border: "1px solid #B3D9E8" }}>
-            <p className="text-[13px] font-bold" style={{ color: "#1E5B8C" }}>겨울 (12~2월)</p>
+          <div className="rounded-xl p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+            <p className="text-[13px] font-bold text-text-main">겨울 (12~2월)</p>
             <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>물이 얼면 전부 동사 위험 — 미지근한 물 하루 1~2회 교체</li>
               <li>사료에 미지근한 물 살짝 섞어 주면 수분 섭취에 도움</li>
@@ -310,8 +303,8 @@ export default function FeedingGuidePage() {
               <li>스티로폼 숨숨집 내부에 핫팩 넣어두면 체온 유지에 결정적</li>
             </ul>
           </div>
-          <div className="rounded-2xl p-4" style={{ background: "#F1F8E9", border: "1px solid #C8E2B0" }}>
-            <p className="text-[13px] font-bold" style={{ color: "#3F6B1F" }}>봄·가을 (환절기)</p>
+          <div className="rounded-xl p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+            <p className="text-[13px] font-bold text-text-main">봄·가을 (환절기)</p>
             <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>환절기엔 면역력 저하로 결막염·호흡기 질환 발생 증가</li>
               <li>노묘는 관절염 악화 — 사료에 관절 영양제 살짝 섞어주는 것도 방법</li>
@@ -324,12 +317,12 @@ export default function FeedingGuidePage() {
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <HelpCircle size={20} color="var(--color-sage)" />
+          <HelpCircle size={20} className="text-text-sub" />
           자주 묻는 질문
         </h2>
-        <div className="space-y-2">
+        <div>
           {faqSchema.mainEntity.map((q, i) => (
-            <details key={i} className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
+            <details key={i} className="py-3 border-b border-divider last:border-b-0 group">
               <summary className="text-[13px] font-bold text-text-main cursor-pointer list-none flex items-center justify-between">
                 <span>Q. {q.name}</span>
                 <span className="text-text-light text-[13px]">+</span>
@@ -345,11 +338,10 @@ export default function FeedingGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="text-[15px] font-bold text-text-main mb-3">함께 보면 좋은 가이드</h2>
-        <div className="grid grid-cols-1 gap-2">
+        <div>
           <Link
             href="/protection/emergency-guide"
-            className="bg-white rounded-2xl p-4 flex items-center gap-3 press"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
             <AlertTriangle size={18} color="var(--color-error)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -359,10 +351,9 @@ export default function FeedingGuidePage() {
           </Link>
           <Link
             href="/protection/trapping-guide"
-            className="bg-white rounded-2xl p-4 flex items-center gap-3 press"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <Scissors size={18} color="var(--color-primary)" className="shrink-0" />
+            <Scissors size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">TNR 포획 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">중성화 수술 전 과정</p>
@@ -370,10 +361,9 @@ export default function FeedingGuidePage() {
           </Link>
           <Link
             href="/protection/kitten-guide"
-            className="bg-white rounded-2xl p-4 flex items-center gap-3 press"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <PawPrint size={18} color="var(--color-care)" className="shrink-0" />
+            <PawPrint size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">냥줍 가이드 (새끼 고양이)</p>
               <p className="text-[11px] text-text-sub mt-0.5">관찰·체온·급여 3단계</p>
@@ -386,8 +376,7 @@ export default function FeedingGuidePage() {
       <section className="mb-2">
         <Link
           href="/map"
-          className="block text-center py-4 rounded-2xl bg-primary text-white text-[15px] font-bold press"
-          style={{ boxShadow: "var(--shadow-primary)" }}
+          className="block text-center py-4 rounded-xl bg-primary text-white text-[15px] font-bold press"
         >
           <Cat size={16} className="inline mr-1.5 -mt-0.5" />
           우리 동네 지도에서 돌봄 시작하기

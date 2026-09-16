@@ -165,10 +165,10 @@ export default function KittenGuidePage() {
 
       {/* 히어로 요약 */}
       <div
-        className="rounded-2xl p-5 mb-6"
+        className="rounded-xl p-5 mb-6"
         style={{
-          background: "#FFF9E8",
-          border: "1px solid rgba(201,169,97,0.2)",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <p className="text-[13px] leading-relaxed text-text-main">
@@ -187,8 +187,8 @@ export default function KittenGuidePage() {
       {/* 목차 */}
       <nav
         aria-label="목차"
-        className="rounded-2xl bg-white p-4 mb-6"
-        style={{ border: "1px solid var(--color-divider)" }}
+        className="rounded-xl bg-white p-4 mb-6"
+        style={{ border: "1px solid var(--color-border)" }}
       >
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
@@ -205,7 +205,7 @@ export default function KittenGuidePage() {
       {/* Step 1 */}
       <section id="step-1" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <span className="w-7 h-7 chip-square bg-[#C9A961] text-white text-[13px] font-bold flex items-center justify-center">1</span>
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">1</span>
           관찰 — 왜 바로 데려가면 안 되나
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -232,29 +232,28 @@ export default function KittenGuidePage() {
       {/* Step 2 */}
       <section id="step-2" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <span className="w-7 h-7 chip-square bg-[#D85555] text-white text-[13px] font-bold flex items-center justify-center">2</span>
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">2</span>
           위험 신호 — 즉시 구조가 필요한 7가지
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
           아래 신호 중 하나라도 해당되면 <strong>관찰 없이 즉시 구조</strong>해야 합니다.
           분 단위로 생존이 위협받는 상황이에요.
         </p>
-        <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #E8C5C5" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
           {[
-            { icon: "🩸", text: "피를 흘리거나 깊은 상처가 있다" },
-            { icon: "❄️", text: "기온 5℃ 이하이고 몸이 차갑다" },
-            { icon: "💧", text: "비·눈에 흠뻑 젖어있다" },
-            { icon: "😿", text: "눈곱·콧물이 심하고 호흡이 거칠다" },
-            { icon: "🦟", text: "파리·개미가 모여들어 있다" },
-            { icon: "🏚️", text: "위험한 장소(도로·공사장·하수구)에 있다" },
-            { icon: "💀", text: "어미로 보이는 개체가 이미 사망 상태다" },
+            { text: "피를 흘리거나 깊은 상처가 있다" },
+            { text: "기온 5℃ 이하이고 몸이 차갑다" },
+            { text: "비·눈에 흠뻑 젖어있다" },
+            { text: "눈곱·콧물이 심하고 호흡이 거칠다" },
+            { text: "파리·개미가 모여들어 있다" },
+            { text: "위험한 장소(도로·공사장·하수구)에 있다" },
+            { text: "어미로 보이는 개체가 이미 사망 상태다" },
           ].map((r) => (
             <div
               key={r.text}
               className="flex items-center gap-3 px-4 py-3 border-b last:border-b-0"
-              style={{ borderColor: "rgba(216,85,85,0.15)", background: "var(--color-error-soft)" }}
+              style={{ borderColor: "var(--color-divider)", background: "var(--color-surface)" }}
             >
-              <span className="text-[17px]">{r.icon}</span>
               <span className="text-[13px] font-semibold text-text-main">{r.text}</span>
             </div>
           ))}
@@ -268,8 +267,8 @@ export default function KittenGuidePage() {
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Thermometer size={20} color="#B05C36" />
-          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[13px] font-bold flex items-center justify-center">3</span>
+          <Thermometer size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">3</span>
           체온 유지 — 36.5도 만들기
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -283,7 +282,7 @@ export default function KittenGuidePage() {
           <li><strong>핫팩은 간접 열원으로</strong> — 핫팩을 수건에 싸서 박스 구석에 두세요. 직접 닿으면 저온 화상 위험. 반대편에 찬 공간도 만들어 아기가 피할 수 있게 합니다.</li>
           <li><strong>체온계로 확인</strong> — 36.5~38.5℃가 정상. 36℃ 이하면 저체온증, 39℃ 이상이면 고열·감염 의심. 둘 다 병원 직행.</li>
         </ol>
-        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#FDECEC", color: "#8B2F2F" }}>
+        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface)", color: "var(--color-error)", border: "1px solid var(--color-border)" }}>
           <p className="font-bold mb-1">주의 — 금지 행동</p>
           <ul className="space-y-1 pl-4 list-disc">
             <li>뜨거운 물에 담그기 (쇼크 위험)</li>
@@ -296,8 +295,8 @@ export default function KittenGuidePage() {
       {/* Step 4 */}
       <section id="step-4" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Milk size={20} color="#6B8E6F" />
-          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[13px] font-bold flex items-center justify-center">4</span>
+          <Milk size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">4</span>
           KMR 분유 급여 — 절대 우유 금지
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -306,7 +305,7 @@ export default function KittenGuidePage() {
           응급 시 임시로 쌀뜨물·따뜻한 물 한 티스푼 정도는 가능하지만, 분유를 최우선 구해야 해요.
         </p>
         <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">연령별 급여량·간격</h3>
-        <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
           <table className="w-full text-[13px]">
             <thead style={{ background: "var(--color-surface-alt)" }}>
               <tr>
@@ -345,8 +344,8 @@ export default function KittenGuidePage() {
       {/* Step 5 */}
       <section id="step-5" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Stethoscope size={20} color="#4A7BA8" />
-          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[13px] font-bold flex items-center justify-center">5</span>
+          <Stethoscope size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">5</span>
           동물병원 방문 — 24시간 내
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -373,8 +372,8 @@ export default function KittenGuidePage() {
       {/* Step 6 */}
       <section id="step-6" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Home size={20} color="#8B65B8" />
-          <span className="w-7 h-7 chip-square bg-[#8B65B8] text-white text-[13px] font-bold flex items-center justify-center">6</span>
+          <Home size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">6</span>
           입양·임보 결정
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -401,15 +400,14 @@ export default function KittenGuidePage() {
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-4">
-          <HelpCircle size={20} color="var(--color-sage)" />
+          <HelpCircle size={20} className="text-text-sub" />
           자주 묻는 질문
         </h2>
-        <div className="space-y-3">
+        <div>
           {(faqSchema.mainEntity as { name: string; acceptedAnswer: { text: string } }[]).map((q) => (
             <details
               key={q.name}
-              className="rounded-xl bg-white p-4 group"
-              style={{ border: "1px solid var(--color-divider)" }}
+              className="py-3 border-b border-divider last:border-b-0 group"
             >
               <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
@@ -426,14 +424,13 @@ export default function KittenGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <BookOpen size={18} color="#B05C36" />
+          <BookOpen size={18} className="text-text-sub" />
           관련 가이드
         </h2>
-        <div className="space-y-2">
+        <div>
           <Link
             href="/protection/emergency-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
             <AlertTriangle size={18} color="var(--color-error)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -443,10 +440,9 @@ export default function KittenGuidePage() {
           </Link>
           <Link
             href="/protection/trapping-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <Clock size={18} color="var(--color-care)" className="shrink-0" />
+            <Clock size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">TNR 포획 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">중성화 수술을 위한 안전한 포획</p>
@@ -454,10 +450,9 @@ export default function KittenGuidePage() {
           </Link>
           <Link
             href="/hospitals"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <Stethoscope size={18} color="var(--color-sage)" className="shrink-0" />
+            <Stethoscope size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">구조동물 치료 병원</p>
               <p className="text-[11px] text-text-sub mt-0.5">할인·지원되는 동물병원 목록</p>
@@ -467,9 +462,9 @@ export default function KittenGuidePage() {
       </section>
 
       {/* 신뢰 출처 */}
-      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-divider)" }}>
+      <section className="mb-8 rounded-xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2 flex items-center gap-1.5">
-          <Heart size={14} color="#B05C36" />
+          <Heart size={14} className="text-text-sub" />
           참고한 공공 자료
         </h3>
         <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
@@ -488,7 +483,6 @@ export default function KittenGuidePage() {
           slug="kitten-guide"
           title="새끼 고양이(냥줍) 발견했을 때 완벽 가이드 | 도시공존"
           description="관찰·체온·분유 3단계. 어미 고양이와 분리 판단부터 응급 케어까지."
-          accent="#E8B040"
         />
       </section>
     </div>

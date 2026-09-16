@@ -3,7 +3,7 @@ import Link from "next/link";
 import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   ArrowLeft, Scissors, Package, MapPin, Clock, AlertTriangle,
-  HelpCircle, BookOpen, Stethoscope, Info, CheckCircle2,
+  HelpCircle, BookOpen, Stethoscope, Info, CheckCircle2, Phone, Cat,
 } from "lucide-react";
 
 const SITE_URL = "https://dosigongzon.com";
@@ -162,10 +162,10 @@ export default function TrappingGuidePage() {
 
       {/* 히어로 */}
       <div
-        className="rounded-2xl p-5 mb-6"
+        className="rounded-xl p-5 mb-6"
         style={{
-          background: "#E8F4E8",
-          border: "1px solid rgba(107,142,111,0.2)",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <p className="text-[13px] leading-relaxed text-text-main">
@@ -182,7 +182,7 @@ export default function TrappingGuidePage() {
       {/* 왜 TNR? */}
       <section id="why" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Info size={20} color="var(--color-sage)" />
+          <Info size={20} className="text-text-sub" />
           왜 TNR을 해야 하나요?
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -202,8 +202,8 @@ export default function TrappingGuidePage() {
       {/* 목차 */}
       <nav
         aria-label="목차"
-        className="rounded-2xl bg-white p-4 mb-6"
-        style={{ border: "1px solid var(--color-divider)" }}
+        className="rounded-xl bg-white p-4 mb-6"
+        style={{ border: "1px solid var(--color-border)" }}
       >
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
@@ -221,7 +221,7 @@ export default function TrappingGuidePage() {
       {/* Step 1 */}
       <section id="step-1" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[13px] font-bold flex items-center justify-center">1</span>
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">1</span>
           신청 — 구청 TNR 사업
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -246,11 +246,11 @@ export default function TrappingGuidePage() {
       {/* Step 2 */}
       <section id="step-2" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Package size={20} color="#5B7A8F" />
-          <span className="w-7 h-7 chip-square bg-[#5B7A8F] text-white text-[13px] font-bold flex items-center justify-center">2</span>
+          <Package size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">2</span>
           준비물 체크리스트
         </h2>
-        <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
+        <div className="rounded-xl bg-white p-4" style={{ border: "1px solid var(--color-border)" }}>
           {[
             { item: "포획틀(통덫)", note: "구청·단체 대여 또는 개인 소장자에게 빌리기" },
             { item: "참치캔·습식사료", note: "냄새 강한 것. 평소 안 주던 종류가 효과적" },
@@ -278,8 +278,8 @@ export default function TrappingGuidePage() {
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <MapPin size={20} color="#B05C36" />
-          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[13px] font-bold flex items-center justify-center">3</span>
+          <MapPin size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">3</span>
           포획틀 설치
         </h2>
         <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">설치 위치 고르기</h3>
@@ -297,7 +297,7 @@ export default function TrappingGuidePage() {
           <li>포획틀 상단을 어두운 천으로 살짝 덮기 (숨숨집 느낌)</li>
           <li>주변에 <strong>평소 먹이 그릇 치우기</strong> — 미끼만 먹게 유도</li>
         </ol>
-        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#FDECEC", color: "#8B2F2F" }}>
+        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface)", color: "var(--color-error)", border: "1px solid var(--color-border)" }}>
           <p className="font-bold mb-1">주의</p>
           <ul className="space-y-1 pl-4 list-disc">
             <li>다른 동물(너구리·개)이 접근 가능한 장소 피하기</li>
@@ -310,8 +310,8 @@ export default function TrappingGuidePage() {
       {/* Step 4 */}
       <section id="step-4" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Clock size={20} color="#7A6B8E" />
-          <span className="w-7 h-7 chip-square bg-[#7A6B8E] text-white text-[13px] font-bold flex items-center justify-center">4</span>
+          <Clock size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">4</span>
           대기·포획
         </h2>
         <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -333,8 +333,8 @@ export default function TrappingGuidePage() {
       {/* Step 5 */}
       <section id="step-5" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Stethoscope size={20} color="#4A7BA8" />
-          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[13px] font-bold flex items-center justify-center">5</span>
+          <Stethoscope size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">5</span>
           수술·회복
         </h2>
         <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">병원에서의 처치</h3>
@@ -347,7 +347,7 @@ export default function TrappingGuidePage() {
           <li>마이크로칩 삽입 (지역·병원마다 다름)</li>
         </ul>
         <h3 className="text-[15px] font-bold text-text-main mt-5 mb-2">회복 기간</h3>
-        <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
           <table className="w-full text-[13px]">
             <thead style={{ background: "var(--color-surface-alt)" }}>
               <tr>
@@ -379,8 +379,8 @@ export default function TrappingGuidePage() {
       {/* Step 6 */}
       <section id="step-6" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Scissors size={20} color="#8B65B8" />
-          <span className="w-7 h-7 chip-square bg-[#8B65B8] text-white text-[13px] font-bold flex items-center justify-center">6</span>
+          <Scissors size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">6</span>
           재방사
         </h2>
         <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -390,7 +390,7 @@ export default function TrappingGuidePage() {
           <li>며칠간 <strong>상태 관찰</strong> — 상처 감염·탈수 여부</li>
           <li>도시공존 지도에 <strong>이어팁 태그 추가</strong>해서 커뮤니티에 기록</li>
         </ul>
-        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#E8F4E8", color: "#3F5B42" }}>
+        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface)", color: "var(--color-text-main)", border: "1px solid var(--color-border)" }}>
           <p className="font-bold mb-1">꾸준한 돌봄이 완성</p>
           <p>TNR은 끝이 아니라 시작. 재방사 후 <strong>정기적 급식·급수</strong>와 날씨 대응이 있어야 아이들이 건강하게 지낼 수 있어요.</p>
         </div>
@@ -402,8 +402,8 @@ export default function TrappingGuidePage() {
           <AlertTriangle size={20} color="var(--color-error)" />
           절대 하지 말아야 할 행동
         </h2>
-        <div className="rounded-2xl p-4" style={{ background: "#FDECEC", border: "1px solid rgba(216,85,85,0.2)" }}>
-          <ul className="text-[13px] space-y-2 pl-4 list-disc leading-relaxed" style={{ color: "#8B2F2F" }}>
+        <div className="rounded-xl p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+          <ul className="text-[13px] space-y-2 pl-4 list-disc leading-relaxed" style={{ color: "var(--color-error)" }}>
             <li><strong>맨손 포획 시도</strong> — 물리면 Pasteurella 감염 위험</li>
             <li><strong>포획틀 방치</strong> — 2시간 이상 관찰 없이 두면 스트레스·탈수</li>
             <li><strong>수술 전 급식</strong> — 마취 중 구토로 흡인성 폐렴 위험</li>
@@ -418,15 +418,14 @@ export default function TrappingGuidePage() {
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-4">
-          <HelpCircle size={20} color="var(--color-sage)" />
+          <HelpCircle size={20} className="text-text-sub" />
           자주 묻는 질문
         </h2>
-        <div className="space-y-3">
+        <div>
           {(faqSchema.mainEntity as { name: string; acceptedAnswer: { text: string } }[]).map((q) => (
             <details
               key={q.name}
-              className="rounded-xl bg-white p-4 group"
-              style={{ border: "1px solid var(--color-divider)" }}
+              className="py-3 border-b border-divider last:border-b-0 group"
             >
               <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
@@ -443,16 +442,15 @@ export default function TrappingGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <BookOpen size={18} color="#B05C36" />
+          <BookOpen size={18} className="text-text-sub" />
           관련 가이드
         </h2>
-        <div className="space-y-2">
+        <div>
           <Link
             href="/protection/district-contacts"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <span className="text-[17px]">📞</span>
+            <Phone size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">시·구·군청 동물보호 담당부서</p>
               <p className="text-[11px] text-text-sub mt-0.5">TNR 신청·포획틀 대여</p>
@@ -460,10 +458,9 @@ export default function TrappingGuidePage() {
           </Link>
           <Link
             href="/protection/kitten-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <span className="text-[17px]">🐱</span>
+            <Cat size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">새끼 고양이(냥줍) 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">어린 아이 발견했을 때</p>
@@ -471,10 +468,9 @@ export default function TrappingGuidePage() {
           </Link>
           <Link
             href="/protection/emergency-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <span className="text-[17px]">🚨</span>
+            <AlertTriangle size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">응급 구조 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">다친 길고양이 대응법</p>
@@ -482,10 +478,9 @@ export default function TrappingGuidePage() {
           </Link>
           <Link
             href="/hospitals"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <Stethoscope size={18} color="var(--color-sage)" className="shrink-0" />
+            <Stethoscope size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">구조동물 치료 병원</p>
               <p className="text-[11px] text-text-sub mt-0.5">TNR 지정 병원 목록</p>
@@ -495,7 +490,7 @@ export default function TrappingGuidePage() {
       </section>
 
       {/* 신뢰 출처 */}
-      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-divider)" }}>
+      <section className="mb-8 rounded-xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 출처</h3>
         <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>농림축산식품부 길고양이 TNR 사업 지침</li>

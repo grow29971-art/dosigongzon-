@@ -174,15 +174,15 @@ export default function EmergencyGuidePage() {
 
       {/* 긴급 전화 — 항상 가장 위 */}
       <div
-        className="rounded-2xl p-4 mb-5"
+        className="rounded-xl p-4 mb-5"
         style={{
-          background: "var(--color-error-soft)",
-          border: "1px solid rgba(216,85,85,0.3)",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <div className="flex items-center gap-2 mb-2.5">
-          <Phone size={15} color="#B84545" />
-          <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>
+          <Phone size={15} color="var(--color-error)" />
+          <p className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>
             위급 상황 시 바로 연락
           </p>
         </div>
@@ -190,39 +190,39 @@ export default function EmergencyGuidePage() {
           <a
             href="tel:112"
             className="rounded-xl bg-white p-3 flex flex-col items-center press-strong"
-            style={{ border: "1px solid rgba(216,85,85,0.15)" }}
+            style={{ border: "1px solid var(--color-border)" }}
           >
-            <Siren size={17} color="#B84545" />
+            <Siren size={17} color="var(--color-error)" />
             <p className="text-[11px] text-text-sub mt-1">학대·범죄 신고</p>
-            <p className="text-[15px] font-bold" style={{ color: "#B84545" }}>112</p>
+            <p className="text-[15px] font-bold" style={{ color: "var(--color-error)" }}>112</p>
           </a>
           <a
             href="tel:1577-0954"
             className="rounded-xl bg-white p-3 flex flex-col items-center press-strong"
-            style={{ border: "1px solid rgba(216,85,85,0.15)" }}
+            style={{ border: "1px solid var(--color-border)" }}
           >
-            <PawPrint size={17} color="#B84545" />
+            <PawPrint size={17} color="var(--color-error)" />
             <p className="text-[11px] text-text-sub mt-1">동물보호상담</p>
-            <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>1577-0954</p>
+            <p className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>1577-0954</p>
           </a>
           <a
             href="tel:1577-2504"
             className="rounded-xl bg-white p-3 flex flex-col items-center press-strong"
-            style={{ border: "1px solid rgba(216,85,85,0.15)" }}
+            style={{ border: "1px solid var(--color-border)" }}
           >
-            <Construction size={17} color="#B84545" />
+            <Construction size={17} color="var(--color-error)" />
             <p className="text-[11px] text-text-sub mt-1">도로 로드킬</p>
-            <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>1577-2504</p>
+            <p className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>1577-2504</p>
           </a>
         </div>
       </div>
 
       {/* 히어로 요약 */}
       <div
-        className="rounded-2xl p-5 mb-6"
+        className="rounded-xl p-5 mb-6"
         style={{
-          background: "#FFF4E8",
-          border: "1px solid rgba(184,69,69,0.15)",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <p className="text-[13px] leading-relaxed text-text-main">
@@ -239,8 +239,8 @@ export default function EmergencyGuidePage() {
       {/* 목차 */}
       <nav
         aria-label="목차"
-        className="rounded-2xl bg-white p-4 mb-6"
-        style={{ border: "1px solid var(--color-divider)" }}
+        className="rounded-xl bg-white p-4 mb-6"
+        style={{ border: "1px solid var(--color-border)" }}
       >
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
@@ -269,11 +269,10 @@ export default function EmergencyGuidePage() {
             <div
               key={s.title}
               className="rounded-xl p-3"
-              style={{ background: "var(--color-error-soft)", border: "1px solid rgba(216,85,85,0.15)" }}
+              style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
             >
               <div className="flex items-center gap-1.5 mb-1">
-                <span style={{ fontSize: 17 }}>{s.emoji}</span>
-                <span className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>
+                <span className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>
                   {s.title}
                 </span>
               </div>
@@ -286,8 +285,8 @@ export default function EmergencyGuidePage() {
       {/* Step 1 */}
       <section id="step-1" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Shield size={20} color="#B84545" />
-          <span className="w-7 h-7 chip-square bg-[#B84545] text-white text-[13px] font-bold flex items-center justify-center">1</span>
+          <Shield size={20} color="var(--color-error)" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">1</span>
           안전 확보
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -311,14 +310,14 @@ export default function EmergencyGuidePage() {
       {/* Step 2 */}
       <section id="step-2" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Stethoscope size={20} color="#4A7BA8" />
-          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[13px] font-bold flex items-center justify-center">2</span>
+          <Stethoscope size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">2</span>
           상태 파악 (5초 체크)
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
           의사결정에 쓸 시간은 길지 않아요. <strong>5초 내</strong> 네 가지를 빠르게 확인하세요.
         </p>
-        <div className="rounded-2xl overflow-hidden mb-4" style={{ border: "1px solid var(--color-border)" }}>
+        <div className="rounded-xl overflow-hidden mb-4" style={{ border: "1px solid var(--color-border)" }}>
           <table className="w-full text-[13px]">
             <thead style={{ background: "var(--color-surface-alt)" }}>
               <tr>
@@ -349,8 +348,8 @@ export default function EmergencyGuidePage() {
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Droplet size={20} color="#B05C36" />
-          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[13px] font-bold flex items-center justify-center">3</span>
+          <Droplet size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">3</span>
           응급처치 (상황별)
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -397,8 +396,8 @@ export default function EmergencyGuidePage() {
       {/* Step 4 */}
       <section id="step-4" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Car size={20} color="#6B8E6F" />
-          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[13px] font-bold flex items-center justify-center">4</span>
+          <Car size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">4</span>
           안전 이송
         </h2>
         <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -414,8 +413,8 @@ export default function EmergencyGuidePage() {
       {/* Step 5 */}
       <section id="step-5" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Flame size={20} color="#E88D5A" />
-          <span className="w-7 h-7 chip-square bg-[#E88D5A] text-white text-[13px] font-bold flex items-center justify-center">5</span>
+          <Flame size={20} className="text-text-sub" />
+          <span className="w-7 h-7 chip-square bg-gray-100 text-text-main text-[13px] font-bold flex items-center justify-center">5</span>
           사후 조치·신고
         </h2>
         <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -433,8 +432,8 @@ export default function EmergencyGuidePage() {
           <AlertTriangle size={20} color="var(--color-error)" />
           절대 하지 말아야 할 행동
         </h2>
-        <div className="rounded-2xl p-4" style={{ background: "#FDECEC", border: "1px solid rgba(216,85,85,0.2)" }}>
-          <ul className="text-[13px] space-y-2 pl-4 list-disc leading-relaxed" style={{ color: "#8B2F2F" }}>
+        <div className="rounded-xl p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+          <ul className="text-[13px] space-y-2 pl-4 list-disc leading-relaxed" style={{ color: "var(--color-error)" }}>
             <li><strong>사람용 약 투여</strong> — 타이레놀·아스피린·이부프로펜 등. 치명적</li>
             <li><strong>억지로 물·음식 주기</strong> — 의식 저하 상태면 기도 막힘</li>
             <li><strong>상처를 알코올·과산화수소로 닦기</strong> — 조직 손상 악화</li>
@@ -448,15 +447,14 @@ export default function EmergencyGuidePage() {
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-4">
-          <HelpCircle size={20} color="var(--color-sage)" />
+          <HelpCircle size={20} className="text-text-sub" />
           자주 묻는 질문
         </h2>
-        <div className="space-y-3">
+        <div>
           {(faqSchema.mainEntity as { name: string; acceptedAnswer: { text: string } }[]).map((q) => (
             <details
               key={q.name}
-              className="rounded-xl bg-white p-4 group"
-              style={{ border: "1px solid var(--color-divider)" }}
+              className="py-3 border-b border-divider last:border-b-0 group"
             >
               <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
@@ -473,16 +471,15 @@ export default function EmergencyGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <BookOpen size={18} color="#B05C36" />
+          <BookOpen size={18} className="text-text-sub" />
           관련 가이드
         </h2>
-        <div className="space-y-2">
+        <div>
           <Link
             href="/protection/kitten-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <Cat size={18} color="var(--color-care)" className="shrink-0" />
+            <Cat size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">새끼 고양이(냥줍) 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">어린 아이 발견했을 때 대응</p>
@@ -490,10 +487,9 @@ export default function EmergencyGuidePage() {
           </Link>
           <Link
             href="/protection/trapping-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <Scissors size={18} color="var(--color-primary)" className="shrink-0" />
+            <Scissors size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">TNR 포획 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">중성화 수술을 위한 안전한 포획</p>
@@ -501,10 +497,9 @@ export default function EmergencyGuidePage() {
           </Link>
           <Link
             href="/protection/legal"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <Scale size={18} color="var(--color-text-sub)" className="shrink-0" />
+            <Scale size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">동물보호법·학대 신고</p>
               <p className="text-[11px] text-text-sub mt-0.5">법적 대응과 증거 확보 방법</p>
@@ -514,7 +509,7 @@ export default function EmergencyGuidePage() {
       </section>
 
       {/* 신뢰 출처 */}
-      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-divider)" }}>
+      <section className="mb-8 rounded-xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 공공 자료</h3>
         <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>동물보호관리시스템 (animal.go.kr) — 농림축산식품부</li>
@@ -532,7 +527,6 @@ export default function EmergencyGuidePage() {
           slug="emergency-guide"
           title="길고양이 응급 구조·응급처치 완벽 가이드 | 도시공존"
           description="로드킬·출혈·골절·중독 상황별 대응. 안전하게 구조하고 병원으로 이송하는 방법."
-          accent="#D85555"
         />
       </section>
     </div>
