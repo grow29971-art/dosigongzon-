@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, ChevronLeft, ChevronRight, TrendingUp, BookOpen, CatIcon, MessageSquare } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, TrendingUp, BookOpen, Cat, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getMonthlyGrowthReport, hasAnyActivity, pickMonthComment } from "@/lib/monthly-report-server";
 import MonthlyReportShareButton from "@/app/components/MonthlyReportShareButton";
@@ -50,12 +50,9 @@ export default async function MonthlyReportPage({
     `${pickMonthComment(total)}`;
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 */}
-      <div
-        className="px-5 pt-12 pb-7"
-        style={{ background: "#F0FAF3" }}
-      >
+      <div className="px-5 pt-12 pb-5">
         <Link
           href="/mypage"
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3"
@@ -63,30 +60,27 @@ export default async function MonthlyReportPage({
           <ArrowLeft size={14} />
           마이페이지
         </Link>
-        <div className="flex items-center gap-2 mb-1.5">
-          <TrendingUp size={20} color="#5BA876" strokeWidth={2.2} />
-          <h1 className="text-[24px] font-bold tracking-tight text-text-main">
-            성장 리포트
-          </h1>
-        </div>
+        <h1 className="text-[24px] font-bold text-text-main mb-1.5">
+          성장 리포트
+        </h1>
 
         {/* 월 이동 */}
         <div className="flex items-center gap-2 mt-3">
           <Link
             href={`/mypage/monthly-report?y=${prev.year}&m=${prev.month}`}
             className="w-8 h-8 rounded-full flex items-center justify-center press-strong transition-transform"
-            style={{ background: "#FFFFFF", boxShadow: "var(--shadow-raised)" }}
+            style={{ border: "1px solid var(--color-border)" }}
           >
             <ChevronLeft size={16} className="text-text-main" />
           </Link>
-          <span className="text-[15px] font-bold text-text-main tracking-tight px-2">
+          <span className="text-[15px] font-semibold text-text-main px-2">
             {year}년 {month}월
           </span>
           {next ? (
             <Link
               href={`/mypage/monthly-report?y=${next.year}&m=${next.month}`}
               className="w-8 h-8 rounded-full flex items-center justify-center press-strong transition-transform"
-              style={{ background: "#FFFFFF", boxShadow: "var(--shadow-raised)" }}
+              style={{ border: "1px solid var(--color-border)" }}
             >
               <ChevronRight size={16} className="text-text-main" />
             </Link>
@@ -100,16 +94,13 @@ export default async function MonthlyReportPage({
 
       <div className="px-5 pt-5">
         {!active ? (
-          <div
-            className="rounded-2xl p-6 text-center"
-            style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card)" }}
-          >
+          <div className="card p-6 text-center">
             <TrendingUp size={28} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-            <p className="text-[15px] font-bold text-text-main mb-1.5">
+            <p className="text-[15px] font-semibold text-text-main mb-1.5">
               {year}년 {month}월엔 기록이 없어요
             </p>
             <p className="text-[13px] text-text-sub leading-relaxed">
-              돌봄일지를 남기거나 고양이를 등록하면 이 달의 리포트가 채워져요.
+              돌봄일지나 고양이 등록이 있으면 리포트가 채워져요.
             </p>
           </div>
         ) : (
@@ -119,9 +110,9 @@ export default async function MonthlyReportPage({
             </p>
 
             <div className="grid grid-cols-2 gap-3 mb-5">
-              <StatTile icon={<BookOpen size={18} color="#B05C36" />} label="돌봄다이어리" value={report.careLogCount} unit="회" tint="#FFF5E0" />
-              <StatTile icon={<CatIcon size={18} color="#5BA876" />} label="새로 등록한 고양이" value={report.newCatCount} unit="마리" tint="#EAF6EF" />
-              <StatTile icon={<MessageSquare size={18} color="#4A7BA8" />} label="커뮤니티 기록" value={report.commentCount} unit="건" tint="#E5EDF5" />
+              <StatTile icon={<BookOpen size={20} strokeWidth={1.8} />} label="돌봄다이어리" value={report.careLogCount} unit="회" />
+              <StatTile icon={<Cat size={20} strokeWidth={1.8} />} label="새로 등록한 고양이" value={report.newCatCount} unit="마리" />
+              <StatTile icon={<MessageSquare size={20} strokeWidth={1.8} />} label="커뮤니티 기록" value={report.commentCount} unit="건" />
             </div>
 
             <MonthlyReportShareButton text={shareText} />
@@ -132,20 +123,17 @@ export default async function MonthlyReportPage({
   );
 }
 
-function StatTile({ icon, label, value, unit, tint }: { icon: React.ReactNode; label: string; value: number; unit: string; tint: string }) {
+function StatTile({ icon, label, value, unit }: { icon: React.ReactNode; label: string; value: number; unit: string }) {
   return (
-    <div
-      className="rounded-2xl p-4 flex flex-col gap-2"
-      style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card)" }}
-    >
-      <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: tint }}>
+    <div className="card p-4 flex flex-col gap-2">
+      <div className="w-9 h-9 flex items-center justify-center text-text-sub">
         {icon}
       </div>
       <div>
-        <p className="text-[20px] font-bold text-text-main tracking-tight leading-none">
-          {value}<span className="text-[13px] font-bold text-text-sub ml-0.5">{unit}</span>
+        <p className="text-[20px] font-bold text-text-main leading-none">
+          {value}<span className="text-[13px] font-medium text-text-sub ml-0.5">{unit}</span>
         </p>
-        <p className="text-[11px] text-text-sub mt-1">{label}</p>
+        <p className="text-[13px] text-text-sub mt-1">{label}</p>
       </div>
     </div>
   );

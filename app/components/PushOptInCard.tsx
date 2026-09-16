@@ -115,49 +115,40 @@ export default function PushOptInCard({
     <div
       className="mb-3 px-4 py-3"
       style={{
-        background: "#FFF6EE",
-        borderRadius: "var(--radius-input)",
-        border: "1px solid #F2D6B6",
+        background: "var(--color-surface)",
+        borderRadius: "var(--radius-card)",
+        border: "1px solid var(--color-border)",
       }}
     >
       <div className="flex items-center gap-2.5">
-        <div
-          className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-          style={{ backgroundColor: "rgba(176, 92, 54,0.15)" }}
-        >
-          <Bell size={16} style={{ color: "var(--color-primary)" }} />
+        <div className="w-9 h-9 flex items-center justify-center shrink-0 text-text-sub">
+          <Bell size={20} strokeWidth={1.8} />
         </div>
         <div className="flex-1 min-w-0">
-          <p
-            className="text-[13px] font-bold leading-tight"
-            style={{ color: "#8C5A37" }}
-          >
+          <p className="text-[13px] font-semibold leading-tight text-text-main">
             {title}
           </p>
-          <p
-            className="text-[11px] mt-0.5"
-            style={{ color: "#A88160" }}
-          >
+          <p className="text-[11px] mt-0.5 text-text-sub">
             {description}
           </p>
-          <p className="text-[11px] mt-0.5" style={{ color: "#BFA084" }}>
+          <p className="text-[11px] mt-0.5 text-text-light">
             켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 언제든 해제
           </p>
         </div>
         <button
           onClick={handleEnable}
           disabled={busy}
-          className="px-3 py-1.5 rounded-lg text-[11px] font-bold shrink-0 press-strong transition-transform disabled:opacity-50"
-          style={{ backgroundColor: "var(--color-primary)", color: "#fff" }}
+          className="px-3 h-8 text-[13px] font-semibold shrink-0 press-strong transition-transform disabled:opacity-50"
+          style={{ backgroundColor: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
         >
           {busy ? "..." : "켜기"}
         </button>
         <button
           onClick={handleDismiss}
-          className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 press-strong"
+          className="w-7 h-7 flex items-center justify-center shrink-0 press-strong"
           aria-label="닫기"
         >
-          <X size={14} style={{ color: "#A88160" }} />
+          <X size={16} style={{ color: "var(--color-text-light)" }} />
         </button>
       </div>
     </div>

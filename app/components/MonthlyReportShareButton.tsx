@@ -18,15 +18,15 @@ export default function MonthlyReportShareButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleShare}
-      className="w-full flex items-center justify-center gap-2 py-3.5 press transition-transform"
+      className="w-full flex items-center justify-center gap-2 h-12 press transition-transform"
       style={{
-        background: "#5BA876",
+        background: "var(--color-primary)",
+        color: "var(--color-surface)",
         borderRadius: "var(--radius-input)",
-        boxShadow: "var(--shadow-fab)",
       }}
     >
-      <Share2 size={16} color="#fff" strokeWidth={2.2} />
-      <span className="text-[15px] font-bold text-white">이번 달 리포트 공유하기</span>
+      <Share2 size={16} strokeWidth={2} />
+      <span className="text-[15px] font-semibold">이번 달 리포트 공유하기</span>
     </button>
   );
 }

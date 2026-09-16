@@ -90,28 +90,24 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
     <div
       className="mb-3 p-3.5"
       style={{
-        background: "#FFF1D9",
-        borderRadius: "var(--radius-card-sm)",
-        border: "1px solid rgba(232,141,90,0.3)",
-        boxShadow: "var(--shadow-fab)",
+        background: "var(--color-surface)",
+        borderRadius: "var(--radius-card)",
+        border: "1px solid var(--color-border)",
       }}
     >
       <div className="flex items-center gap-3">
-        <div
-          className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-          style={{ background: "#E88D5A", boxShadow: "var(--shadow-card)" }}
-        >
-          <Bell size={17} color="#fff" strokeWidth={2.3} />
+        <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
+          <Bell size={20} strokeWidth={1.8} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-primary-dark)" }}>매일 6시 알림</p>
-          <p className="text-[13px] font-bold text-text-main leading-tight mt-0.5">
-            🍚 내 아이 한 끼 챙길 시간, 알려드릴까요?
+          <p className="text-[11px] font-medium text-text-light">매일 6시 알림</p>
+          <p className="text-[13px] font-semibold text-text-main leading-tight mt-0.5">
+            내 아이 한 끼 챙길 시간, 알려드릴까요?
           </p>
           <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
             바쁘면 까먹어요 — 알림이 챙겨드려요.
           </p>
-          <p className="text-[11px] mt-0.5" style={{ color: "#BFA084" }}>
+          <p className="text-[11px] mt-0.5 text-text-light">
             켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 해제 가능
           </p>
         </div>
@@ -120,19 +116,19 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
             type="button"
             onClick={enable}
             disabled={busy}
-            className="h-8 px-3 rounded-full text-white text-[13px] font-bold press-strong transition-transform disabled:opacity-60"
-            style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-card)" }}
+            className="h-8 px-3 text-[13px] font-semibold press-strong transition-transform disabled:opacity-60"
+            style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
           >
             {busy ? "..." : "켜기"}
           </button>
           <button
             type="button"
             onClick={dismiss}
-            className="h-6 px-2 rounded-full flex items-center justify-center text-[11px] font-bold"
-            style={{ color: "#A88160" }}
+            className="h-6 px-2 flex items-center justify-center"
+            style={{ color: "var(--color-text-light)" }}
             aria-label="다음에"
           >
-            <X size={12} />
+            <X size={14} />
           </button>
         </div>
       </div>

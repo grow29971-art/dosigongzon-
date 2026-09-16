@@ -49,23 +49,23 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
       {blurbs.map((b) => (
         <div
           key={b.id}
-          className="bg-white rounded-2xl p-4"
-          style={{ boxShadow: "var(--shadow-card)" }}
+          className="card p-4"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold tracking-[0.1em] uppercase" style={{ color: "var(--color-primary)" }}>
+            <span className="text-[13px] font-semibold text-text-main">
               {b.label}
             </span>
             <button
               onClick={() => handleCopy(b.id, b.text)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg press-strong transition-transform"
+              className="flex items-center gap-1 px-2.5 h-7 press-strong transition-transform"
               style={{
-                background: copiedId === b.id ? "var(--color-sage-soft)" : "rgba(176, 92, 54,0.10)",
-                color: copiedId === b.id ? "#2E7D32" : "var(--color-primary-dark)",
+                background: "var(--color-gray-100)",
+                color: copiedId === b.id ? "var(--color-sage)" : "var(--color-text-main)",
+                borderRadius: "var(--radius-input)",
               }}
             >
-              {copiedId === b.id ? <Check size={11} /> : <Copy size={11} />}
-              <span className="text-[11px] font-bold">
+              {copiedId === b.id ? <Check size={12} /> : <Copy size={12} />}
+              <span className="text-[11px] font-semibold">
                 {copiedId === b.id ? "복사됨" : "복사"}
               </span>
             </button>
@@ -77,11 +77,8 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
       ))}
 
       {/* 로고 다운로드 */}
-      <div
-        className="bg-white rounded-2xl p-4"
-        style={{ boxShadow: "var(--shadow-card)" }}
-      >
-        <p className="text-[11px] font-bold tracking-[0.1em] uppercase mb-2.5" style={{ color: "var(--color-primary)" }}>
+      <div className="card p-4">
+        <p className="text-[13px] font-semibold text-text-main mb-2.5">
           로고 · 아이콘 다운로드
         </p>
         <div className="grid grid-cols-3 gap-2">
@@ -102,21 +99,21 @@ function LogoCard({ href, label, filename }: { href: string; label: string; file
     <a
       href={href}
       download={filename}
-      className="flex flex-col items-center gap-1 py-3 rounded-xl press-strong transition-transform"
-      style={{ background: "#FFF8F2", border: "1px solid rgba(176, 92, 54,0.20)" }}
+      className="flex flex-col items-center gap-1 py-3 press-strong transition-transform"
+      style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card-sm)" }}
     >
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center"
+        className="w-10 h-10 rounded-lg flex items-center justify-center"
         style={{
           backgroundImage: `url('${href}')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       />
-      <span className="text-[11px] font-bold mt-0.5" style={{ color: "#8B5A3C" }}>
+      <span className="text-[11px] font-medium mt-0.5 text-text-sub">
         {label}
       </span>
-      <Download size={10} style={{ color: "var(--color-primary)" }} />
+      <Download size={12} className="text-text-light" />
     </a>
   );
 }

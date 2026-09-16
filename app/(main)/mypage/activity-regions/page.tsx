@@ -27,10 +27,21 @@ import {
 import { MAP_CENTER } from "@/lib/cats-repo";
 import type { KakaoMap, KakaoMapMouseEvent, KakaoPlaceResult, KakaoOverlay, KakaoCircle } from "@/lib/kakao-types";
 
-const SLOT_COLORS: Record<RegionSlot, string> = {
-  1: "#B05C36",
-  2: "#4A7BA8",
+// 슬롯 색 — 리디자인(2026-09-16): 슬롯 1 primary, 슬롯 2 회색. 화면은 var() 그대로,
+// Kakao Circle(SVG 속성이라 var() 불가)만 런타임에 토큰 값을 읽어 넘긴다.
+const SLOT_TOKENS: Record<RegionSlot, string> = {
+  1: "--color-primary",
+  2: "--color-gray-600",
 };
+const SLOT_COLORS: Record<RegionSlot, string> = {
+  1: `var(${SLOT_TOKENS[1]})`,
+  2: `var(${SLOT_TOKENS[2]})`,
+};
+function resolveSlotColor(slot: RegionSlot): string {
+  if (typeof window === "undefined") return SLOT_COLORS[slot];
+  const v = getComputedStyle(document.documentElement).getPropertyValue(SLOT_TOKENS[slot]).trim();
+  return v || SLOT_COLORS[slot];
+}
 
 export default function ActivityRegionsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -242,14 +253,14 @@ export default function ActivityRegionsPage() {
     if (circleRef.current) circleRef.current.setMap(null);
     if (otherCircleRef.current) otherCircleRef.current.setMap(null);
 
-    const color = SLOT_COLORS[activeSlot];
+    const color = resolveSlotColor(activeSlot);
 
-    // 중심 마커 (이모지 HTML)
+    // 중심 마커 (라벨 HTML)
     const el = document.createElement("div");
     el.innerHTML = `
       <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;">
-        <div style="padding:6px 10px;border-radius:14px;background:${color};color:#fff;font-size:11px;font-weight:800;box-shadow:0 4px 12px ${color}88;white-space:nowrap;">
-          📍 활동 지역 ${activeSlot}
+        <div style="padding:6px 10px;border-radius:6px;background:${color};color:var(--color-surface);font-size:11px;font-weight:600;white-space:nowrap;">
+          활동 지역 ${activeSlot}
         </div>
         <div style="width:10px;height:10px;background:${color};transform:rotate(45deg);margin-top:-5px;"></div>
       </div>
@@ -278,7 +289,7 @@ export default function ActivityRegionsPage() {
     // 다른 슬롯(저장된 것)도 옅게 표시
     const other = regions.find((r) => r.slot !== activeSlot);
     if (other) {
-      const otherColor = SLOT_COLORS[other.slot as RegionSlot];
+      const otherColor = resolveSlotColor(other.slot as RegionSlot);
       otherCircleRef.current = new window.kakao.maps.Circle({
         map,
         center: new window.kakao.maps.LatLng(other.lat, other.lng),
@@ -473,7 +484,7 @@ export default function ActivityRegionsPage() {
   if (authLoading || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="animate-spin text-primary" size={28} />
+        <Loader2 className="animate-spin text-text-muted" size={28} />
       </div>
     );
   }
@@ -481,22 +492,21 @@ export default function ActivityRegionsPage() {
   const savedOnSlot = regions.find((r) => r.slot === activeSlot);
 
   return (
-    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       {/* 헤더 */}
-      <div className="px-5 pt-14 pb-3 flex items-center gap-3 bg-white/80 backdrop-blur-md sticky top-0 z-40">
+      <div className="px-5 pt-14 pb-3 flex items-center gap-3 bg-surface sticky top-0 z-40" style={{ borderBottom: "1px solid var(--color-border)" }}>
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="뒤로"
         >
-          <ArrowLeft size={18} className="text-text-main" />
+          <ArrowLeft size={22} className="text-text-main" />
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-[17px] font-bold text-text-main tracking-tight">
+          <h1 className="text-[17px] font-bold text-text-main">
             활동 지역 설정
           </h1>
-          <p className="text-[11px] text-text-sub">
+          <p className="text-[13px] text-text-sub">
             최대 2곳까지 지정할 수 있어요
           </p>
         </div>
@@ -514,30 +524,27 @@ export default function ActivityRegionsPage() {
                 key={slot}
                 type="button"
                 onClick={() => switchSlot(slot)}
-                className="flex-1 px-3 py-3 rounded-2xl text-left press transition-transform"
+                className="flex-1 px-3 py-3 rounded-lg text-left press transition-transform"
                 style={{
-                  background: active ? color : "#fff",
-                  color: active ? "#fff" : "#333",
-                  boxShadow: active
-                    ? `0 4px 14px ${color}55`
-                    : "0 2px 8px rgba(0,0,0,0.05)",
-                  border: active ? "none" : "1px solid var(--color-divider)",
+                  background: active ? color : "var(--color-surface)",
+                  color: active ? "var(--color-surface)" : "var(--color-text-main)",
+                  border: active ? `1px solid ${color}` : "1px solid var(--color-border)",
                 }}
               >
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <MapPin size={12} />
-                  <span className="text-[11px] font-bold opacity-80">
+                  <span className="text-[11px] font-medium opacity-80">
                     활동 지역 {slot}
                   </span>
                   {r?.is_primary && (
                     <Star
                       size={11}
-                      fill={active ? "#fff" : "#E8B84A"}
+                      fill="currentColor"
                       strokeWidth={0}
                     />
                   )}
                 </div>
-                <p className="text-[13px] font-bold truncate">
+                <p className="text-[13px] font-semibold truncate">
                   {r ? r.name : "미설정"}
                 </p>
                 {r && (
@@ -552,10 +559,10 @@ export default function ActivityRegionsPage() {
 
         {/* 지도 */}
         <div
-          className="relative rounded-2xl overflow-hidden"
+          className="relative rounded-xl overflow-hidden"
           style={{
             height: 320,
-            boxShadow: "var(--shadow-raised)",
+            border: "1px solid var(--color-border)",
           }}
         >
           <div
@@ -568,25 +575,25 @@ export default function ActivityRegionsPage() {
           {(!mapReady || mapError) && (
             <div
               className="absolute inset-0 flex items-center justify-center z-[5] pointer-events-none"
-              style={{ background: "rgba(238,234,226,0.85)" }}
+              style={{ background: "rgba(245,245,245,0.85)" }}
             >
               {mapError ? (
                 <div
-                  className="pointer-events-auto mx-4 rounded-2xl px-4 py-3 text-center"
-                  style={{ background: "#FFFFFF", boxShadow: "var(--shadow-raised)" }}
+                  className="pointer-events-auto mx-4 rounded-xl px-4 py-3 text-center"
+                  style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
                 >
-                  <p className="text-[13px] font-bold text-text-main mb-1">⚠️ 지도 로드 실패</p>
-                  <p className="text-[11px] text-text-sub mb-2">{mapError}</p>
+                  <p className="text-[13px] font-semibold text-text-main mb-1">지도 로드 실패</p>
+                  <p className="text-[13px] text-text-sub mb-2">{mapError}</p>
                   <button
                     type="button"
                     onClick={() => window.location.reload()}
-                    className="text-[11px] font-bold text-primary"
+                    className="text-[13px] font-semibold text-primary"
                   >
                     새로고침
                   </button>
                 </div>
               ) : (
-                <Loader2 size={24} className="animate-spin text-primary" />
+                <Loader2 size={24} className="animate-spin text-text-muted" />
               )}
             </div>
           )}
@@ -594,10 +601,10 @@ export default function ActivityRegionsPage() {
           {/* 검색바 */}
           <div className="absolute top-3 left-3 right-3 z-10">
             <div
-              className="flex items-center gap-2 rounded-2xl px-3 py-2 bg-white"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 bg-surface"
               style={{ boxShadow: "var(--shadow-raised)" }}
             >
-              <Search size={14} className="text-text-sub" />
+              <Search size={16} className="text-text-sub" />
               <input
                 type="text"
                 value={searchQ}
@@ -606,11 +613,11 @@ export default function ActivityRegionsPage() {
                 placeholder="주소·장소 검색 (예: 남동구청)"
                 className="flex-1 bg-transparent text-[13px] font-semibold outline-none"
               />
-              {searching && <Loader2 size={14} className="animate-spin text-primary" />}
+              {searching && <Loader2 size={14} className="animate-spin text-text-muted" />}
             </div>
             {searchResults.length > 0 && (
               <div
-                className="mt-1 bg-white rounded-2xl overflow-hidden"
+                className="mt-1 bg-surface rounded-lg overflow-hidden"
                 style={{ boxShadow: "var(--shadow-raised)" }}
               >
                 {searchResults.map((r) => (
@@ -618,9 +625,9 @@ export default function ActivityRegionsPage() {
                     key={r.id}
                     type="button"
                     onClick={() => pickSearchResult(r)}
-                    className="w-full text-left px-3 py-2 active:bg-gray-50 border-b border-gray-100 last:border-0"
+                    className="w-full text-left px-3 py-2 active:bg-gray-50 border-b border-divider last:border-0"
                   >
-                    <p className="text-[13px] font-bold text-text-main truncate">
+                    <p className="text-[13px] font-semibold text-text-main truncate">
                       {r.place_name}
                     </p>
                     <p className="text-[11px] text-text-sub truncate">
@@ -636,30 +643,27 @@ export default function ActivityRegionsPage() {
           <button
             type="button"
             onClick={handleLocateMe}
-            className="absolute bottom-3 right-3 z-10 w-10 h-10 rounded-full bg-white flex items-center justify-center press-strong"
+            className="absolute bottom-3 right-3 z-10 w-10 h-10 rounded-full bg-surface flex items-center justify-center press-strong"
             style={{ boxShadow: "var(--shadow-raised)" }}
             aria-label="내 위치"
           >
-            <LocateFixed size={18} style={{ color: SLOT_COLORS[activeSlot] }} />
+            <LocateFixed size={18} className="text-text-main" />
           </button>
 
           {/* 안내 */}
           <div
-            className="absolute bottom-3 left-3 z-10 px-3 py-1.5 rounded-xl"
+            className="absolute bottom-3 left-3 z-10 px-3 py-1.5 rounded-lg"
             style={{ background: "rgba(255,255,255,0.92)", boxShadow: "var(--shadow-raised)" }}
           >
-            <p className="text-[11px] font-bold text-text-main">
+            <p className="text-[11px] font-medium text-text-sub">
               지도를 터치해서 중심점을 바꿔보세요
             </p>
           </div>
         </div>
 
         {/* 이름 입력 */}
-        <div
-          className="bg-white rounded-2xl p-4"
-          style={{ boxShadow: "var(--shadow-card)" }}
-        >
-          <label className="text-[11px] font-bold text-text-sub">
+        <div className="card p-4">
+          <label className="text-[13px] font-semibold text-text-sub">
             지역 이름
           </label>
           <input
@@ -667,27 +671,21 @@ export default function ActivityRegionsPage() {
             value={name}
             onChange={(e) => setName(e.target.value.slice(0, 20))}
             placeholder="예: 구월동, 우리집 근처"
-            className="w-full mt-1.5 px-3 py-2.5 rounded-xl text-[13px] font-bold outline-none"
+            className="w-full mt-1.5 px-3 py-2.5 text-[15px] font-medium outline-none text-text-main"
             style={{
-              background: "#F7F4EE",
-              border: "1px solid var(--color-divider)",
+              background: "var(--color-gray-100)",
+              borderRadius: "var(--radius-input)",
             }}
           />
         </div>
 
         {/* 반경 선택 */}
-        <div
-          className="bg-white rounded-2xl p-4"
-          style={{ boxShadow: "var(--shadow-card)" }}
-        >
+        <div className="card p-4">
           <div className="flex items-center justify-between mb-2.5">
-            <label className="text-[11px] font-bold text-text-sub">
+            <label className="text-[13px] font-semibold text-text-sub">
               활동 반경
             </label>
-            <span
-              className="text-[13px] font-bold"
-              style={{ color: SLOT_COLORS[activeSlot] }}
-            >
+            <span className="text-[13px] font-semibold text-text-main">
               {radius >= 1000 ? `${radius / 1000}km` : `${radius}m`}
             </span>
           </div>
@@ -699,10 +697,11 @@ export default function ActivityRegionsPage() {
                   key={p.value}
                   type="button"
                   onClick={() => setRadius(p.value)}
-                  className="px-3 py-1.5 chip-square text-[11px] font-bold press-strong transition-transform"
+                  className="px-3 h-8 chip-square text-[13px] font-semibold press-strong transition-transform"
                   style={{
-                    background: active ? SLOT_COLORS[activeSlot] : "#F7F4EE",
-                    color: active ? "#fff" : "#666",
+                    background: active ? SLOT_COLORS[activeSlot] : "var(--color-surface)",
+                    color: active ? "var(--color-surface)" : "var(--color-text-sub)",
+                    border: active ? `1px solid ${SLOT_COLORS[activeSlot]}` : "1px solid var(--color-border)",
                   }}
                 >
                   {p.label}
@@ -713,30 +712,24 @@ export default function ActivityRegionsPage() {
         </div>
 
         {/* 주 활동 지역 */}
-        <div
-          className="bg-white rounded-2xl p-4 flex items-center gap-3"
-          style={{ boxShadow: "var(--shadow-card)" }}
-        >
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "rgba(232,184,74,0.15)" }}
-          >
-            <Star size={16} fill="#E8B84A" strokeWidth={0} />
+        <div className="card p-4 flex items-center gap-3">
+          <div className="w-9 h-9 flex items-center justify-center shrink-0 text-text-sub">
+            <Star size={20} strokeWidth={1.8} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-bold text-text-main">
+            <p className="text-[15px] font-semibold text-text-main">
               주 활동 지역
             </p>
-            <p className="text-[11px] text-text-sub">
+            <p className="text-[13px] text-text-sub">
               홈/지도의 기본 필터 기준이 돼요
             </p>
           </div>
           {savedOnSlot?.is_primary ? (
             <span
-              className="px-3 py-1.5 chip-square text-[11px] font-bold"
-              style={{ background: "#E8B84A", color: "#fff" }}
+              className="px-3 h-8 inline-flex items-center chip-square text-[13px] font-semibold text-text-sub"
+              style={{ border: "1px solid var(--color-border)" }}
             >
-              <Check size={11} className="inline mr-0.5" />
+              <Check size={12} className="inline mr-0.5" />
               지정됨
             </span>
           ) : (
@@ -744,8 +737,8 @@ export default function ActivityRegionsPage() {
               type="button"
               onClick={handleSetPrimary}
               disabled={!savedOnSlot}
-              className="px-3 py-1.5 rounded-xl text-[11px] font-bold press-strong disabled:opacity-40"
-              style={{ background: "#F7F4EE", color: "#333" }}
+              className="px-3 h-8 rounded-lg text-[13px] font-semibold press-strong disabled:opacity-40"
+              style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)" }}
             >
               지정하기
             </button>
@@ -754,20 +747,14 @@ export default function ActivityRegionsPage() {
 
         {/* 피드백 */}
         {err && (
-          <div
-            className="rounded-2xl px-4 py-2.5 text-[13px] font-bold"
-            style={{ background: "#FDECEC", color: "#B84545" }}
-          >
+          <p className="px-1 text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>
             {err}
-          </div>
+          </p>
         )}
         {ok && (
-          <div
-            className="rounded-2xl px-4 py-2.5 text-[13px] font-bold"
-            style={{ background: "#E8F4E8", color: "#3F5B42" }}
-          >
+          <p className="px-1 text-[13px] font-semibold" style={{ color: "var(--color-sage)" }}>
             {ok}
-          </div>
+          </p>
         )}
 
         {/* 액션 버튼 */}
@@ -776,22 +763,21 @@ export default function ActivityRegionsPage() {
             <button
               type="button"
               onClick={handleDelete}
-              className="px-4 py-3 rounded-2xl flex items-center gap-1.5 press-strong"
-              style={{ background: "#fff", color: "#B84545", boxShadow: "var(--shadow-card)" }}
+              className="px-4 h-12 rounded-lg flex items-center gap-1.5 press-strong"
+              style={{ background: "var(--color-error-soft)", color: "var(--color-error)" }}
             >
               <Trash2 size={15} />
-              <span className="text-[13px] font-bold">삭제</span>
+              <span className="text-[13px] font-semibold">삭제</span>
             </button>
           )}
           <button
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 py-3 rounded-2xl flex items-center justify-center gap-1.5 press disabled:opacity-50"
+            className="flex-1 h-12 rounded-lg flex items-center justify-center gap-1.5 press disabled:opacity-50"
             style={{
-              background: SLOT_COLORS[activeSlot],
-              color: "#fff",
-              boxShadow: `0 4px 14px ${SLOT_COLORS[activeSlot]}55`,
+              background: "var(--color-primary)",
+              color: "var(--color-surface)",
             }}
           >
             {saving ? (
@@ -799,7 +785,7 @@ export default function ActivityRegionsPage() {
             ) : (
               <Save size={15} />
             )}
-            <span className="text-[13px] font-bold">
+            <span className="text-[15px] font-semibold">
               {savedOnSlot ? "변경사항 저장" : "활동 지역 저장"}
             </span>
           </button>

@@ -107,27 +107,21 @@ export default function InstallAppMenuItem() {
         className="w-full flex items-center gap-3 px-1 py-3 press disabled:opacity-80"
         style={{ borderTop: "1px solid var(--color-divider)" }}
       >
-        <div
-          className="w-10 h-10 flex items-center justify-center shrink-0"
-          style={{
-            backgroundColor: installed ? "rgba(46,125,50,0.1)" : "var(--color-primary-soft)",
-            borderRadius: "var(--radius-square-lg)",
-          }}
-        >
+        <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
           {installed ? (
-            <Check size={18} color="#2E7D32" strokeWidth={2.2} />
+            <Check size={20} strokeWidth={1.8} style={{ color: "var(--color-sage)" }} />
           ) : (
-            <Download size={18} color="#B05C36" strokeWidth={2.2} />
+            <Download size={20} strokeWidth={1.8} />
           )}
         </div>
         <div className="flex-1 min-w-0 text-left">
-          <p className="text-[15px] font-bold text-text-main tracking-tight">
+          <p className="text-[15px] font-semibold text-text-main">
             {installed ? "앱 설치 완료" : "앱으로 설치하기"}
           </p>
-          <p className="text-[11px] text-text-sub mt-0.5">{subtitle}</p>
+          <p className="text-[13px] text-text-sub mt-0.5">{subtitle}</p>
         </div>
         {!installed && (
-          <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
+          <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
         )}
       </button>
 
@@ -140,36 +134,19 @@ export default function InstallAppMenuItem() {
             onClick={() => setIosModalOpen(false)}
           />
           <div
-            className="relative w-full max-w-sm rounded-3xl p-5"
-            style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)" }}
+            className="relative w-full max-w-sm p-5"
+            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
           >
             <button
               type="button"
               onClick={() => setIosModalOpen(false)}
-              className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(0,0,0,0.05)" }}
+              className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center press-strong"
               aria-label="닫기"
             >
-              <X size={14} className="text-text-sub" />
+              <X size={18} style={{ color: "var(--color-text-light)" }} />
             </button>
-            <div className="flex items-center gap-3 mb-3">
-              <div
-                className="w-11 h-11 rounded-full flex items-center justify-center"
-                style={{
-                  background: "var(--color-primary)",
-                  boxShadow: "var(--shadow-primary)",
-                }}
-              >
-                <Download size={19} color="#fff" strokeWidth={2.2} />
-              </div>
-              <div>
-                <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
-                  INSTALL
-                </p>
-                <p className="text-[15px] font-bold text-text-main tracking-tight">
-                  홈 화면에 추가하기
-                </p>
-              </div>
+            <div className="mb-3 pr-8">
+              <p className="text-[17px] font-bold text-text-main">홈 화면에 추가하기</p>
             </div>
             {isIosSafari() ? (
               <>
@@ -179,24 +156,24 @@ export default function InstallAppMenuItem() {
                 <ol className="space-y-2.5 text-[13px] text-text-main">
                   <li className="flex items-center gap-2">
                     <span
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
-                      style={{ background: "var(--color-primary)" }}
+                      className="w-6 h-6 flex items-center justify-center text-[11px] font-semibold text-text-sub shrink-0"
+                      style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
                     >1</span>
-                    <Share size={14} style={{ color: "var(--color-primary)" }} />
+                    <Share size={14} className="text-text-sub" />
                     <span>사파리 하단 공유 아이콘 탭</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
-                      style={{ background: "var(--color-primary)" }}
+                      className="w-6 h-6 flex items-center justify-center text-[11px] font-semibold text-text-sub shrink-0"
+                      style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
                     >2</span>
-                    <PlusSquare size={14} style={{ color: "var(--color-primary)" }} />
+                    <PlusSquare size={14} className="text-text-sub" />
                     <span>"홈 화면에 추가" 선택</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
-                      style={{ background: "var(--color-primary)" }}
+                      className="w-6 h-6 flex items-center justify-center text-[11px] font-semibold text-text-sub shrink-0"
+                      style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
                     >3</span>
                     <span>우측 상단 "추가" 버튼</span>
                   </li>

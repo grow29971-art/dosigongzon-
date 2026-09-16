@@ -9,17 +9,13 @@ import Image from "next/image";
 import {
   ArrowLeft,
   Loader2,
-  Users,
-  UserPlus,
+  User,
   Search,
   X,
   Check,
-  Mail,
   ShieldCheck,
-  Link2,
   Copy,
   MessageCircle,
-  ChevronRight,
   Clock3,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
@@ -46,6 +42,7 @@ import {
 import { listJoinedCircles, listMyUnreadCircles, type JoinedCircle } from "@/lib/circle-chat-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { thumbnailUrl } from "@/lib/cats-repo";
+import UIListRow from "@/app/components/ui/ListRow";
 
 type SearchUser = { id: string; nickname: string | null; avatar_url: string | null };
 type CareShift = {
@@ -367,13 +364,13 @@ export default function CirclePage() {
   const showCareTeam = isCoreJourneyEnabled("P4");
 
   return (
-    <div className="min-h-dvh pb-6" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-6" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 */}
-      <div className="px-4 pt-12 pb-3 flex items-center gap-2 sticky top-0 z-10" style={{ background: "#F7F4EE" }}>
+      <div className="px-4 pt-12 pb-3 flex items-center gap-2 sticky top-0 z-10" style={{ background: "var(--color-surface)" }}>
         <Link
           href="/mypage"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
           aria-label="마이페이지로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -381,20 +378,12 @@ export default function CirclePage() {
         <h1 className="text-[17px] font-bold text-text-main">내 서클</h1>
       </div>
 
-      {/* 설명 카드 */}
+      {/* 안내 — 흰 면 + 헤어라인, 한 줄 */}
       <section className="px-5 mt-2">
-        <div
-          className="rounded-2xl p-4 flex items-start gap-2.5"
-          style={{
-            background: "rgba(107,142,111,0.10)",
-            border: "1px solid rgba(107,142,111,0.22)",
-          }}
-        >
-          <ShieldCheck size={20} className="shrink-0 mt-0.5" style={{ color: "#4F6B53" }} />
+        <div className="card p-4 flex items-start gap-2.5">
+          <ShieldCheck size={20} className="shrink-0 mt-0.5 text-text-sub" strokeWidth={1.8} />
           <p className="text-[13px] text-text-sub leading-relaxed">
-            서클 멤버에게만 보이는 고양이를 등록할 수 있어요. 학대 우려가 큰 아이를
-            <b className="text-text-main"> 믿는 이웃</b>과만 공유하세요. 등록할 때 공개 범위를
-            <b className="text-text-main"> &quot;내 서클&quot;</b>로 선택하면 적용돼요.
+            공개 범위를 <b className="text-text-main">&quot;내 서클&quot;</b>로 등록한 고양이는 믿는 이웃(서클 멤버)에게만 보여요.
           </p>
         </div>
       </section>
@@ -403,17 +392,9 @@ export default function CirclePage() {
 
       {showCareShift && (
         <section className="px-5 mt-5" aria-labelledby="care-shift-heading">
-          <div
-            className="rounded-2xl bg-white p-4"
-            style={{ boxShadow: "var(--shadow-card)" }}
-          >
+          <div className="card p-4">
             <div className="flex items-start gap-3">
-              <div
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53" }}
-              >
-                <Clock3 size={20} aria-hidden="true" />
-              </div>
+              <Clock3 size={20} className="shrink-0 mt-0.5 text-text-sub" strokeWidth={1.8} aria-hidden="true" />
               <div>
                 <h2 id="care-shift-heading" className="text-[15px] font-bold text-text-main">
                   돌봄 교대
@@ -423,19 +404,19 @@ export default function CirclePage() {
                 </p>
               </div>
             </div>
-            <ol className="mt-3 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-text-sub">
-              <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">1. 요청</li>
-              <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">2. 수락</li>
-              <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">3. 완료</li>
+            <ol className="mt-3 grid grid-cols-3 gap-2 text-center text-[11px] font-semibold text-text-sub">
+              <li className="px-2 py-2" style={{ borderRadius: "var(--radius-card-sm)", background: "var(--color-surface-alt)" }}>1. 요청</li>
+              <li className="px-2 py-2" style={{ borderRadius: "var(--radius-card-sm)", background: "var(--color-surface-alt)" }}>2. 수락</li>
+              <li className="px-2 py-2" style={{ borderRadius: "var(--radius-card-sm)", background: "var(--color-surface-alt)" }}>3. 완료</li>
             </ol>
             {acceptedMembers.length > 0 ? (
-              <div className="mt-4 space-y-3 border-t border-black/5 pt-4">
-                <label className="block text-[13px] font-bold text-text-main">
+              <div className="mt-4 space-y-3 border-t border-divider pt-4">
+                <label className="block text-[13px] font-semibold text-text-main">
                   부탁할 이웃
                   <select
                     value={shiftAssigneeId}
                     onChange={(event) => setShiftAssigneeId(event.target.value)}
-                    className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 text-[13px] font-normal"
+                    className="mt-1.5 w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-[13px] font-normal"
                   >
                     <option value="">서클 이웃 선택</option>
                     {acceptedMembers.map((member) => (
@@ -445,7 +426,7 @@ export default function CirclePage() {
                     ))}
                   </select>
                 </label>
-                <label className="block text-[13px] font-bold text-text-main">
+                <label className="block text-[13px] font-semibold text-text-main">
                   돌봄 시작 시각
                   <input
                     type="datetime-local"
@@ -455,52 +436,52 @@ export default function CirclePage() {
                       new Date(Date.now() + CARE_SHIFT_MAX_FUTURE_MS),
                     )}
                     onChange={(event) => setShiftStartsAt(event.target.value)}
-                    className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 text-[13px] font-normal"
+                    className="mt-1.5 w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-[13px] font-normal"
                   />
                 </label>
-                <label className="block text-[13px] font-bold text-text-main">
+                <label className="block text-[13px] font-semibold text-text-main">
                   메모 <span className="font-normal text-text-light">(선택)</span>
                   <textarea
                     value={shiftNote}
                     maxLength={500}
                     onChange={(event) => setShiftNote(event.target.value)}
                     placeholder="급식 위치나 필요한 돌봄을 알려주세요."
-                    className="mt-1.5 min-h-20 w-full resize-none rounded-xl border border-black/10 bg-white px-3 py-2.5 text-[13px] font-normal"
+                    className="mt-1.5 min-h-20 w-full resize-none rounded-lg border border-border bg-surface px-3 py-2.5 text-[13px] font-normal"
                   />
                 </label>
                 <button
                   type="button"
                   disabled={!shiftAssigneeId || !shiftStartsAt || shiftSubmitting}
                   onClick={handleCreateCareShift}
-                  className="min-h-11 w-full rounded-xl bg-primary px-4 py-2.5 text-[13px] font-bold text-white disabled:opacity-40"
+                  className="min-h-11 w-full rounded-lg bg-primary px-4 py-2.5 text-[15px] font-semibold text-white disabled:opacity-40 press"
                 >
                   {shiftSubmitting ? "요청 중..." : "돌봄 교대 요청"}
                 </button>
               </div>
             ) : (
-              <p className="mt-3 text-[11px] text-text-light">
+              <p className="mt-3 text-[13px] text-text-light">
                 교대를 부탁하려면 먼저 서클 이웃의 초대 수락이 필요해요.
               </p>
             )}
-            <div className="mt-4 border-t border-black/5 pt-4">
-              <h3 className="text-[13px] font-bold text-text-main">내 돌봄 교대</h3>
+            <div className="mt-4 border-t border-divider pt-4">
+              <h3 className="text-[13px] font-semibold text-text-main">내 돌봄 교대</h3>
               {careShiftsLoading ? (
                 <div className="flex justify-center py-5" aria-label="돌봄 교대 불러오는 중">
                   <Loader2 size={18} className="animate-spin text-primary" />
                 </div>
               ) : careShiftsLoadError ? (
                 <div className="mt-2">
-                  <p className="text-[11px] text-text-light">{careShiftsLoadError}</p>
+                  <p className="text-[13px] text-text-light">{careShiftsLoadError}</p>
                   <button
                     type="button"
                     onClick={() => void loadCareShifts()}
-                    className="mt-2 min-h-11 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-[13px] font-bold text-text-main"
+                    className="mt-2 min-h-11 w-full rounded-lg border border-border bg-surface px-3 py-2 text-[15px] font-semibold text-text-main press"
                   >
                     다시 시도
                   </button>
                 </div>
               ) : careShifts.length > 0 ? (
-                <ul className="mt-2 space-y-2">
+                <ul className="mt-1">
                   {careShifts.map((shift) => {
                     const assignee = acceptedMembers.find(
                       (member) => member.member_id === shift.assignee_id,
@@ -511,25 +492,25 @@ export default function CirclePage() {
                       completed: "완료",
                     }[shift.status];
                     return (
-                      <li key={shift.id} className="rounded-xl bg-[#F7F4EE] px-3 py-2.5">
+                      <li key={shift.id} className="py-3 border-b border-divider last:border-b-0">
                         <div className="flex items-center justify-between gap-2">
-                          <p className="text-[13px] font-bold text-text-main">
+                          <p className="text-[15px] font-semibold text-text-main">
                             {shift.requester_id === user.id
                               ? `${assignee?.member_nickname ?? "이웃"}에게 요청`
                               : "받은 교대 요청"}
                           </p>
-                          <span className="shrink-0 text-[11px] font-bold text-primary">
+                          <span className="shrink-0 text-[13px] font-medium text-text-sub">
                             {statusLabel}
                           </span>
                         </div>
-                        <time className="mt-1 block text-[11px] text-text-sub" dateTime={shift.starts_at}>
+                        <time className="mt-0.5 block text-[13px] text-text-sub" dateTime={shift.starts_at}>
                           {new Intl.DateTimeFormat("ko-KR", {
                             dateStyle: "medium",
                             timeStyle: "short",
                           }).format(new Date(shift.starts_at))}
                         </time>
                         {shift.note && (
-                          <p className="mt-1 line-clamp-2 text-[11px] text-text-sub">{shift.note}</p>
+                          <p className="mt-1 line-clamp-2 text-[13px] text-text-sub">{shift.note}</p>
                         )}
                         {shift.assignee_id === user.id && shift.status !== "completed" && (
                           <button
@@ -541,7 +522,7 @@ export default function CirclePage() {
                                 shift.status === "requested" ? "accepted" : "completed",
                               )
                             }
-                            className="mt-2 min-h-11 w-full rounded-xl bg-primary px-3 py-2 text-[13px] font-bold text-white disabled:opacity-40"
+                            className="mt-2 min-h-11 w-full rounded-lg bg-primary px-3 py-2 text-[15px] font-semibold text-white disabled:opacity-40 press"
                           >
                             {careShiftTransitioning === shift.id
                               ? "처리 중..."
@@ -555,7 +536,7 @@ export default function CirclePage() {
                   })}
                 </ul>
               ) : (
-                <p className="mt-2 text-[11px] text-text-light">아직 돌봄 교대 요청이 없어요.</p>
+                <p className="mt-2 text-[13px] text-text-light">아직 돌봄 교대 요청이 없어요.</p>
               )}
             </div>
           </div>
@@ -572,45 +553,39 @@ export default function CirclePage() {
           {invitations.length > 0 && (
             <section className="px-5 mt-6">
               <div className="flex items-center gap-2 mb-3">
-                <Mail size={14} style={{ color: "var(--color-primary)" }} />
                 <h2 className="text-[17px] font-bold text-text-main tracking-tight">받은 초대</h2>
-                <span className="text-[11px] font-bold px-2 py-0.5 chip-square text-white" style={{ background: "var(--color-primary)" }}>
-                  {invitations.length}
-                </span>
+                <span className="text-[13px] font-semibold text-text-sub tabular-nums">{invitations.length}</span>
               </div>
-              <div className="space-y-2">
+              <div className="card px-3 py-1">
                 {invitations.map((inv) => (
-                  <div
+                  <UIListRow
                     key={inv.id}
-                    className="bg-white rounded-2xl p-3 flex items-center gap-3"
-                    style={{ boxShadow: "var(--shadow-card)" }}
-                  >
-                    <Avatar url={inv.owner_avatar_url} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-bold text-text-main truncate">
-                        {inv.owner_nickname ?? "익명 길집사"}
-                      </p>
-                      <p className="text-[11px] text-text-light">서클 초대를 보냈어요</p>
-                    </div>
-                    <div className="flex gap-1.5 shrink-0">
-                      <button
-                        onClick={() => handleRespond(inv, "accepted")}
-                        disabled={busy === inv.id}
-                        className="px-3 py-2 rounded-xl text-[13px] font-bold text-white press-strong disabled:opacity-50"
-                        style={{ background: "#6B8E6F" }}
-                      >
-                        <Check size={13} />
-                      </button>
-                      <button
-                        onClick={() => handleRespond(inv, "rejected")}
-                        disabled={busy === inv.id}
-                        className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong disabled:opacity-50"
-                        style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
-                      >
-                        <X size={13} />
-                      </button>
-                    </div>
-                  </div>
+                    icon={<Avatar url={inv.owner_avatar_url} />}
+                    title={inv.owner_nickname ?? "익명 길집사"}
+                    subtitle="서클 초대를 보냈어요"
+                    right={
+                      <div className="flex gap-1.5 shrink-0">
+                        <button
+                          onClick={() => handleRespond(inv, "accepted")}
+                          disabled={busy === inv.id}
+                          className="h-8 px-3 rounded-lg text-[13px] font-semibold text-white press-strong disabled:opacity-50 inline-flex items-center"
+                          style={{ background: "var(--color-primary)" }}
+                          aria-label="초대 수락"
+                        >
+                          <Check size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleRespond(inv, "rejected")}
+                          disabled={busy === inv.id}
+                          className="h-8 px-3 rounded-lg text-[13px] font-semibold text-text-sub press-strong disabled:opacity-50 inline-flex items-center"
+                          style={{ background: "var(--color-gray-100)" }}
+                          aria-label="초대 거절"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    }
+                  />
                 ))}
               </div>
             </section>
@@ -620,109 +595,70 @@ export default function CirclePage() {
           {myCircleId && (
             <section className="px-5 mt-6">
               <div className="flex items-center gap-2 mb-3">
-                <MessageCircle size={14} style={{ color: "var(--color-primary)" }} />
                 <h2 className="text-[17px] font-bold text-text-main tracking-tight">서클 채팅</h2>
               </div>
-              <Link
-                href={`/circle/${myCircleId}/chat`}
-                className="w-full block rounded-2xl p-4 press transition-transform"
-                style={{
-                  background: "#FFF9F2",
-                  border: "1px solid rgba(176, 92, 54,0.22)",
-                  boxShadow: "var(--shadow-card)",
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-                    style={{ background: "var(--color-primary)" }}
-                  >
-                    <MessageCircle size={20} color="#fff" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-bold text-text-main">내 서클 채팅방 열기</p>
-                    <p className="text-[11px] text-text-sub mt-0.5">
-                      멤버끼리 한 채팅방에서 대화 · 실시간 동기화
-                    </p>
-                  </div>
-                  <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
-                </div>
-              </Link>
-
-              {/* 참여 중인 다른 서클 (멤버로 들어가 있는 곳) */}
-              {joinedCircles.filter((c) => c.role === "member").length > 0 && (
-                <div className="mt-3">
-                  <p className="text-[11px] text-text-light mb-2 ml-1">참여 중인 다른 서클</p>
-                  <div className="space-y-1.5">
-                    {joinedCircles
-                      .filter((c) => c.role === "member")
-                      .map((c) => {
-                        const unread = unreadMap.get(c.circle_id) ?? 0;
-                        return (
-                          <Link
-                            key={c.circle_id}
-                            href={`/circle/${c.circle_id}/chat`}
-                            className="flex items-center gap-3 p-3 rounded-xl bg-white press"
-                            style={{ boxShadow: "var(--shadow-card-sm)", border: "1px solid #F0E6D8" }}
-                          >
-                            <Avatar url={c.owner_avatar_url} size={36} />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[13px] font-bold text-text-main truncate">
-                                {c.owner_nickname ?? "익명"}님의 서클
-                              </p>
-                              <p className="text-[11px] text-text-light">멤버 {c.member_count + 1}명</p>
-                            </div>
-                            {unread > 0 && (
-                              <span
-                                className="shrink-0 px-2 py-0.5 chip-square text-[11px] font-bold leading-none"
-                                style={{ background: "#D85555", color: "#FFF" }}
-                              >
-                                {unread > 99 ? "99+" : unread}
-                              </span>
-                            )}
-                            <ChevronRight size={14} className="shrink-0 text-text-light" />
-                          </Link>
-                        );
-                      })}
-                  </div>
-                </div>
-              )}
+              <div className="card px-3 py-1">
+                <UIListRow
+                  href={`/circle/${myCircleId}/chat`}
+                  icon={<MessageCircle size={20} strokeWidth={1.8} />}
+                  title="내 서클 채팅방 열기"
+                  subtitle="멤버끼리 한 채팅방에서 대화 · 실시간 동기화"
+                />
+                {/* 참여 중인 다른 서클 (멤버로 들어가 있는 곳) */}
+                {joinedCircles
+                  .filter((c) => c.role === "member")
+                  .map((c) => {
+                    const unread = unreadMap.get(c.circle_id) ?? 0;
+                    return (
+                      <UIListRow
+                        key={c.circle_id}
+                        href={`/circle/${c.circle_id}/chat`}
+                        icon={<Avatar url={c.owner_avatar_url} size={36} />}
+                        title={`${c.owner_nickname ?? "익명"}님의 서클`}
+                        subtitle={`멤버 ${c.member_count + 1}명`}
+                        value={
+                          unread > 0 ? (
+                            <span
+                              className="px-2 py-0.5 chip-square text-[11px] font-semibold leading-none text-white"
+                              style={{ background: "var(--color-error)" }}
+                            >
+                              {unread > 99 ? "99+" : unread}
+                            </span>
+                          ) : undefined
+                        }
+                      />
+                    );
+                  })}
+              </div>
             </section>
           )}
 
           {/* 카카오톡 초대 링크 */}
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
-              <Link2 size={14} style={{ color: "#FEE500" }} />
               <h2 className="text-[17px] font-bold text-text-main tracking-tight">초대 링크</h2>
-              <span className="text-[9px] font-bold tracking-[0.15em] px-1.5 py-0.5 chip-square" style={{ background: "#FEE500", color: "#191919" }}>
-                빠른 초대
-              </span>
             </div>
-            <div
-              className="rounded-2xl p-3"
-              style={{ boxShadow: "var(--shadow-card)", background: "#FFFEF5", border: "1px solid rgba(254,229,0,0.4)" }}
-            >
-              <p className="text-[13px] leading-relaxed mb-2.5" style={{ color: "#6B5916" }}>
-                링크 한 번이면 친한 이웃을 바로 서클에 초대할 수 있어요. 카카오톡으로 공유 → 받는 사람이 수락하면 즉시 멤버.
+            <div className="card p-4">
+              <p className="text-[13px] text-text-sub leading-relaxed mb-3">
+                링크를 받은 이웃이 수락하면 바로 서클 멤버가 돼요.
               </p>
               <div className="flex gap-2">
                 <button
                   onClick={handleKakaoShare}
-                  className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press-strong"
-                  style={{ background: "#FEE500", color: "#191919" }}
+                  className="flex-[1.5] h-10 flex items-center justify-center gap-1.5 rounded-lg text-[15px] font-semibold press-strong"
+                  style={{ background: "#FEE500", color: "var(--color-gray-900)" }}
                 >
                   <svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
-                    <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#191919" />
+                    <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="currentColor" />
                   </svg>
                   카카오톡 공유
                 </button>
                 <button
                   onClick={handleCopyInviteUrl}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press-strong"
-                  style={{ background: "#FFFFFF", color: "#6B5916", border: "1px solid rgba(254,229,0,0.5)" }}
+                  className="flex-1 h-10 flex items-center justify-center gap-1.5 rounded-lg text-[15px] font-semibold press-strong text-text-main"
+                  style={{ background: "var(--color-gray-100)" }}
                 >
-                  {copied ? <Check size={12} /> : <Copy size={12} />}
+                  {copied ? <Check size={14} /> : <Copy size={14} />}
                   {copied ? "복사됨" : "링크 복사"}
                 </button>
               </div>
@@ -732,13 +668,15 @@ export default function CirclePage() {
           {/* 닉네임 검색 초대 */}
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
-              <UserPlus size={14} style={{ color: "#4A7BA8" }} />
               <h2 className="text-[17px] font-bold text-text-main tracking-tight">닉네임 검색 초대</h2>
             </div>
-            <div className="bg-white rounded-2xl p-3" style={{ boxShadow: "var(--shadow-card)" }}>
+            <div className="card p-3">
               <div className="flex items-center gap-2">
-                <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: "var(--color-gray-50)" }}>
-                  <Search size={14} className="text-text-light shrink-0" />
+                <div
+                  className="flex-1 flex items-center gap-2 px-3 h-10"
+                  style={{ background: "var(--color-surface-alt)", borderRadius: "var(--radius-input)" }}
+                >
+                  <Search size={16} className="text-text-light shrink-0" />
                   <input
                     type="text"
                     value={searchQuery}
@@ -750,43 +688,40 @@ export default function CirclePage() {
                       if (e.key === "Enter") handleSearch();
                     }}
                     placeholder="닉네임 검색 (2자 이상)"
-                    className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-text-muted"
+                    className="flex-1 min-w-0 bg-transparent text-[15px] outline-none placeholder:text-text-light"
                   />
                 </div>
                 <button
                   onClick={handleSearch}
                   disabled={searching || searchQuery.trim().length < 2}
-                  className="px-4 py-2 rounded-xl bg-primary text-white text-[13px] font-bold press-strong disabled:opacity-40"
+                  className="h-10 px-4 rounded-lg bg-primary text-white text-[15px] font-semibold press-strong disabled:opacity-40 inline-flex items-center"
                 >
-                  {searching ? <Loader2 size={13} className="animate-spin" /> : "검색"}
+                  {searching ? <Loader2 size={14} className="animate-spin" /> : "검색"}
                 </button>
               </div>
               {searchOpen && searchResults.length > 0 && (
-                <div className="mt-2 space-y-1">
+                <div className="mt-2">
                   {searchResults.map((r) => (
-                    <div
+                    <UIListRow
                       key={r.id}
-                      className="flex items-center gap-2 px-2.5 py-2 rounded-xl"
-                      style={{ background: "var(--color-gray-50)" }}
-                    >
-                      <Avatar url={r.avatar_url} size={32} />
-                      <p className="flex-1 min-w-0 text-[13px] font-bold text-text-main truncate">
-                        {r.nickname ?? "익명"}
-                      </p>
-                      <button
-                        onClick={() => handleInvite(r)}
-                        disabled={busy === r.id}
-                        className="px-3 py-1.5 rounded-lg text-[13px] font-bold text-white press-strong disabled:opacity-50"
-                        style={{ background: "#4A7BA8" }}
-                      >
-                        {busy === r.id ? <Loader2 size={11} className="animate-spin" /> : "초대"}
-                      </button>
-                    </div>
+                      icon={<Avatar url={r.avatar_url} size={32} />}
+                      title={r.nickname ?? "익명"}
+                      right={
+                        <button
+                          onClick={() => handleInvite(r)}
+                          disabled={busy === r.id}
+                          className="h-8 px-3 rounded-lg text-[13px] font-semibold text-white press-strong disabled:opacity-50 inline-flex items-center"
+                          style={{ background: "var(--color-primary)" }}
+                        >
+                          {busy === r.id ? <Loader2 size={12} className="animate-spin" /> : "초대"}
+                        </button>
+                      }
+                    />
                   ))}
                 </div>
               )}
               {searchOpen && searchQuery.trim().length >= 2 && !searching && searchResults.length === 0 && (
-                <p className="mt-2 text-[11px] text-text-light text-center py-2">검색 결과가 없어요.</p>
+                <p className="mt-2 text-[13px] text-text-light text-center py-2">검색 결과가 없어요.</p>
               )}
             </div>
           </section>
@@ -794,25 +729,15 @@ export default function CirclePage() {
           {/* 멤버 목록 */}
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
-              <Users size={14} style={{ color: "#6B8E6F" }} />
               <h2 className="text-[17px] font-bold text-text-main tracking-tight">내 서클 멤버</h2>
-              <span className="text-[11px] font-bold px-2 py-0.5 chip-square text-white" style={{ background: "#6B8E6F" }}>
-                {acceptedMembers.length}
-              </span>
+              <span className="text-[13px] font-semibold text-text-sub tabular-nums">{acceptedMembers.length}</span>
             </div>
             {acceptedMembers.length === 0 && pendingMembers.length === 0 ? (
-              <div
-                className="rounded-2xl p-6 text-center"
-                style={{ background: "var(--color-gray-50)", border: "1px dashed var(--color-gray-200)" }}
-              >
-                <p className="text-[13px] text-text-sub leading-relaxed">
-                  아직 서클 멤버가 없어요.
-                  <br />
-                  위에서 닉네임을 검색해 초대해보세요.
-                </p>
+              <div className="card p-6 text-center">
+                <p className="text-[13px] text-text-sub">아직 멤버가 없어요. 위에서 닉네임을 검색해 초대해보세요.</p>
               </div>
             ) : (
-              <div className="space-y-2">
+              <div className="card px-3 py-1">
                 {pendingMembers.map((m) => (
                   <MemberRow key={m.id} member={m} pending busy={busy === m.member_id} onRemove={() => handleRemove(m)} />
                 ))}
@@ -833,10 +758,10 @@ function Avatar({ url, size = 40 }: { url: string | null; size?: number }) {
   if (!safe) {
     return (
       <div
-        className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-bold"
-        style={{ width: size, height: size, background: "var(--color-primary)" }}
+        className="shrink-0 rounded-full flex items-center justify-center text-text-light"
+        style={{ width: size, height: size, background: "var(--color-gray-200)" }}
       >
-        🐾
+        <User size={Math.round(size * 0.5)} strokeWidth={1.8} />
       </div>
     );
   }
@@ -848,6 +773,7 @@ function Avatar({ url, size = 40 }: { url: string | null; size?: number }) {
       width={size}
       height={size}
       className="shrink-0 rounded-full object-cover"
+      style={{ width: size, height: size }}
       unoptimized
     />
   );
@@ -865,27 +791,20 @@ function MemberRow({
   onRemove: () => void;
 }) {
   return (
-    <div
-      className="bg-white rounded-2xl p-3 flex items-center gap-3"
-      style={{ boxShadow: "var(--shadow-card)" }}
-    >
-      <Avatar url={member.member_avatar_url ?? null} />
-      <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-bold text-text-main truncate">
-          {member.member_nickname ?? "익명 길집사"}
-        </p>
-        <p className="text-[11px]" style={{ color: pending ? "#C9A961" : "#6B8E6F" }}>
-          {pending ? "수락 대기 중" : "수락됨"}
-        </p>
-      </div>
-      <button
-        onClick={onRemove}
-        disabled={busy}
-        className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong disabled:opacity-50"
-        style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
-      >
-        {busy ? <Loader2 size={12} className="animate-spin" /> : "내보내기"}
-      </button>
-    </div>
+    <UIListRow
+      icon={<Avatar url={member.member_avatar_url ?? null} />}
+      title={member.member_nickname ?? "익명 길집사"}
+      subtitle={pending ? "수락 대기 중" : "수락됨"}
+      right={
+        <button
+          onClick={onRemove}
+          disabled={busy}
+          className="h-8 px-3 rounded-lg text-[13px] font-semibold text-text-sub press-strong disabled:opacity-50 inline-flex items-center shrink-0"
+          style={{ background: "var(--color-gray-100)" }}
+        >
+          {busy ? <Loader2 size={12} className="animate-spin" /> : "내보내기"}
+        </button>
+      }
+    />
   );
 }

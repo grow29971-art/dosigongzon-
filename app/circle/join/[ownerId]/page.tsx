@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Loader2, ShieldCheck, Check, X } from "lucide-react";
+import { ArrowLeft, Loader2, ShieldCheck, Check, X, User } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -74,21 +74,21 @@ export default function CircleJoinPage() {
 
   if (loading || authLoading) {
     return (
-      <div className="min-h-dvh flex items-center justify-center" style={{ background: "#F7F4EE" }}>
-        <Loader2 size={28} className="animate-spin text-primary" />
+      <div className="min-h-dvh flex items-center justify-center" style={{ background: "var(--color-surface)" }}>
+        <Loader2 size={28} className="animate-spin text-text-muted" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#F7F4EE" }}>
-        <ShieldCheck size={40} className="mx-auto mb-3" style={{ color: "#4F6B53" }} />
+      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "var(--color-surface)" }}>
+        <ShieldCheck size={40} className="mx-auto mb-3 text-text-light" strokeWidth={1.5} />
         <p className="text-[15px] font-bold text-text-main mb-2">서클 초대 받기</p>
         <p className="text-[13px] text-text-sub mb-5">로그인하시면 초대를 수락할 수 있어요.</p>
         <Link
           href={`/login?next=${encodeURIComponent(`/circle/join/${ownerId}`)}`}
-          className="inline-block px-6 py-2.5 rounded-2xl bg-primary text-white font-bold text-[13px] press-strong"
+          className="inline-flex items-center px-6 h-10 rounded-lg bg-primary text-surface font-semibold text-[13px] press-strong"
         >
           로그인하고 수락하기
         </Link>
@@ -98,9 +98,9 @@ export default function CircleJoinPage() {
 
   if (!ownerProfile) {
     return (
-      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#F7F4EE" }}>
+      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "var(--color-surface)" }}>
         <p className="text-[15px] text-text-sub mb-3">유효하지 않은 초대 링크예요.</p>
-        <Link href="/mypage/circle" className="text-primary text-[13px] font-bold">
+        <Link href="/mypage/circle" className="text-primary text-[13px] font-semibold">
           내 서클로 이동
         </Link>
       </div>
@@ -109,11 +109,11 @@ export default function CircleJoinPage() {
 
   if (isSelf) {
     return (
-      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#F7F4EE" }}>
-        <ShieldCheck size={40} className="mx-auto mb-3" style={{ color: "#4F6B53" }} />
+      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "var(--color-surface)" }}>
+        <ShieldCheck size={40} className="mx-auto mb-3 text-text-light" strokeWidth={1.5} />
         <p className="text-[15px] text-text-sub mb-3">본인의 초대 링크예요.</p>
-        <p className="text-[13px] text-text-light mb-5">이 링크를 카카오톡으로 공유해 이웃을 초대해보세요.</p>
-        <Link href="/mypage/circle" className="inline-block px-6 py-2.5 rounded-2xl bg-primary text-white font-bold text-[13px] press-strong">
+        <p className="text-[13px] text-text-light mb-5">이 링크를 공유해 이웃을 초대해보세요.</p>
+        <Link href="/mypage/circle" className="inline-flex items-center px-6 h-10 rounded-lg bg-primary text-surface font-semibold text-[13px] press-strong">
           내 서클 관리
         </Link>
       </div>
@@ -121,101 +121,82 @@ export default function CircleJoinPage() {
   }
 
   return (
-    <div className="min-h-dvh px-6 pt-14 pb-10" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh px-6 pt-14 pb-10" style={{ background: "var(--color-surface)" }}>
       <div className="flex items-center gap-2 mb-6">
         <Link
           href="/mypage/circle"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="뒤로"
         >
-          <ArrowLeft size={18} className="text-text-main" />
+          <ArrowLeft size={22} className="text-text-main" />
         </Link>
         <h1 className="text-[17px] font-bold text-text-main">서클 초대</h1>
       </div>
 
       {result === "accepted" || result === "already" ? (
-        <div
-          className="rounded-3xl p-6 text-center"
-          style={{
-            background: "#4F6B53",
-            color: "#fff",
-          }}
-        >
-          <Check size={40} className="mx-auto mb-3" color="#FFF7C4" />
-          <p className="text-[20px] font-bold mb-2">
-            {result === "already" ? "이미 멤버예요" : "서클에 합류했어요!"}
+        <div className="card p-6 text-center">
+          <Check size={40} className="mx-auto mb-3" style={{ color: "var(--color-sage)" }} />
+          <p className="text-[20px] font-bold mb-2 text-text-main">
+            {result === "already" ? "이미 멤버예요" : "서클에 합류했어요"}
           </p>
-          <p className="text-[13px] mb-5" style={{ color: "rgba(255,255,255,0.85)" }}>
+          <p className="text-[13px] mb-5 text-text-sub">
             {ownerProfile.nickname ?? "익명"}님의 우리동네 길집사 멤버로 등록됐어요.
           </p>
           <Link
             href="/map"
-            className="inline-block px-6 py-2.5 rounded-2xl bg-white font-bold text-[13px] press-strong"
-            style={{ color: "#4F6B53" }}
+            className="inline-flex items-center px-6 h-10 rounded-lg bg-primary text-surface font-semibold text-[13px] press-strong"
           >
             지도로 이동
           </Link>
         </div>
       ) : result === "rejected" ? (
-        <div className="rounded-3xl p-6 text-center bg-white" style={{ boxShadow: "var(--shadow-card)" }}>
-          <p className="text-[15px] font-bold text-text-main mb-3">초대를 거절했어요</p>
-          <Link href="/" className="text-primary text-[13px] font-bold">홈으로</Link>
+        <div className="card p-6 text-center">
+          <p className="text-[15px] font-semibold text-text-main mb-3">초대를 거절했어요</p>
+          <Link href="/" className="text-primary text-[13px] font-semibold">홈으로</Link>
         </div>
       ) : (
         <>
-          <div
-            className="rounded-3xl p-6 mb-4 text-center bg-white"
-            style={{ boxShadow: "var(--shadow-card)" }}
-          >
+          <div className="card p-6 mb-4 text-center">
             <div className="flex justify-center mb-3">
               <Avatar url={ownerProfile.avatar_url} size={72} />
             </div>
-            <p className="text-[11px] font-bold tracking-[0.18em] mb-1.5" style={{ color: "#4F6B53" }}>
+            <p className="text-[13px] font-medium mb-1.5 text-text-light">
               우리동네 길집사 초대
             </p>
             <p className="text-[17px] font-bold text-text-main leading-snug mb-2">
-              <b style={{ color: "#4F6B53" }}>{ownerProfile.nickname ?? "익명 길집사"}</b>
-              님이 당신을<br />서클에 초대했어요
+              {ownerProfile.nickname ?? "익명 길집사"}님이 당신을<br />서클에 초대했어요
             </p>
             <p className="text-[13px] text-text-sub leading-relaxed">
-              수락하면 이 분이 "내 서클" 핀으로 등록한 고양이를
-              <br />볼 수 있는 신뢰 그룹에 합류하게 돼요.
+              수락하면 이 분이 "내 서클"로 등록한 고양이를 볼 수 있어요.
             </p>
           </div>
 
           {error && (
-            <div className="rounded-2xl px-4 py-3 mb-3" style={{ background: "var(--color-error-soft)" }}>
-              <p className="text-[13px]" style={{ color: "#B84545" }}>{error}</p>
-            </div>
+            <p className="text-[13px] mb-3 px-1" style={{ color: "var(--color-error)" }}>{error}</p>
           )}
 
           <div className="flex gap-2">
             <button
               onClick={handleReject}
               disabled={busy}
-              className="flex-1 py-3 rounded-2xl text-[15px] font-bold press-strong disabled:opacity-50"
-              style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
+              className="flex-1 h-12 rounded-lg text-[15px] font-semibold press-strong disabled:opacity-50"
+              style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)" }}
             >
               <X size={14} className="inline mr-1" /> 거절
             </button>
             <button
               onClick={handleAccept}
               disabled={busy}
-              className="flex-[1.5] py-3 rounded-2xl text-[15px] font-bold text-white press-strong disabled:opacity-50"
-              style={{
-                background: "#4F6B53",
-                boxShadow: "var(--shadow-raised)",
-              }}
+              className="flex-[1.5] h-12 rounded-lg text-[15px] font-semibold press-strong disabled:opacity-50"
+              style={{ background: "var(--color-primary)", color: "var(--color-surface)" }}
             >
               {busy ? <Loader2 size={14} className="animate-spin inline" /> : <Check size={14} className="inline mr-1" />}
               수락하기
             </button>
           </div>
 
-          <p className="text-[11px] text-text-light text-center mt-4 leading-relaxed">
-            서클 멤버가 되어도 본인 동의 없이 위치가 공유되지 않아요.
-            <br />언제든지 마이페이지 → 내 서클에서 나갈 수 있어요.
+          <p className="text-[13px] text-text-light text-center mt-4 leading-relaxed">
+            위치는 동의 없이 공유되지 않고, 마이페이지 → 내 서클에서 언제든 나갈 수 있어요.
           </p>
         </>
       )}
@@ -228,10 +209,10 @@ function Avatar({ url, size = 40 }: { url: string | null; size?: number }) {
   if (!safe) {
     return (
       <div
-        className="rounded-full flex items-center justify-center text-white text-[24px] font-bold"
-        style={{ width: size, height: size, background: "#4F6B53" }}
+        className="rounded-full flex items-center justify-center text-text-light"
+        style={{ width: size, height: size, background: "var(--color-gray-100)" }}
       >
-        🐾
+        <User size={Math.round(size * 0.45)} strokeWidth={1.6} />
       </div>
     );
   }
@@ -243,7 +224,7 @@ function Avatar({ url, size = 40 }: { url: string | null; size?: number }) {
       width={size}
       height={size}
       className="rounded-full object-cover"
-      style={{ border: "3px solid rgba(79,107,83,0.18)" }}
+      style={{ border: "1px solid var(--color-border)" }}
       unoptimized
     />
   );

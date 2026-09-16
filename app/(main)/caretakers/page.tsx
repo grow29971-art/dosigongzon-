@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { ArrowLeft, MapPin, PawPrint, MessageCircle, Sparkles, UserPlus } from "lucide-react";
+import { ArrowLeft, MapPin, PawPrint, MessageCircle, UserPlus, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { listNearbyCaretakersServer } from "@/lib/users-server";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -42,7 +42,7 @@ export default async function CaretakersPage() {
   const caretakers = await listNearbyCaretakersServer(user.id);
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 */}
       <div className="px-5 pt-12 pb-5">
         <Link
@@ -52,15 +52,11 @@ export default async function CaretakersPage() {
           <ArrowLeft size={14} />
           마이페이지
         </Link>
-        <div className="flex items-baseline gap-2 mb-1">
-          <UserPlus size={20} className="text-primary" />
-          <h1 className="text-[24px] font-bold tracking-tight text-text-main">
-            동네 길집사 찾기
-          </h1>
-        </div>
+        <h1 className="text-[24px] font-bold text-text-main mb-1">
+          동네 길집사 찾기
+        </h1>
         <p className="text-[13px] text-text-sub leading-relaxed">
           내 활동 지역에서 함께 길고양이를 챙기는 분들을 만나보세요.
-          휴가 갈 때 백업을 부탁하거나 정보 공유도 가능해요.
         </p>
       </div>
 
@@ -72,20 +68,11 @@ export default async function CaretakersPage() {
           <EmptyNoMatch myRegions={myRegions} />
         ) : (
           <>
-            <div
-              className="mb-3 px-3 py-2.5 rounded-xl flex items-center gap-2"
-              style={{
-                background: "var(--color-primary-softer)",
-                border: "1px solid rgba(176, 92, 54,0.15)",
-              }}
-            >
-              <Sparkles size={13} className="text-primary shrink-0" />
-              <p className="text-[13px] font-bold text-text-main leading-tight">
-                {myRegions.join(" · ")}에서 활동하는 {caretakers.length}분
-              </p>
-            </div>
+            <p className="mb-2 px-1 text-[13px] font-semibold text-text-sub">
+              {myRegions.join(" · ")}에서 활동하는 {caretakers.length}분
+            </p>
 
-            <div className="space-y-2.5">
+            <div className="card px-4">
               {caretakers.map((c) => (
                 <CaretakerCard key={c.id} caretaker={c} />
               ))}
@@ -109,19 +96,11 @@ function CaretakerCard({
   );
 
   return (
-    <div
-      className="rounded-2xl p-4"
-      style={{
-        background: "#FFFFFF",
-        boxShadow: "var(--shadow-card)",
-        border: "1px solid var(--color-divider)",
-      }}
-    >
+    <div className="py-4 border-b border-divider last:border-b-0">
       <div className="flex items-center gap-3">
         <Link
           href={`/users/${caretaker.id}`}
-          className="shrink-0 w-12 h-12 rounded-full overflow-hidden bg-surface-alt flex items-center justify-center"
-          style={{ border: "1.5px solid #E5E0D6" }}
+          className="shrink-0 w-12 h-12 rounded-full overflow-hidden bg-surface-alt flex items-center justify-center text-text-light"
         >
           {avatar ? (
             <Image
@@ -133,25 +112,25 @@ function CaretakerCard({
               unoptimized
             />
           ) : (
-            <span className="text-[20px]">🙂</span>
+            <User size={22} strokeWidth={1.6} />
           )}
         </Link>
 
         <Link href={`/users/${caretaker.id}`} className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <p className="text-[15px] font-bold text-text-main tracking-tight truncate">
+            <p className="text-[15px] font-semibold text-text-main truncate">
               {caretaker.nickname}
             </p>
             {caretaker.admin_title && (
               <span
-                className="text-[9px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
-                style={{ background: "var(--color-primary)", color: "#fff" }}
+                className="text-[11px] font-medium px-1.5 py-0.5 chip-square shrink-0 text-text-sub"
+                style={{ border: "1px solid var(--color-border)" }}
               >
                 {caretaker.admin_title}
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2.5 mt-0.5 text-[11px] text-text-sub">
+          <div className="flex items-center gap-2.5 mt-0.5 text-[13px] text-text-sub">
             <span className="inline-flex items-center gap-0.5">
               <PawPrint size={11} />
               {caretaker.catCount}마리
@@ -170,8 +149,8 @@ function CaretakerCard({
           {caretaker.sharedRegions.slice(0, 3).map((r) => (
             <span
               key={r}
-              className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
-              style={{ background: "rgba(107,142,111,0.12)", color: "#3F5B42" }}
+              className="text-[11px] font-medium px-1.5 py-0.5 chip-square text-text-sub"
+              style={{ border: "1px solid var(--color-border)" }}
             >
               {r}
             </span>
@@ -182,21 +161,17 @@ function CaretakerCard({
       <div className="mt-3 flex gap-2">
         <Link
           href={`/users/${caretaker.id}`}
-          className="flex-1 py-2 rounded-xl text-center text-[13px] font-bold press-strong transition-transform"
-          style={{
-            background: "var(--color-primary-softer)",
-            color: "var(--color-primary)",
-            border: "1px solid rgba(176, 92, 54,0.18)",
-          }}
+          className="flex-1 h-9 rounded-lg text-center text-[13px] font-semibold press-strong transition-transform inline-flex items-center justify-center"
+          style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)" }}
         >
           프로필 보기
         </Link>
         <Link
           href={`/messages?to=${caretaker.id}&name=${encodeURIComponent(caretaker.nickname)}&preset=${presetMsg}`}
-          className="flex-1 py-2 rounded-xl text-center text-[13px] font-bold text-white press-strong transition-transform inline-flex items-center justify-center gap-1.5"
-          style={{ background: "var(--color-primary)" }}
+          className="flex-1 h-9 rounded-lg text-center text-[13px] font-semibold press-strong transition-transform inline-flex items-center justify-center gap-1.5"
+          style={{ background: "var(--color-primary)", color: "var(--color-surface)" }}
         >
-          <MessageCircle size={13} />
+          <MessageCircle size={14} />
           쪽지 보내기
         </Link>
       </div>
@@ -206,16 +181,9 @@ function CaretakerCard({
 
 function EmptyNoRegion() {
   return (
-    <div
-      className="rounded-2xl p-6 text-center"
-      style={{
-        background: "#FFFFFF",
-        border: "1px solid var(--color-divider)",
-        boxShadow: "var(--shadow-card)",
-      }}
-    >
+    <div className="card p-6 text-center">
       <MapPin size={32} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[15px] font-bold text-text-main mb-1.5">
+      <p className="text-[15px] font-semibold text-text-main mb-1.5">
         먼저 활동 지역을 등록해주세요
       </p>
       <p className="text-[13px] text-text-sub leading-relaxed mb-4">
@@ -223,7 +191,7 @@ function EmptyNoRegion() {
       </p>
       <Link
         href="/mypage/activity-regions"
-        className="inline-block px-5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold"
+        className="inline-flex items-center px-5 h-10 rounded-lg bg-primary text-surface text-[13px] font-semibold press"
       >
         활동 지역 설정
       </Link>
@@ -233,23 +201,13 @@ function EmptyNoRegion() {
 
 function EmptyNoMatch({ myRegions }: { myRegions: string[] }) {
   return (
-    <div
-      className="rounded-2xl p-6 text-center"
-      style={{
-        background: "#FFFFFF",
-        border: "1px solid var(--color-divider)",
-        boxShadow: "var(--shadow-card)",
-      }}
-    >
+    <div className="card p-6 text-center">
       <UserPlus size={32} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[15px] font-bold text-text-main mb-1.5">
+      <p className="text-[15px] font-semibold text-text-main mb-1.5">
         아직 같은 동네 길집사가 없어요
       </p>
-      <p className="text-[13px] text-text-sub leading-relaxed mb-2">
+      <p className="text-[13px] text-text-sub leading-relaxed">
         {myRegions.join(", ")} 지역에 등록된 다른 분이 없어요.
-      </p>
-      <p className="text-[11px] text-text-light leading-relaxed">
-        주변 분들에게 도시공존을 소개해보세요. 함께하면 더 많은 아이를 챙길 수 있어요.
       </p>
     </div>
   );

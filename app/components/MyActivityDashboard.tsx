@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { TrendingUp, Crown, Clock } from "lucide-react";
+import { Crown, Clock } from "lucide-react";
+import { catArtWalkSvg } from "@/lib/cat-art";
 import {
   getMyCareDashboard,
   CARE_TYPE_MAP,
@@ -33,11 +34,8 @@ export default function MyActivityDashboard() {
 
   if (loading || !data) {
     return (
-      <div
-        className="rounded-2xl p-4 mb-5"
-        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-card)" }}
-      >
-        <div className="h-20 animate-pulse bg-surface-alt rounded-xl" />
+      <div className="card p-4 mb-5">
+        <div className="h-20 animate-pulse bg-surface-alt rounded-lg" />
       </div>
     );
   }
@@ -69,57 +67,45 @@ export default function MyActivityDashboard() {
   return (
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3 px-1">
-        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#48A59E" }} />
-        <h2 className="text-[15px] font-bold text-text-main tracking-tight">
+        <h2 className="text-[17px] font-bold text-text-main">
           내 활동 대시보드
         </h2>
-        <span className="text-[11px] text-text-light ml-auto">
+        <span className="text-[13px] text-text-light ml-auto">
           누적 {data.totalAllTime.toLocaleString()}건
         </span>
       </div>
 
-      <div
-        className="rounded-2xl overflow-hidden"
-        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-card)" }}
-      >
+      <div className="card overflow-hidden">
         {/* 이번 달 카운트 + 변동률 */}
         <div
           className="px-4 py-4 flex items-center gap-3"
-          style={{
-            background: "#48A59E15",
-            borderBottom: "1px solid var(--color-divider)",
-          }}
+          style={{ borderBottom: "1px solid var(--color-divider)" }}
         >
-          <div
-            className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "#48A59E", boxShadow: "0 4px 12px #48A59E55" }}
-          >
-            <TrendingUp size={18} color="#fff" strokeWidth={2.5} />
-          </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-bold text-text-sub">이번 달 돌봄</p>
-            <p className="text-[24px] font-bold tracking-tight" style={{ color: "#48A59E" }}>
+            <p className="text-[13px] text-text-sub">이번 달 돌봄</p>
+            <p className="text-[24px] font-bold text-text-main leading-tight">
               {data.thisMonthCount.toLocaleString()}번
             </p>
           </div>
           {deltaPct !== null && (
             <div
-              className="px-2.5 py-1 rounded-xl text-[11px] font-bold shrink-0"
+              className="px-2 py-1 text-[11px] font-semibold shrink-0"
               style={{
-                background: delta >= 0 ? "#E8F4F1" : "#FDECEC",
-                color: delta >= 0 ? "#2F7B73" : "#B84545",
+                borderRadius: "var(--radius-square)",
+                background: "var(--color-gray-100)",
+                color: delta >= 0 ? "var(--color-sage)" : "var(--color-error)",
               }}
             >
-              {delta >= 0 ? "▲" : "▼"} {Math.abs(deltaPct)}%
-              <span className="ml-0.5 opacity-70">vs 지난달</span>
+              {delta >= 0 ? "+" : "-"}{Math.abs(deltaPct)}%
+              <span className="ml-0.5 text-text-light">지난달 대비</span>
             </div>
           )}
           {deltaPct === null && data.lastMonthCount === 0 && data.thisMonthCount > 0 && (
             <div
-              className="px-2.5 py-1 rounded-xl text-[11px] font-bold shrink-0"
-              style={{ background: "#FFF4DC", color: "#A67B1E" }}
+              className="px-2 py-1 text-[11px] font-semibold shrink-0 text-text-sub"
+              style={{ borderRadius: "var(--radius-square)", background: "var(--color-gray-100)" }}
             >
-              🎉 첫 달
+              첫 달
             </div>
           )}
         </div>
@@ -128,35 +114,42 @@ export default function MyActivityDashboard() {
         {data.topCats.length > 0 && (
           <div className="px-4 py-3 border-b border-divider">
             <div className="flex items-center gap-1.5 mb-2">
-              <Crown size={12} style={{ color: "#E8B040" }} />
-              <span className="text-[11px] font-bold text-text-sub">
+              <Crown size={14} className="text-text-light" />
+              <span className="text-[13px] font-semibold text-text-sub">
                 가장 많이 돌본 아이
               </span>
             </div>
             <div className="flex gap-2">
-              {data.topCats.map((c, i) => (
+              {data.topCats.map((c) => (
                 <Link
                   key={c.catId}
                   href={`/cats/${c.catId}`}
-                  className="flex-1 min-w-0 flex items-center gap-2 px-2.5 py-2 rounded-xl press-strong"
+                  className="flex-1 min-w-0 flex items-center gap-2 px-2.5 py-2 press-strong"
                   style={{
-                    background: i === 0 ? "#FFF9EB" : "#F7F4EE",
-                    border: i === 0 ? "1px solid #E8B04040" : "1px solid var(--color-divider)",
+                    background: "var(--color-surface)",
+                    border: "1px solid var(--color-border)",
+                    borderRadius: "var(--radius-card-sm)",
                   }}
                 >
                   <div
                     className="relative w-8 h-8 rounded-full overflow-hidden shrink-0"
                     style={{ background: "var(--color-gray-100)" }}
                   >
-                    {c.photoUrl && (
+                    {c.photoUrl ? (
                       <Image src={c.photoUrl} alt={c.catName} fill sizes="32px" style={{ objectFit: "cover" }} />
+                    ) : (
+                      <div
+                        className="w-full h-full flex items-center justify-center"
+                        aria-hidden
+                        dangerouslySetInnerHTML={{ __html: catArtWalkSvg(c.catId, 26) }}
+                      />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-text-main truncate">
-                      {i === 0 && "🥇 "}{c.catName}
+                    <p className="text-[13px] font-semibold text-text-main truncate">
+                      {c.catName}
                     </p>
-                    <p className="text-[11px] font-bold" style={{ color: i === 0 ? "#A67B1E" : "#A38E7A" }}>
+                    <p className="text-[11px] text-text-light">
                       {c.count}번
                     </p>
                   </div>
@@ -171,14 +164,14 @@ export default function MyActivityDashboard() {
           <div className="px-4 py-3 border-b border-divider">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
-                <Clock size={12} style={{ color: "#8B65B8" }} />
-                <span className="text-[11px] font-bold text-text-sub">주 활동 시간대</span>
+                <Clock size={14} className="text-text-light" />
+                <span className="text-[13px] font-semibold text-text-sub">주 활동 시간대</span>
               </div>
-              <span className="text-[11px] font-bold" style={{ color: "#8B65B8" }}>
+              <span className="text-[13px] font-semibold text-text-main">
                 {peakLabel}
               </span>
             </div>
-            {/* 24시간 분포 바 (4시간 단위 6구간) */}
+            {/* 24시간 분포 바 */}
             <div className="flex items-end gap-[2px] h-8">
               {data.byHour.map((count, hour) => {
                 const isPeak = hour === data.peakHour;
@@ -190,17 +183,17 @@ export default function MyActivityDashboard() {
                     style={{
                       height: h,
                       background: isPeak
-                        ? "linear-gradient(180deg, #8B65B8 0%, #6E4EA0 100%)"
+                        ? "var(--color-primary)"
                         : count > 0
-                          ? "#8B65B835"
-                          : "rgba(0,0,0,0.04)",
+                          ? "var(--color-gray-300)"
+                          : "var(--color-gray-100)",
                     }}
                     title={`${hour}시: ${count}번`}
                   />
                 );
               })}
             </div>
-            <div className="flex justify-between text-[9px] text-text-light mt-1 px-0.5 font-semibold">
+            <div className="flex justify-between text-[11px] text-text-light mt-1 px-0.5">
               <span>0시</span>
               <span>6시</span>
               <span>12시</span>
@@ -214,25 +207,25 @@ export default function MyActivityDashboard() {
         {topTypes.length > 0 && (
           <div className="px-4 py-3">
             <div className="flex items-center gap-1.5 mb-2">
-              <span className="text-[11px] font-bold text-text-sub">
+              <span className="text-[13px] font-semibold text-text-sub">
                 주로 하는 돌봄
               </span>
             </div>
             <div className="flex gap-1.5 flex-wrap">
-              {topTypes.map(([type, count], i) => {
+              {topTypes.map(([type, count]) => {
                 const config = CARE_TYPE_MAP[type];
                 return (
                   <div
                     key={type}
-                    className="px-2.5 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1"
+                    className="px-2.5 h-8 text-[13px] font-medium flex items-center gap-1 text-text-sub"
                     style={{
-                      background: i === 0 ? config.color : `${config.color}15`,
-                      color: i === 0 ? "#fff" : config.color,
+                      borderRadius: "var(--radius-square)",
+                      border: "1px solid var(--color-border)",
+                      background: "var(--color-surface)",
                     }}
                   >
-                    <span>{config.emoji}</span>
                     <span>{config.label}</span>
-                    <span className="opacity-75">{count}</span>
+                    <span className="text-text-light">{count}</span>
                   </div>
                 );
               })}

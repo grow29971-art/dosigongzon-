@@ -37,12 +37,16 @@ export default function RankShareButton({
     <button
       type="button"
       onClick={share}
-      className="h-9 px-3.5 rounded-full flex items-center gap-1.5 shrink-0 press-strong transition-transform text-white"
-      style={{ background: top3 ? "#C9A961" : "var(--color-primary)", boxShadow: "var(--shadow-card)" }}
+      className="h-8 px-3 flex items-center gap-1.5 shrink-0 press-strong transition-transform"
+      style={{
+        background: "var(--color-gray-100)",
+        color: "var(--color-text-main)",
+        borderRadius: "var(--radius-input)",
+      }}
       aria-label="내 순위 자랑하기"
     >
       {copied ? <Check size={14} /> : <Share2 size={14} />}
-      <span className="text-[13px] font-bold">{copied ? "복사됨" : "자랑하기"}</span>
+      <span className="text-[13px] font-semibold">{copied ? "복사됨" : "자랑하기"}</span>
     </button>
   );
 }

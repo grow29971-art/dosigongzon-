@@ -46,7 +46,7 @@ export default function BlockedUsersPage() {
   if (authLoading || loading) {
     return (
       <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
+        <Loader2 size={28} className="animate-spin text-text-muted" />
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function BlockedUsersPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <p className="text-[15px] text-text-sub">로그인이 필요해요.</p>
-        <Link href="/login?next=%2Fmypage%2Fblocked-users" className="inline-block mt-4 text-[13px] font-bold text-primary">
+        <Link href="/login?next=%2Fmypage%2Fblocked-users" className="inline-block mt-4 text-[13px] font-semibold text-primary">
           로그인하기
         </Link>
       </div>
@@ -63,71 +63,54 @@ export default function BlockedUsersPage() {
   }
 
   return (
-    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/mypage"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="마이페이지로"
         >
-          <ArrowLeft size={18} className="text-text-main" />
+          <ArrowLeft size={22} className="text-text-main" />
         </Link>
         <h1 className="text-[17px] font-bold text-text-main">차단한 사용자</h1>
       </div>
 
       <div className="px-4 mt-3">
-        {/* 안내 카드 */}
-        <div
-          className="rounded-2xl p-4 mb-4 flex items-start gap-3"
-          style={{ backgroundColor: "var(--color-error-soft)", border: "1px solid #E8C5C5" }}
-        >
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: "#D85555" }}
-          >
-            <Ban size={16} color="#fff" strokeWidth={2.5} />
-          </div>
+        {/* 안내 */}
+        <div className="px-1 pb-3 mb-3 flex items-start gap-3" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+          <Ban size={18} className="text-text-light shrink-0 mt-0.5" strokeWidth={1.8} />
           <div className="flex-1">
-            <p className="text-[13px] font-bold" style={{ color: "#4A3F35" }}>
+            <p className="text-[13px] font-semibold text-text-main">
               차단된 사용자와는 메시지·댓글이 보이지 않아요
             </p>
-            <p className="text-[11px] mt-0.5" style={{ color: "#A38E7A" }}>
-              아래 목록에서 언제든 해제할 수 있어요.
+            <p className="text-[13px] mt-0.5 text-text-sub">
+              언제든 해제할 수 있어요.
             </p>
           </div>
         </div>
 
         {/* 목록 */}
         {items.length === 0 ? (
-          <div
-            className="rounded-2xl py-12 px-4 text-center"
-            style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-divider)" }}
-          >
-            <div
-              className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
-              style={{ backgroundColor: "var(--color-gray-50)" }}
-            >
-              <Users size={24} style={{ color: "#A38E7A" }} strokeWidth={1.8} />
-            </div>
-            <p className="text-[13px] font-bold text-text-main">
+          <div className="card py-12 px-4 text-center">
+            <Users size={28} className="mx-auto mb-3 text-text-light" strokeWidth={1.5} />
+            <p className="text-[15px] font-semibold text-text-main">
               차단한 사용자가 없어요
             </p>
-            <p className="text-[11px] text-text-sub mt-1">
-              불편한 사용자가 있으면 프로필에서 차단할 수 있어요.
+            <p className="text-[13px] text-text-sub mt-1">
+              불편한 사용자는 프로필에서 차단할 수 있어요.
             </p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="card px-4">
             {items.map((b) => {
               const rawAvatar = sanitizeImageUrl(b.avatar_url, "");
               const avatar = thumbnailUrl(rawAvatar, 72) ?? rawAvatar;
               return (
                 <div
                   key={b.id}
-                  className="rounded-2xl p-3 flex items-center gap-3"
-                  style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-divider)" }}
+                  className="py-3 flex items-center gap-3 border-b border-divider last:border-b-0"
+                  style={{ minHeight: 64 }}
                 >
                   {avatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -137,23 +120,22 @@ export default function BlockedUsersPage() {
                       loading="lazy"
                       decoding="async"
                       className="w-10 h-10 rounded-full object-cover shrink-0 grayscale"
-                      style={{ border: "1.5px solid #E5E0D6" }}
                     />
                   ) : (
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: "var(--color-gray-100)", border: "1.5px solid #E5E0D6" }}
+                      style={{ backgroundColor: "var(--color-gray-100)" }}
                     >
-                      <span className="text-[15px] font-bold" style={{ color: "#A38E7A" }}>
+                      <span className="text-[15px] font-semibold text-text-light">
                         {(b.nickname ?? "?").charAt(0)}
                       </span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-bold text-text-main truncate">
+                    <p className="text-[15px] font-semibold text-text-main truncate">
                       {b.nickname ?? "이름 없음"}
                     </p>
-                    <p className="text-[11px] text-text-light mt-0.5">
+                    <p className="text-[13px] text-text-light mt-0.5">
                       {formatDate(b.created_at)} 차단
                     </p>
                   </div>
@@ -161,13 +143,13 @@ export default function BlockedUsersPage() {
                     type="button"
                     onClick={() => handleUnblock(b)}
                     disabled={busyId === b.id}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-transform disabled:opacity-60"
-                    style={{ backgroundColor: "var(--color-gray-50)", color: "#A38E7A", border: "1px solid var(--color-border)" }}
+                    className="flex items-center gap-1 px-3 h-8 rounded-lg text-[13px] font-semibold press-strong transition-transform disabled:opacity-60"
+                    style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-text-main)" }}
                   >
                     {busyId === b.id ? (
-                      <Loader2 size={11} className="animate-spin" />
+                      <Loader2 size={12} className="animate-spin" />
                     ) : (
-                      <ShieldOff size={11} strokeWidth={2.5} />
+                      <ShieldOff size={12} strokeWidth={2} />
                     )}
                     해제
                   </button>

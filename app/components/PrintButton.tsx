@@ -8,8 +8,8 @@ export default function PrintButton() {
     <button
       type="button"
       onClick={() => window.print()}
-      className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[13px] font-bold text-white press transition-transform"
-      style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-primary)" }}
+      className="flex-1 flex items-center justify-center gap-2 h-10 text-[13px] font-semibold press transition-transform"
+      style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
     >
       <Printer size={14} />
       인쇄 · PDF로 저장

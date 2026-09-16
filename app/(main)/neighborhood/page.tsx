@@ -98,21 +98,22 @@ export default function NeighborhoodPage() {
         {/* 동네 선택 버튼 */}
         <button
           onClick={() => setShowPicker(true)}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/10 press-strong transition-transform"
+          className="flex items-center gap-1 px-3 h-8 chip-square press-strong transition-transform"
+          style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)" }}
         >
-          <MapPin size={14} className="text-primary" />
-          <span className="text-[13px] font-semibold text-primary">
+          <MapPin size={14} className="text-text-sub" />
+          <span className="text-[13px] font-semibold text-text-main">
             {region || "동네 설정"}
           </span>
-          <ChevronDown size={14} className="text-primary" />
+          <ChevronDown size={14} className="text-text-light" />
         </button>
       </div>
 
       {/* ── 동네 안내 ── */}
       {region && (
         <div className="px-5 mb-3">
-          <div className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-primary/5">
-            <MapPin size={16} className="text-primary shrink-0" />
+          <div className="flex items-center gap-2 px-1 py-2" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+            <MapPin size={16} className="text-text-light shrink-0" />
             <p className="text-[13px] text-text-sub">
               <strong className="text-text-main">{region}</strong> 주변의
               소식만 보여드려요
@@ -133,7 +134,7 @@ export default function NeighborhoodPage() {
             </p>
             <p className="text-[13px] mt-1">
               {region
-                ? "첫 번째 동네 소식을 전해보세요!"
+                ? "첫 동네 소식을 전해보세요"
                 : "상단의 동네 설정 버튼을 눌러주세요"}
             </p>
           </div>
@@ -146,16 +147,16 @@ export default function NeighborhoodPage() {
                 href={`/community/${post.id}`}
                 className="block"
               >
-                <article className="card p-5 press transition-transform">
+                <article className="card p-4 press transition-transform">
                   <div className="flex items-center gap-2 mb-2">
                     <span
-                      className="text-[11px] font-bold text-white px-2.5 py-0.5 rounded-lg"
-                      style={{ backgroundColor: cat.color }}
+                      className="text-[11px] font-medium text-text-sub px-2 py-0.5 chip-square"
+                      style={{ border: "1px solid var(--color-border)" }}
                     >
-                      {cat.emoji} {cat.label}
+                      {cat.label}
                     </span>
                     {post.region && (
-                      <span className="text-[11px] text-primary font-medium flex items-center gap-0.5">
+                      <span className="text-[11px] text-text-sub font-medium flex items-center gap-0.5">
                         <MapPin size={10} /> {post.region}
                       </span>
                     )}
@@ -163,7 +164,7 @@ export default function NeighborhoodPage() {
                       {formatRelativeTime(post.createdAt)}
                     </span>
                   </div>
-                  <h3 className="text-[17px] font-bold text-text-main leading-snug mb-1.5">
+                  <h3 className="text-[15px] font-semibold text-text-main leading-snug mb-1.5">
                     {post.title}
                   </h3>
                   <p className="text-[13px] text-text-sub leading-relaxed line-clamp-2 mb-3">
@@ -195,8 +196,9 @@ export default function NeighborhoodPage() {
         <button
           onClick={handleWrite}
           className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow press-strong transition-transform z-40"
+          style={{ color: "var(--color-surface)" }}
         >
-          <Plus size={28} color="#fff" strokeWidth={2.5} />
+          <Plus size={28} strokeWidth={2.2} />
         </button>
       )}
 
@@ -208,8 +210,8 @@ export default function NeighborhoodPage() {
             onClick={() => region && setShowPicker(false)}
           />
           <div
-            className="relative mt-auto w-full rounded-t-[28px] flex flex-col"
-            style={{ maxHeight: "60dvh", backgroundColor: "#F5F3EE" }}
+            className="relative mt-auto w-full flex flex-col"
+            style={{ maxHeight: "60dvh", backgroundColor: "var(--color-surface)", borderRadius: "var(--radius-sheet) var(--radius-sheet) 0 0", boxShadow: "var(--shadow-sheet)" }}
           >
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 rounded-full bg-border" />
@@ -228,10 +230,10 @@ export default function NeighborhoodPage() {
                   <button
                     key={r}
                     onClick={() => selectRegion(r)}
-                    className={`py-3 rounded-2xl text-[13px] font-semibold transition-all press-strong ${
+                    className={`py-3 rounded-lg text-[13px] font-semibold transition-all press-strong ${
                       r === region
-                        ? "bg-primary text-white"
-                        : "bg-white text-text-sub border border-border"
+                        ? "bg-primary text-surface"
+                        : "bg-surface text-text-sub border border-border"
                     }`}
                   >
                     {r}
@@ -251,25 +253,24 @@ export default function NeighborhoodPage() {
             onClick={() => setShowWarning(false)}
           />
           <div
-            className="relative w-[85%] max-w-sm rounded-[28px] p-6"
-            style={{ backgroundColor: "#F5F3EE" }}
+            className="relative w-[85%] max-w-sm p-6"
+            style={{ backgroundColor: "var(--color-surface)", borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
           >
             <button
               onClick={() => setShowWarning(false)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-surface-alt flex items-center justify-center"
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center press-strong"
+              aria-label="닫기"
             >
-              <X size={16} className="text-text-sub" />
+              <X size={18} className="text-text-light" />
             </button>
 
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-warning/20 flex items-center justify-center">
-                <ShieldAlert size={24} className="text-warning" />
-              </div>
+            <div className="flex items-center gap-3 mb-4 pr-8">
+              <ShieldAlert size={24} className="text-text-sub shrink-0" strokeWidth={1.8} />
               <div>
-                <p className="text-[15px] font-bold text-text-main">
+                <p className="text-[17px] font-bold text-text-main">
                   위치 정보 주의
                 </p>
-                <p className="text-[11px] text-text-sub">
+                <p className="text-[13px] text-text-sub">
                   길고양이 안전을 위해 확인해주세요
                 </p>
               </div>
@@ -282,15 +283,15 @@ export default function NeighborhoodPage() {
               </p>
               <ul className="space-y-1.5 text-[13px] text-text-sub">
                 <li className="flex items-start gap-2">
-                  <span className="text-warning mt-0.5">*</span>
+                  <span className="text-text-light mt-0.5">-</span>
                   정확한 주소 대신 <strong className="text-text-main">대략적인 위치</strong>만 적어주세요
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-warning mt-0.5">*</span>
+                  <span className="text-text-light mt-0.5">-</span>
                   사진 속 <strong className="text-text-main">건물명, 간판</strong>이 보이지 않도록 주의해주세요
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-warning mt-0.5">*</span>
+                  <span className="text-text-light mt-0.5">-</span>
                   급식 시간대는 <strong className="text-text-main">구체적으로 공개하지 마세요</strong>
                 </li>
               </ul>
@@ -299,13 +300,13 @@ export default function NeighborhoodPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowWarning(false)}
-                className="flex-1 py-3 rounded-2xl text-[15px] font-semibold text-text-sub bg-surface-alt press-strong transition-transform"
+                className="flex-1 h-12 rounded-lg text-[15px] font-semibold text-text-main bg-gray-100 press-strong transition-transform"
               >
                 취소
               </button>
               <button
                 onClick={confirmWrite}
-                className="flex-1 py-3 rounded-2xl text-[15px] font-semibold text-white bg-primary press-strong transition-transform"
+                className="flex-1 h-12 rounded-lg text-[15px] font-semibold text-surface bg-primary press-strong transition-transform"
               >
                 확인하고 글쓰기
               </button>

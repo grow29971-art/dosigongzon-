@@ -6,7 +6,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, Check, Share2, Sprout, CalendarDays, RefreshCw } from "lucide-react";
+import { Loader2, Check, Share2, Sprout, CalendarDays, RefreshCw, CloudOff } from "lucide-react";
 import {
   EXPERIMENT_ACTIVITY_MAP, EXPERIMENT_ACTIVITY_TYPES,
   type ExperimentActivityType, type ExperimentSummary,
@@ -69,7 +69,7 @@ export default function ExperimentPage() {
       setNotice(
         data.already
           ? { kind: "ok", text: "오늘 이 활동은 이미 기록되어 있어요. 고마워요!" }
-          : { kind: "ok", text: `${EXPERIMENT_ACTIVITY_MAP[type].label} 기록 완료! 오늘도 고생하셨어요 🐾` },
+          : { kind: "ok", text: `${EXPERIMENT_ACTIVITY_MAP[type].label} 기록 완료. 오늘도 고생하셨어요.` },
       );
       await load();
     } catch {
@@ -124,19 +124,19 @@ export default function ExperimentPage() {
   if (state.phase === "loading") {
     return (
       <div className="flex flex-col items-center justify-center py-40 gap-3">
-        <Loader2 size={28} className="animate-spin" style={{ color: "var(--color-primary)" }} />
+        <Loader2 size={28} className="animate-spin" style={{ color: "var(--color-text-muted)" }} />
         <p className="text-[15px]" style={{ color: "var(--color-text-light)" }}>불러오는 중이에요…</p>
       </div>
     );
   }
   if (state.phase === "login") {
     return (
-      <EmptyShell title="동네 돌봄 실험" emoji="🌱">
+      <EmptyShell title="동네 돌봄 실험" icon={<Sprout size={36} strokeWidth={1.5} />}>
         <p>로그인하면 우리 동네 돌봄 기록 실험에 참여할 수 있어요.</p>
         <Link
           href="/login?next=/experiment"
-          className="inline-block mt-4 px-6 py-3 rounded-2xl text-white text-[15px] font-bold"
-          style={{ background: "var(--color-primary)" }}
+          className="inline-flex items-center mt-4 px-6 h-12 rounded-lg text-[15px] font-semibold press"
+          style={{ background: "var(--color-primary)", color: "var(--color-surface)" }}
         >
           로그인하기
         </Link>
@@ -145,23 +145,20 @@ export default function ExperimentPage() {
   }
   if (state.phase === "none") {
     return (
-      <EmptyShell title="동네 돌봄 실험" emoji="🌱">
+      <EmptyShell title="동네 돌봄 실험" icon={<Sprout size={36} strokeWidth={1.5} />}>
         <p>아직 참여 중인 실험이 없어요.</p>
-        <p className="mt-1">
-          이 실험은 동네 돌봄자의 초대 링크로 참여할 수 있어요.
-          이미 활동 중인 이웃 돌봄자에게 초대를 요청해 보세요.
-        </p>
+        <p className="mt-1">이웃 돌봄자의 초대 링크로 참여할 수 있어요.</p>
       </EmptyShell>
     );
   }
   if (state.phase === "error") {
     return (
-      <EmptyShell title="동네 돌봄 실험" emoji="🌧️">
+      <EmptyShell title="동네 돌봄 실험" icon={<CloudOff size={36} strokeWidth={1.5} />}>
         <p>정보를 불러오지 못했어요.</p>
         <button
           onClick={load}
-          className="inline-flex items-center gap-2 mt-4 px-6 py-3 rounded-2xl text-white text-[15px] font-bold"
-          style={{ background: "var(--color-primary)" }}
+          className="inline-flex items-center gap-2 mt-4 px-6 h-12 rounded-lg text-[15px] font-semibold press"
+          style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)" }}
         >
           <RefreshCw size={16} /> 다시 시도
         </button>
@@ -177,10 +174,10 @@ export default function ExperimentPage() {
     <div className="px-5 pt-6 pb-10 max-w-lg mx-auto">
       {/* 헤더 */}
       <header className="mb-5">
-        <p className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>
+        <p className="text-[13px] font-medium text-text-light">
           동네 돌봄 실험
         </p>
-        <h1 className="text-[24px] font-bold mt-0.5" style={{ color: "var(--color-text, #211D17)" }}>
+        <h1 className="text-[24px] font-bold mt-0.5 text-text-main">
           {experiment.publicAreaName} 돌봄 기록
         </h1>
         <p className="text-[13px] mt-1 flex items-center gap-1.5" style={{ color: "var(--color-text-light)" }}>
@@ -192,23 +189,22 @@ export default function ExperimentPage() {
 
       {/* 상태 배너 */}
       {ended && (
-        <Banner text="이 실험은 마무리됐어요. 2주 동안 함께해 주셔서 정말 고마워요 🐾" />
+        <Banner text="이 실험은 마무리됐어요. 2주 동안 함께해 주셔서 고마워요." />
       )}
       {beforeStart && (
-        <Banner text={`실험은 ${experiment.startsAt}부터 시작돼요. 시작하면 이곳에서 기록할 수 있어요.`} />
+        <Banner text={`실험은 ${experiment.startsAt}부터 시작돼요.`} />
       )}
 
       {/* 오늘 돌봄 완료 */}
       <section
         aria-labelledby="today-care-heading"
-        className="rounded-3xl p-5 mb-4"
-        style={{ background: "#fff", boxShadow: "var(--shadow-card)" }}
+        className="card p-5 mb-4"
       >
-        <h2 id="today-care-heading" className="text-[17px] font-bold mb-1">
-          오늘 돌봄 완료 🐾
+        <h2 id="today-care-heading" className="text-[17px] font-bold mb-1 text-text-main">
+          오늘 돌봄 완료
         </h2>
-        <p className="text-[13px] mb-4" style={{ color: "var(--color-text-light)" }}>
-          오늘 하신 활동을 눌러 주세요. 날짜는 자동으로 기록돼요.
+        <p className="text-[13px] mb-4 text-text-sub">
+          오늘 하신 활동을 눌러 주세요.
         </p>
         <div className="grid grid-cols-2 gap-2.5">
           {EXPERIMENT_ACTIVITY_TYPES.map((type) => {
@@ -223,21 +219,17 @@ export default function ExperimentPage() {
                 disabled={disabled}
                 aria-pressed={done}
                 aria-label={`${meta.label} ${done ? "기록됨" : "기록하기"}`}
-                className="flex items-center justify-center gap-2 rounded-2xl px-3 font-bold text-[15px] press-strong transition-transform disabled:opacity-60"
+                className="flex items-center justify-center gap-2 rounded-lg px-3 font-semibold text-[15px] press-strong transition-transform disabled:opacity-60"
                 style={{
                   minHeight: 56,
-                  background: done ? "var(--color-primary-soft)" : "var(--color-surface-alt)",
-                  color: done ? "var(--color-primary)" : "#5D564B",
-                  border: done ? "1.5px solid var(--color-primary)" : "1.5px solid transparent",
+                  background: done ? "var(--color-primary)" : "var(--color-surface)",
+                  color: done ? "var(--color-surface)" : "var(--color-text-main)",
+                  border: done ? "1px solid var(--color-primary)" : "1px solid var(--color-border)",
                 }}
               >
-                {busy ? (
-                  <Loader2 size={18} className="animate-spin" />
-                ) : (
-                  <span aria-hidden>{meta.emoji}</span>
-                )}
+                {busy && <Loader2 size={18} className="animate-spin" />}
                 {meta.label}
-                {done && <Check size={16} strokeWidth={3} />}
+                {done && !busy && <Check size={16} strokeWidth={2.5} />}
               </button>
             );
           })}
@@ -246,10 +238,10 @@ export default function ExperimentPage() {
         {notice && (
           <p
             role="status"
-            className="mt-3 text-[13px] font-semibold rounded-xl px-3 py-2.5"
+            className="mt-3 text-[13px] font-semibold px-1 py-2"
             style={{
-              background: notice.kind === "ok" ? "rgba(107,142,111,0.12)" : "rgba(216,85,85,0.1)",
-              color: notice.kind === "ok" ? "#557A59" : "#C24747",
+              borderTop: "1px solid var(--color-divider)",
+              color: notice.kind === "ok" ? "var(--color-sage)" : "var(--color-error)",
             }}
           >
             {notice.text}
@@ -258,8 +250,8 @@ export default function ExperimentPage() {
         {failedType && (
           <button
             onClick={() => recordCare(failedType)}
-            className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-bold px-4 py-2.5 rounded-xl"
-            style={{ background: "var(--color-surface-alt)", color: "var(--color-primary)" }}
+            className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-semibold px-4 h-9 rounded-lg press"
+            style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)" }}
           >
             <RefreshCw size={14} /> 다시 시도
           </button>
@@ -269,27 +261,26 @@ export default function ExperimentPage() {
       {/* 지역 공동 성과 */}
       <section
         aria-labelledby="area-heading"
-        className="rounded-3xl p-5 mb-4 text-white"
-        style={{ background: "var(--color-primary)" }}
+        className="card p-5 mb-4"
       >
-        <h2 id="area-heading" className="text-[15px] font-bold mb-3 flex items-center gap-1.5">
-          <Sprout size={16} /> 이번 주 {experiment.publicAreaName}
+        <h2 id="area-heading" className="text-[15px] font-semibold mb-3 flex items-center gap-1.5 text-text-main">
+          <Sprout size={16} className="text-text-light" /> 이번 주 {experiment.publicAreaName}
         </h2>
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
-            <p className="text-[24px] font-bold leading-tight">{area.weekLogCount}</p>
-            <p className="text-[13px] opacity-90 mt-0.5">돌봄 완료</p>
+            <p className="text-[24px] font-bold leading-tight text-text-main">{area.weekLogCount}</p>
+            <p className="text-[13px] text-text-sub mt-0.5">돌봄 완료</p>
           </div>
           <div>
-            <p className="text-[24px] font-bold leading-tight">{area.weekCarerCount}</p>
-            <p className="text-[13px] opacity-90 mt-0.5">함께한 돌봄자</p>
+            <p className="text-[24px] font-bold leading-tight text-text-main">{area.weekCarerCount}</p>
+            <p className="text-[13px] text-text-sub mt-0.5">함께한 돌봄자</p>
           </div>
           <div>
-            <p className="text-[24px] font-bold leading-tight">{area.streakDays}</p>
-            <p className="text-[13px] opacity-90 mt-0.5">연속 기록일</p>
+            <p className="text-[24px] font-bold leading-tight text-text-main">{area.streakDays}</p>
+            <p className="text-[13px] text-text-sub mt-0.5">연속 기록일</p>
           </div>
         </div>
-        <p className="text-[13px] opacity-85 mt-3">
+        <p className="text-[13px] text-text-light mt-3">
           {area.weekLogCount === 0
             ? "이번 주 첫 기록을 기다리고 있어요. 한 번의 기록이면 충분해요."
             : "작은 기록들이 우리 동네 돌봄의 증거가 되고 있어요."}
@@ -299,16 +290,15 @@ export default function ExperimentPage() {
       {/* 내 기록 (지역 집계와 분리) */}
       <section
         aria-labelledby="me-heading"
-        className="rounded-3xl p-5 mb-4"
-        style={{ background: "#fff", boxShadow: "var(--shadow-card)" }}
+        className="card p-5 mb-4"
       >
-        <h2 id="me-heading" className="text-[15px] font-bold mb-2">나의 기록</h2>
-        <p className="text-[15px]" style={{ color: "#5D564B" }}>
-          이번 주 <b style={{ color: "var(--color-primary)" }}>{me.weekLogCount}회</b> · 실험 시작 후 누적{" "}
-          <b style={{ color: "var(--color-primary)" }}>{me.totalLogCount}회</b>
+        <h2 id="me-heading" className="text-[15px] font-semibold mb-2 text-text-main">나의 기록</h2>
+        <p className="text-[15px] text-text-sub">
+          이번 주 <b className="text-text-main">{me.weekLogCount}회</b> · 실험 시작 후 누적{" "}
+          <b className="text-text-main">{me.totalLogCount}회</b>
         </p>
-        <p className="text-[13px] mt-1.5" style={{ color: "var(--color-text-light)" }}>
-          나의 기록은 나와 운영자만 볼 수 있어요. 동네 화면에는 합계 숫자만 표시돼요.
+        <p className="text-[13px] mt-1.5 text-text-light">
+          나의 기록은 나와 운영자만 볼 수 있어요.
         </p>
       </section>
 
@@ -316,21 +306,19 @@ export default function ExperimentPage() {
       {!ended && (
         <section
           aria-labelledby="invite-heading"
-          className="rounded-3xl p-5"
-          style={{ background: "#fff", boxShadow: "var(--shadow-card)" }}
+          className="card p-5"
         >
-          <h2 id="invite-heading" className="text-[15px] font-bold mb-1.5">
+          <h2 id="invite-heading" className="text-[15px] font-semibold mb-1.5 text-text-main">
             이웃 돌봄자 초대하기
           </h2>
-          <p className="text-[13px] mb-3" style={{ color: "var(--color-text-light)" }}>
+          <p className="text-[13px] mb-3 text-text-sub">
             {experiment.publicAreaName}에서 함께 돌보는 분이 있다면 초대해 주세요.
-            위치는 공개되지 않고, 경쟁 요소도 없어요.
           </p>
           <button
             onClick={createInvite}
             disabled={inviteBusy}
-            className="w-full flex items-center justify-center gap-2 rounded-2xl text-white text-[15px] font-bold press transition-transform disabled:opacity-60"
-            style={{ minHeight: 52, background: "var(--color-primary)" }}
+            className="w-full flex items-center justify-center gap-2 rounded-lg text-[15px] font-semibold press transition-transform disabled:opacity-60"
+            style={{ minHeight: 48, background: "var(--color-primary)", color: "var(--color-surface)" }}
           >
             {inviteBusy ? <Loader2 size={18} className="animate-spin" /> : <Share2 size={18} />}
             초대 링크 만들기
@@ -344,20 +332,20 @@ export default function ExperimentPage() {
 function Banner({ text }: { text: string }) {
   return (
     <div
-      className="rounded-2xl px-4 py-3 mb-4 text-[13px] font-semibold"
-      style={{ background: "var(--color-primary-soft, rgba(176,92,54,0.1))", color: "var(--color-primary)" }}
+      className="px-4 py-3 mb-4 text-[13px] font-medium text-text-sub"
+      style={{ background: "var(--color-surface-alt)", borderRadius: "var(--radius-card-sm)" }}
     >
       {text}
     </div>
   );
 }
 
-function EmptyShell({ title, emoji, children }: { title: string; emoji: string; children: React.ReactNode }) {
+function EmptyShell({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="px-6 pt-24 pb-10 max-w-lg mx-auto text-center">
-      <p className="text-[44px] mb-3" aria-hidden>{emoji}</p>
-      <h1 className="text-[20px] font-bold mb-2">{title}</h1>
-      <div className="text-[15px] leading-relaxed" style={{ color: "var(--color-text-light)" }}>
+      <div className="flex justify-center mb-3 text-text-light" aria-hidden>{icon}</div>
+      <h1 className="text-[20px] font-bold mb-2 text-text-main">{title}</h1>
+      <div className="text-[15px] leading-relaxed text-text-sub">
         {children}
       </div>
     </div>
