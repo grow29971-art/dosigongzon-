@@ -62,7 +62,8 @@ const guardedRoutes = GUARDED_API_DIRS.flatMap((dir) =>
 );
 
 test("결제·쇼핑 라우트 목록이 비어있지 않음 (디렉터리 이동 시 이 테스트도 갱신)", () => {
-  assert.ok(guardedRoutes.length >= 8, `발견된 라우트 ${guardedRoutes.length}개 — 경로 확인 필요`);
+  // 2026-08-29 코인 상점 폐지로 shop/buy·use-item 삭제 → 7개가 현재 기준 (2026-09-16 갱신)
+  assert.ok(guardedRoutes.length >= 7, `발견된 라우트 ${guardedRoutes.length}개 — 경로 확인 필요`);
 });
 
 test("AUTH_EXEMPT에 등록된 라우트는 전부 실존 (죽은 예외 방지)", () => {

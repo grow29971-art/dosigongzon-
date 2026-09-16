@@ -14,9 +14,8 @@ const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 
 const FAIL_CLOSED_ROUTES = [
   // [파일, 필수 RPC 이름, 금지 패턴(비원자 폴백 흔적)]
-  ["app/api/shop/buy/route.ts", "buy_shop_item_atomic", ['.from("user_items")', '.from("profiles")']],
-  ["app/api/shop/use-item/route.ts", "consume_user_item", ['.from("user_items")']],
-  // equip-item은 카드 시스템 폐지(2026-08-27)로 라우트 삭제됨 — 목록에서 제거
+  // equip-item은 카드 시스템 폐지(2026-08-27), shop/buy·use-item은 코인 상점 폐지(2026-08-29)로
+  // 라우트 삭제됨 — 목록 비움. 새 경제성 라우트(원자 RPC 변이)가 생기면 여기 다시 등록한다.
 ];
 
 for (const [file, rpc, forbidden] of FAIL_CLOSED_ROUTES) {
@@ -30,17 +29,8 @@ for (const [file, rpc, forbidden] of FAIL_CLOSED_ROUTES) {
   });
 }
 
-test("코인 지급 라우트(daily-login/care-bonus/checkin): 503 fail-closed 유지", () => {
-  for (const file of [
-    "app/api/coins/daily-login/route.ts",
-    "app/api/coins/care-bonus/route.ts",
-    "app/api/checkin/complete/route.ts",
-  ]) {
-    const src = read(file);
-    assert.ok(/status:\s*503/.test(src), `${file}: 503 경로 필요`);
-    assert.ok(!src.includes('.update({ coins'), `${file}: 코인 read-modify-write 금지`);
-  }
-});
+// 코인 지급 라우트(daily-login/care-bonus/checkin) 검사는 코인·일일출석 폐지(2026-08-29)로
+// 라우트가 삭제되어 제거됨 (2026-09-16).
 
 // ── 2. 결제 로그 마스킹 (paymentKey 원문·토스 전체 오류 객체 로깅 금지) ──
 
