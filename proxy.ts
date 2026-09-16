@@ -10,7 +10,7 @@ import { updateSession } from "@/lib/supabase/proxy";
 // (2026-08-04 보안: 화이트리스트 + rate limit 통과 후 호출로 변경)
 const KNOWN_CRONS = new Set([
   "admin-daily-digest", "area-chat-nudge", "backfill-cat-art", "care-cue",
-  "cleanup-area-chats", "cleanup-read-dms", "cleanup-stale-orders", "community-topic",
+  "cleanup-area-chats", "cleanup-read-dms", "cleanup-stale-orders", "community-comment", "community-topic",
   "daily-dispatch", "engagement-push", "fund-snapshot", "health-alert-push", "like-digest",
   "news-crawl", "onboarding-nudge", "order-dispatch", "payment-reconcile", "purge-safety-data",
   "retention-report", "scheduled-push", "storage-diet", "streak-reminder",
