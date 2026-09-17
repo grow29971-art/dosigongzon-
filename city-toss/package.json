@@ -1,0 +1,31 @@
+{
+  "name": "city-toss",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "도시공존 앱인토스 미니앱 — 지도·고양이·돌봄 기록 축소판 (WebView SDK 3.x)",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "tsc --noEmit && vite build && ait build",
+    "deploy": "ait deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@apps-in-toss/web-framework": "3.4.1",
+    "@supabase/supabase-js": "^2.116.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.9.0"
+  },
+  "devDependencies": {
+    "@apps-in-toss/devtools": "3.4.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "~5.7.2",
+    "vite": "^6.2.0"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}

@@ -1,0 +1,88 @@
+/* 본 앱 리디자인 「익숙한 동네앱」(decisions/0007) 토큰 축소판 — 순백·뉴트럴 그레이·Pretendard·라운드 12 상한 */
+:root {
+  --bg: #ffffff;
+  --surface-alt: #f5f5f5;
+  --border: #e5e5e5;
+  --text: #111111;
+  --text-sub: #555555;
+  --text-light: #8a8a8a;
+  --primary: #ad5e3b;
+  --primary-soft: #f7ebe5;
+  --danger: #d1433b;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+button { font: inherit; cursor: pointer; }
+input, textarea { font: inherit; }
+
+.page { min-height: 100%; padding: 16px 16px calc(24px + env(safe-area-inset-bottom)); }
+.title { font-size: 20px; font-weight: 800; margin: 8px 0 4px; letter-spacing: -0.01em; }
+.sub { color: var(--text-sub); font-size: 14px; margin: 0 0 16px; }
+.muted { color: var(--text-light); font-size: 13px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; min-height: 52px; padding: 0 16px;
+  border-radius: var(--radius); border: 1px solid transparent;
+  font-weight: 700; font-size: 16px;
+  background: var(--primary); color: #fff;
+}
+.btn:disabled { opacity: 0.45; cursor: default; }
+.btn-secondary { background: var(--surface-alt); color: var(--text); }
+.btn-sm { min-height: 40px; font-size: 14px; width: auto; padding: 0 14px; border-radius: var(--radius-sm); }
+
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+.hr { height: 1px; background: var(--border); margin: 12px 0; }
+
+.check { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-sub); margin: 16px 0; }
+.check input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--primary); }
+.link { color: var(--text); text-decoration: underline; background: none; border: 0; padding: 0; font-size: inherit; }
+
+.map-wrap { position: fixed; inset: 0; }
+.map-top {
+  position: absolute; top: 12px; left: 12px; right: 12px; z-index: 5;
+  display: flex; align-items: center; gap: 8px;
+}
+.pill {
+  background: rgba(255,255,255,0.96); border: 1px solid var(--border); border-radius: 999px;
+  padding: 8px 12px; font-size: 13px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.sheet {
+  position: absolute; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 5;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 12px; display: flex; gap: 12px; align-items: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+}
+.thumb { width: 64px; height: 64px; border-radius: var(--radius-sm); object-fit: cover; background: var(--surface-alt); flex: none; }
+.thumb-lg { width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius); object-fit: cover; background: var(--surface-alt); display: block; }
+.name { font-weight: 800; font-size: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.chip {
+  border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 600;
+}
+.chip.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.textarea {
+  width: 100%; min-height: 72px; resize: none; padding: 12px;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg);
+}
+.log { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.log:last-child { border-bottom: 0; }
+.log-type { font-weight: 700; min-width: 64px; }
+.log-meta { color: var(--text-light); font-size: 12px; margin-left: auto; white-space: nowrap; }
+.error { color: var(--danger); font-size: 13px; margin: 8px 0; }
+.center { display: flex; align-items: center; justify-content: center; min-height: 60vh; color: var(--text-light); }
+.logo { width: 64px; height: 64px; border-radius: 16px; margin: 24px 0 8px; }
+.topbar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.back { background: none; border: 0; padding: 8px 8px 8px 0; font-size: 22px; line-height: 1; }
