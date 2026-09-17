@@ -82,14 +82,13 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   };
 
   // 정보 행(배송·적립·후원) — 헤어라인 리스트. 후원 문구는 법정·후원율 표기라 그대로 둔다.
+  // 배송기간은 상품 페이지에 명시 — PG 심사 요건(구매자가 배송기간을 인지할 수 있어야 함), policy 페이지와 동일 값.
   const infoRows: { Icon: typeof Truck; text: string }[] = [
     {
       Icon: Truck,
       text: isVirtual
         ? "배송 없음 · 후원금으로 전액 사용됩니다"
-        : product.shipping_fee === 0
-          ? "무료배송"
-          : `배송비 ${formatWon(product.shipping_fee)}`,
+        : `${product.shipping_fee === 0 ? "무료배송" : `배송비 ${formatWon(product.shipping_fee)}`} · 결제 후 영업일 2~5일 내 발송`,
     },
     // 구매 적립 안내 (2026-08-30) — 산 만큼 포인트로 돌려받는 즉각 보상. 요율은 points-config에서 관리
     ...(!isVirtual
