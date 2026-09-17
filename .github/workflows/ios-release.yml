@@ -3,15 +3,16 @@ name: ios-release
 # iOS 앱(city-ios/) 빌드·서명·App Store Connect 업로드 — Mac 없이 GitHub macOS 러너로.
 # 공개 리포라 macOS 러너 무료. 수동 실행(workflow_dispatch)만 — push마다 업로드하지 않는다.
 #
-# 필요한 리포 Secrets (Settings → Secrets and variables → Actions):
-#   ASC_KEY_ID      — App Store Connect API 키 ID (예: 2X9R4HXF34)
-#   ASC_ISSUER_ID   — Issuer ID (UUID)
-#   ASC_KEY_P8      — AuthKey_<KEY_ID>.p8 파일 내용 전체 (-----BEGIN PRIVATE KEY----- 포함)
-# API 키 권한은 Admin 또는 App Manager여야 자동 서명(인증서·프로파일 클라우드 생성)이 된다.
+# 서명은 수동(Manual): 자동 서명은 아카이브 단계에서 개발용 프로파일을 요구하고 그건 등록 기기가
+# 1대 이상 있어야 만들어져서 CI에서 실패했다(2026-09-17 1·2차 실행 실측). 그래서 배포 인증서와
+# App Store 프로파일을 ASC API로 미리 만들어 Secrets에 넣고, 러너의 임시 키체인에 넣어 서명한다.
+# (Codemagic이 7월에 하던 방식과 같다. 인증서 만료 2027-09-17 — 갱신 시 Secrets 3종 교체.)
 #
-# 서명: CODE_SIGN_STYLE=Automatic + -allowProvisioningUpdates + API 키 → Xcode가 Apple Distribution
-# 인증서·프로파일을 클라우드에서 만든다(로컬 키체인 불필요). 팀 V63FY2Y4AT, 번들 kr.dosigongzon.app.
-# 아카이브부터 Apple Distribution으로 서명한다 — 개발용 프로파일은 등록 기기가 필요해 CI에서 실패한다(1차 실행 실측).
+# 필요한 리포 Secrets:
+#   ASC_KEY_ID / ASC_ISSUER_ID / ASC_KEY_P8   — App Store Connect API 키(업로드용)
+#   IOS_DIST_P12_B64 / IOS_DIST_P12_PASSWORD  — Apple Distribution 인증서+개인키(.p12, base64)
+#   IOS_PROFILE_B64                           — 프로파일 "dosigongzon AppStore GH"(.mobileprovision, base64)
+# 원본 백업: 사장님 Desktop/애플앱키/github-actions-배포서명/
 # 빌드 번호는 run_number로 자동 증가(App Store는 같은 번호 재업로드를 거부한다).
 
 on:
@@ -31,54 +32,72 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 45
     env:
-      WORKSPACE: city-ios/도시공존.xcworkspace
+      PROJECT: city-ios/도시공존.xcodeproj
       SCHEME: 도시공존
       TEAM_ID: V63FY2Y4AT
+      BUNDLE_ID: kr.dosigongzon.app
+      PROFILE_NAME: dosigongzon AppStore GH
       ARCHIVE: build/dosigongzon.xcarchive
+      KEYCHAIN: ${{ github.workspace }}/build/ci.keychain-db
     steps:
       - uses: actions/checkout@v5
 
       - name: Xcode 버전
-        run: xcodebuild -version
+        run: |
+          mkdir -p build
+          xcodebuild -version
 
-      # 프로젝트에 CocoaPods 스크립트 단계([CP] Embed Pods Frameworks)가 남아 있어 Pods 지원 파일이
-      # 없으면 빌드가 죽는다. Podfile은 비어 있지만 pod install이 그 파일들을 만들어 준다.
-      - name: pod install
-        run: pod install --project-directory=city-ios
+      - name: 서명 재료 설치 (임시 키체인 + 프로파일)
+        env:
+          P12_B64: ${{ secrets.IOS_DIST_P12_B64 }}
+          P12_PW: ${{ secrets.IOS_DIST_P12_PASSWORD }}
+          PROFILE_B64: ${{ secrets.IOS_PROFILE_B64 }}
+        run: |
+          set -e
+          KC_PW="$(openssl rand -hex 16)"
+          echo "$P12_B64" | base64 --decode > build/dist.p12
+          security create-keychain -p "$KC_PW" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KC_PW" "$KEYCHAIN"
+          security import build/dist.p12 -P "$P12_PW" -A -t cert -f pkcs12 -k "$KEYCHAIN"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KC_PW" "$KEYCHAIN" > /dev/null
+          security list-keychains -d user -s "$KEYCHAIN" $(security list-keychains -d user | tr -d '"')
+          security find-identity -v -p codesigning "$KEYCHAIN"
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$PROFILE_B64" | base64 --decode > build/profile.mobileprovision
+          UUID=$(/usr/libexec/PlistBuddy -c 'Print UUID' /dev/stdin <<< "$(security cms -D -i build/profile.mobileprovision)")
+          cp build/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/"$UUID".mobileprovision
+          echo "profile uuid: $UUID"
+          rm -f build/dist.p12
 
       - name: App Store Connect API 키 파일 생성
         env:
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
         run: |
-          mkdir -p ~/private_keys build
+          mkdir -p ~/private_keys
           printf '%s\n' "$ASC_KEY_P8" > ~/private_keys/AuthKey_${ASC_KEY_ID}.p8
           chmod 600 ~/private_keys/AuthKey_${ASC_KEY_ID}.p8
           echo "ASC_KEY_PATH=$HOME/private_keys/AuthKey_${ASC_KEY_ID}.p8" >> "$GITHUB_ENV"
 
-      - name: 아카이브 (자동 서명, 클라우드 인증서)
-        env:
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      - name: 아카이브 (수동 서명, Apple Distribution)
         run: |
           set -o pipefail
           xcodebuild archive \
-            -workspace "$WORKSPACE" \
+            -project "$PROJECT" \
             -scheme "$SCHEME" \
             -configuration Release \
             -destination 'generic/platform=iOS' \
             -archivePath "$ARCHIVE" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$ASC_KEY_PATH" \
-            -authenticationKeyID "$ASC_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
-            CODE_SIGN_STYLE=Automatic \
+            CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             DEVELOPMENT_TEAM="$TEAM_ID" \
+            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME" \
+            OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN" \
             MARKETING_VERSION="${{ inputs.marketing_version }}" \
             CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
             SUPPORTS_MACCATALYST=NO \
-            | tee build/archive.log | grep -E "error:|warning: .*signing|\*\* ARCHIVE" || true
+            | tee build/archive.log | grep -E "error:|warning: .*sign|\*\* ARCHIVE" || true
           test -d "$ARCHIVE" || { echo "아카이브 실패 — build/archive.log 확인"; tail -n 80 build/archive.log; exit 1; }
 
       - name: exportOptions.plist 작성
@@ -90,8 +109,12 @@ jobs:
           <plist version="1.0"><dict>
             <key>method</key><string>app-store-connect</string>
             <key>destination</key><string>${DEST}</string>
-            <key>signingStyle</key><string>automatic</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>signingCertificate</key><string>Apple Distribution</string>
             <key>teamID</key><string>${TEAM_ID}</string>
+            <key>provisioningProfiles</key><dict>
+              <key>${BUNDLE_ID}</key><string>${PROFILE_NAME}</string>
+            </dict>
             <key>uploadSymbols</key><true/>
             <key>manageAppVersionAndBuildNumber</key><false/>
           </dict></plist>
@@ -108,12 +131,15 @@ jobs:
             -archivePath "$ARCHIVE" \
             -exportOptionsPlist build/exportOptions.plist \
             -exportPath build/export \
-            -allowProvisioningUpdates \
             -authenticationKeyPath "$ASC_KEY_PATH" \
             -authenticationKeyID "$ASC_KEY_ID" \
             -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
             | tee build/export.log | grep -E "error:|Upload|EXPORT|Exported" || true
           grep -qE "EXPORT SUCCEEDED" build/export.log || { echo "내보내기 실패"; tail -n 80 build/export.log; exit 1; }
+
+      - name: 임시 키체인 삭제
+        if: always()
+        run: security delete-keychain "$KEYCHAIN" || true
 
       - name: 산출물 보관 (로그 + ipa)
         if: always()
