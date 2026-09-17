@@ -29,7 +29,8 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    # App Store Connect는 iOS 26 SDK(Xcode 26+) 빌드만 받는다(2026-09-17 업로드 거절 실측) → macos-26 이미지.
+    runs-on: macos-26
     timeout-minutes: 45
     env:
       PROJECT: city-ios/도시공존.xcodeproj
@@ -42,10 +43,14 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Xcode 버전
+      - name: Xcode 26 선택
         run: |
           mkdir -p build
+          ls -d /Applications/Xcode*.app
+          LATEST=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          if [ -n "$LATEST" ]; then sudo xcode-select -s "$LATEST"; fi
           xcodebuild -version
+          xcodebuild -showsdks | grep -i "iphoneos" || true
 
       - name: 서명 재료 설치 (임시 키체인 + 프로파일)
         env:
