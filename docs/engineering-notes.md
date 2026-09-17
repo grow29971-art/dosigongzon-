@@ -105,10 +105,8 @@
 
 ## 2026-09-17에 알게 된 것
 
-- **`.env.local`의 `NEXT_PUBLIC_SUPABASE_URL` 값 끝에도 리터럴 `
-`이 붙어 있다.** 파이썬/노드로 프로브할 때 따옴표·`
-`
-  제거 없이 쓰면 `getaddrinfo failed`. `scripts/watch-probe.mjs`의 loadEnv 패턴을 그대로 쓸 것.
+- **`.env.local`의 `NEXT_PUBLIC_SUPABASE_URL` 값 끝에도 리터럴 백슬래시-n 두 글자가 붙어 있다.** 파이썬/노드로
+  프로브할 때 따옴표·백슬래시-n 제거 없이 쓰면 `getaddrinfo failed`. `scripts/watch-probe.mjs`의 loadEnv 패턴을 쓸 것.
 - **Bash 툴 heredoc에 백슬래시가 든 문자열을 넣으면 이스케이프가 변형된다.** 정규식·YAML·Swift 이스케이프를 고칠 땐
   Edit 툴로 직접 치환하라(이날 세 번 헛돌았다).
 - **Supabase SQL 에디터에 Chrome 번역이 켜져 있으면 붙여넣기가 에디터에 안 들어가고 버튼이 "구하다/달리다"로 보인다.**
