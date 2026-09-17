@@ -42,8 +42,8 @@
 7. **iOS 앱** — 2026-09-17 재개. 코드는 main의 `city-ios/`(브랜치 아님). App Store 반려 사유(7/5, 2.1(a)
    "Apple 로그인 후 무한 로딩")를 네이티브 Sign in with Apple로 수정(b34b46fd). Mac 없이
    `.github/workflows/ios-release.yml`(macOS 러너, 수동 서명)로 빌드·업로드 — 서명 재료는 Secrets 6종,
-   원본은 Desktop/애플앱키/github-actions-배포서명/. 남은 것: TestFlight 실기기 Apple 로그인 확인 →
-   App Store Connect에서 새 빌드 선택·심사 제출. iOS 키스토어 문제는 없음(Android TWA만 해당).
+   원본은 Desktop/애플앱키/github-actions-배포서명/. **1.0.1(5) 심사 제출 완료(2026-09-17, 실기기 미검증
+   — 사장님 결정)**. 재반려 시 TestFlight 실기기 확인 선행. iOS 키스토어 문제는 없음(Android TWA만 해당).
 
 ## 차단 요인
 
