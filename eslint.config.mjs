@@ -16,6 +16,8 @@ const eslintConfig = defineConfig([
     "scripts/**",
     // box 폴더는 개발일지·SQL·빌드 리소스 생성 스크립트. 앱 빌드에 포함되지 않음.
     "box/**",
+    // 앱인토스 미니앱 — 별도 Vite 프로젝트(자체 tsconfig), Next 룰셋 대상 아님.
+    "city-toss/**",
   ]),
   {
     // react-hooks 6 / next 강화 룰셋으로 새로 error가 된 규칙들 — 2026-07-27 전수 확인 후

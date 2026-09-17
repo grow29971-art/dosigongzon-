@@ -149,6 +149,19 @@ const nextConfig: NextConfig = {
           { key: "Access-Control-Max-Age", value: "86400" },
         ],
       },
+      // 앱인토스 미니앱(city-toss/) → 토스 로그인 브릿지 CORS. 같은 키는 뒤 항목이 이긴다(Next 규칙).
+      // 오리진은 토스가 호스팅하는 tossmini.com 하위 4종(SDK 3.x web/private-web, 8/25 이후 apps/private-apps).
+      {
+        source: "/api/toss/:path*",
+        has: [{ type: "header", key: "origin", value: "https://dosigongzon\\.(?<sub>web|private-web|apps|private-apps)\\.tossmini\\.com" }],
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "https://dosigongzon.:sub.tossmini.com" },
+          { key: "Access-Control-Allow-Methods", value: "POST, OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type" },
+          { key: "Access-Control-Max-Age", value: "86400" },
+          { key: "Vary", value: "Origin" },
+        ],
+      },
       // PWA 자원 — 외부 도구(PWABuilder, Lighthouse, Play Store) 접근 허용
       {
         source: "/manifest.json",
