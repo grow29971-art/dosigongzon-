@@ -1,4 +1,4 @@
-# 0008 — 앱인토스 입점: PWA 그대로 불가, 축소판 미니앱은 조건부 보류 (2026-09-17)
+# 0008 — 앱인토스 입점: PWA 그대로 불가 → 축소판 미니앱 착수 (2026-09-17, 같은 날 번복)
 
 ## 배경
 
@@ -21,7 +21,31 @@
 출처: developers-apps-in-toss.toss.im — `ai-vibe-coding/tutorials/webview`, `guide/operation/deploy`,
 `checklist/app-nongame`, `guide/authentication/intro`.
 
-## 결정
+## 결정 (2026-09-17 오후, 사장님 번복 — 아래 "당초 결정"을 대체)
+
+사장님이 "토스인앱에 도시공존 올리게 해보자"로 착수를 지시했다. 인터뷰 선행 조건은 철회.
+같은 날 구현·배포한 것:
+
+- `city-toss/` — Vite/React SPA 미니앱 v1(토스 로그인 → 카카오맵 고양이 핀 → 상세 → 돌봄 기록).
+  `npm run build`로 `dosigongzon.ait` 생성 실측(189KB).
+- `app/api/toss/login` + `lib/toss-ait.ts` — mTLS 토큰 교환·userKey 조회·Supabase magiclink 세션 브릿지.
+- `box/supabase_toss_identities_20260917.sql` — userKey ↔ auth.users 매핑(실행 게이트).
+- `next.config.ts` — `/api/toss/*` CORS를 tossmini.com 오리진에 허용.
+
+남은 것은 전부 사장님 손이 필요한 외부 등록이다(아래 "착수 후 게이트").
+
+## 착수 후 게이트 (코드는 끝, 외부 등록 대기)
+
+1. 앱인토스 콘솔: 워크스페이스 개설 → 앱 등록(appName **dosigongzon**, 아이콘) → 사업자 인증.
+2. 콘솔에서 토스 로그인 설정: mTLS 파트너 인증서·개인키 발급, 복호화 키·AAD 발급 →
+   Vercel 환경변수 `TOSS_AIT_CLIENT_CERT`·`TOSS_AIT_CLIENT_KEY`·`TOSS_AIT_DECRYPT_KEY`·`TOSS_AIT_AAD`.
+3. Supabase SQL 실행: `box/supabase_toss_identities_20260917.sql`.
+4. 카카오 개발자 콘솔 Web 플랫폼 도메인 추가: `https://dosigongzon.web.tossmini.com`,
+   `https://dosigongzon.private-web.tossmini.com` (+ `apps`/`private-apps` 변형 2종).
+5. `city-toss/.env.local`에 VITE_SUPABASE_ANON_KEY·VITE_KAKAO_JS_KEY → `npm run build` → 콘솔에 .ait 업로드
+   → QR 테스트(만 19세·워크스페이스 멤버·토스 로그인 상태) → 검토 요청.
+
+## 당초 결정 (같은 날 오전, 참고용으로 보존)
 
 1. **PWA/TWA 래핑 방식은 없다.** "컨버전"은 별도 클라이언트(Vite/React SPA + `@apps-in-toss/web-framework`)를
    새로 만드는 일이며, 백엔드(Supabase·API 라우트)만 재사용된다.
@@ -52,7 +76,5 @@
 
 ## 결과와 제약
 
-- 이 결정은 "안 한다"가 아니라 "인터뷰 결과 전엔 안 한다"다. 재론 트리거는 인터뷰 응답이며,
-  노출 수(3,000만)는 트리거가 아니다.
 - 기존 앱을 손대서 앱인토스 규칙(SSR 제거·토스 로그인 전용)에 맞추는 방향은 금지 — 본 앱의 카카오
   로그인·SSR·쇼핑 PG는 그대로 두고 미니앱을 별도로 만든다.
