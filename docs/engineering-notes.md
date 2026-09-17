@@ -97,7 +97,8 @@
   가드: `tests/og-image-url.test.mjs`.
 - **satori(next/og)는 webp를 못 그린다**: 고양이 사진이 webp라 OG 이미지에 사진을 넣으면 "지원되지 않는 이미지
   형식: image/webp" 경고 후 사진 없이 렌더된다(에러 아님). 사진을 OG에 쓰려면 jpg/png 변환이 선행.
-- **/tips/[slug] 500의 정체(2026-09-16)**: `isomorphic-dompurify → jsdom → html-encoding-sniffer(CJS)`가 ESM 전용
-  `@exodus/bytes`를 require()해 Node 20 런타임에서 ERR_REQUIRE_ESM. 락은 8/25 이후 무변경이라 런타임 문제.
-  조치: `package.json engines.node=22.x`(require(esm) 가능) + `lib/html-sanitize-server.ts`를 지연 로드·실패 시
-  정규식 sanitizer 폴백. 서버 전용 모듈은 이렇게 **로드 실패를 페이지 500으로 번지게 두지 말 것**.
+- **/tips/[slug] 500의 정체(2026-09-16) → jsdom 퇴출(2026-09-17)**: `isomorphic-dompurify → jsdom → html-encoding-sniffer(CJS)`가
+  ESM 전용 `@exodus/bytes`를 require()해 ERR_REQUIRE_ESM. Node 22로 올려도 Vercel 로그에 매 요청 폴백이 찍혔다(9/17 실측) —
+  런타임 버전으로 안 풀리는 번들 구조 문제. 조치: 렌더 sink 정화를 `sanitize-html`(htmlparser2, DOM 없음)로 교체하고
+  jsdom 의존 제거. 교훈: 서버 컴포넌트에서 jsdom 계열은 쓰지 않는다 — 파서 기반 sanitizer로 충분하고,
+  서버 전용 모듈의 **로드 실패를 페이지 500으로 번지게 두지 말 것**.
