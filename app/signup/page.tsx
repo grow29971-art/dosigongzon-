@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PawPrint, Check, Loader2, AlertCircle, AlertTriangle, ExternalLink, Gift } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { hasNativeAppleSignIn, startNativeAppleSignIn, AppleSignInCancelled } from "@/lib/native-apple-signin";
 import {
   detectInAppBrowser,
   detectOS,
@@ -126,6 +127,16 @@ function SignupContent() {
     }
     if (provider === "apple") {
       oauthOptions.scopes = "name email";
+    }
+    // iOS 앱: 네이티브 Sign in with Apple (lib/native-apple-signin.ts 참조)
+    if (provider === "apple" && hasNativeAppleSignIn()) {
+      try {
+        await startNativeAppleSignIn(safeNext);
+      } catch (e) {
+        setLoading(null);
+        if (!(e instanceof AppleSignInCancelled)) setError("Apple 로그인에 실패했어요. 다시 시도해주세요.");
+      }
+      return;
     }
 
     // Meta Pixel: 가입 의향 측정 — OAuth로 redirect되기 직전 발사.

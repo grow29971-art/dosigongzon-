@@ -74,9 +74,18 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/login?${params.toString()}`);
   }
 
-  if (code) {
+  // native=1: iOS 앱 네이티브 Sign in with Apple — 클라이언트가 signInWithIdToken으로 이미 세션을
+  // 만들었고(쿠키), 여기서는 교환 없이 첫 가입 처리·welcome 분기만 웹과 동일하게 태운다.
+  const native = searchParams.get("native") === "1";
+
+  if (code || native) {
     const supabase = await createClient();
-    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+    const { error: exchangeError } = code
+      ? await supabase.auth.exchangeCodeForSession(code)
+      : await (async () => {
+          const { data: { user: nativeUser } } = await supabase.auth.getUser();
+          return { error: nativeUser ? null : { message: "native session missing", code: "native_no_session" } };
+        })();
 
     if (exchangeError) {
       // 중복 호출 내성 — 새로고침·프리페치로 콜백이 재실행되면 code는 이미 소모돼

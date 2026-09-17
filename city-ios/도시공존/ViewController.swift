@@ -1,19 +1,19 @@
 import UIKit
 import WebKit
 import AuthenticationServices
+import CryptoKit
 
 var gWebView: WKWebView!
 
 @objc(ViewController)
 class ViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHandler,
-                      ASWebAuthenticationPresentationContextProviding {
+                      ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
 
     @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var connectionProblemView: UIImageView!
     @IBOutlet weak var webviewView: UIView!
 
-    private var authSession: ASWebAuthenticationSession?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,44 +62,84 @@ class ViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHan
     }
 
     // MARK: - WKScriptMessageHandler
-    // JS가 window.webkit.messageHandlers.nativeAppleSignIn.postMessage(oauthUrl) 로 호출
+    // JS(lib/native-apple-signin.ts)가 window.webkit.messageHandlers.nativeAppleSignIn.postMessage(null) 로 호출.
+    // WKWebView 안에서 Apple OAuth 리다이렉트를 돌리면 무한 로딩(App Store 반려 2.1(a), 2026-07-05)이라
+    // 네이티브 ASAuthorizationController로 identityToken을 받아 JS로 넘기고, JS가 Supabase signInWithIdToken을 한다.
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard message.name == "nativeAppleSignIn",
-              let urlString = message.body as? String,
-              let url = URL(string: urlString) else { return }
-
+        guard message.name == "nativeAppleSignIn" else { return }
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.authSession = ASWebAuthenticationSession(
-                url: url,
-                callbackURLScheme: "dosigongzon"
-            ) { callbackURL, error in
-                DispatchQueue.main.async {
-                    if let callbackURL = callbackURL,
-                       let comps = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false),
-                       let code = comps.queryItems?.first(where: { $0.name == "code" })?.value,
-                       let targetURL = URL(string: "https://dosigongzon.com/api/auth/callback?code=\(code)&provider=apple&next=%2F") {
-                        gWebView.load(URLRequest(url: targetURL))
-                    } else if callbackURL != nil {
-                        // code 파라미터 없음 — 에러 처리
-                        let escaped = (callbackURL?.absoluteString ?? "no_url")
-                            .replacingOccurrences(of: "'", with: "\\'")
-                        gWebView.evaluateJavaScript("window.__appleSignInError('callback_no_code: \(escaped)')", completionHandler: nil)
-                    } else {
-                        let msg = (error?.localizedDescription ?? "cancelled")
-                            .replacingOccurrences(of: "'", with: "\\'")
-                        gWebView.evaluateJavaScript("window.__appleSignInError('\(msg)')", completionHandler: nil)
-                    }
-                }
-            }
-            self.authSession?.presentationContextProvider = self
-            self.authSession?.prefersEphemeralWebBrowserSession = false
-            self.authSession?.start()
+            self?.startNativeAppleSignIn()
         }
     }
 
-    // MARK: - ASWebAuthenticationPresentationContextProviding
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+    private var currentNonce: String?
+
+    private func startNativeAppleSignIn() {
+        let nonce = Self.randomNonce()
+        currentNonce = nonce
+        let request = ASAuthorizationAppleIDProvider().createRequest()
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = Self.sha256(nonce)  // Apple에는 해시를, Supabase에는 원문을 보낸다
+        let controller = ASAuthorizationController(authorizationRequests: [request])
+        controller.delegate = self
+        controller.presentationContextProvider = self
+        controller.performRequests()
+    }
+
+    private static func randomNonce(length: Int = 32) -> String {
+        let charset = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._")
+        var result = ""
+        var remaining = length
+        while remaining > 0 {
+            var random: UInt8 = 0
+            let status = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+            if status != errSecSuccess { fatalError("SecRandomCopyBytes failed: \(status)") }
+            if random < charset.count {
+                result.append(charset[Int(random)])
+                remaining -= 1
+            }
+        }
+        return result
+    }
+
+    private static func sha256(_ input: String) -> String {
+        let hashed = SHA256.hash(data: Data(input.utf8))
+        return hashed.compactMap { String(format: "%02x", $0) }.joined()
+    }
+
+    private func jsString(_ s: String) -> String {
+        return s.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "'", with: "\\'")
+    }
+
+    private func reportAppleError(_ msg: String) {
+        gWebView.evaluateJavaScript("window.__appleSignInError && window.__appleSignInError('\(jsString(msg))')", completionHandler: nil)
+    }
+
+    // MARK: - ASAuthorizationControllerDelegate
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+              let tokenData = credential.identityToken,
+              let token = String(data: tokenData, encoding: .utf8),
+              let nonce = currentNonce else {
+            reportAppleError("no_identity_token")
+            return
+        }
+        currentNonce = nil
+        gWebView.evaluateJavaScript(
+            "window.__appleSignInSuccess && window.__appleSignInSuccess('\(jsString(token))', '\(jsString(nonce))')",
+            completionHandler: nil
+        )
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        currentNonce = nil
+        let code = (error as? ASAuthorizationError)?.code.rawValue ?? -1
+        // 1001 = canceled — JS 쪽에서 "1001"/"cancel"로 구분해 에러 표시를 생략한다
+        reportAppleError("apple_auth_error \(code): \(error.localizedDescription)")
+    }
+
+    // MARK: - ASAuthorizationControllerPresentationContextProviding
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return view.window!
     }
 }

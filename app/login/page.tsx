@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PawPrint, Check, Loader2, ExternalLink, AlertCircle, AlertTriangle, RotateCcw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { hasNativeAppleSignIn, startNativeAppleSignIn, AppleSignInCancelled } from "@/lib/native-apple-signin";
 import {
   detectInAppBrowser,
   detectOS,
@@ -109,6 +110,20 @@ function LoginContent() {
     }
     if (provider === "apple") {
       oauthOptions.scopes = "name email";
+      // iOS 앱: WKWebView 안 OAuth 리다이렉트는 무한 로딩(App Store 반려) — 네이티브 시트로 우회
+      if (hasNativeAppleSignIn()) {
+        try {
+          await startNativeAppleSignIn(safeNext);
+        } catch (e) {
+          setSocialLoading(null);
+          if (!(e instanceof AppleSignInCancelled)) {
+            const msg = e instanceof Error ? e.message : "unknown";
+            setError("Apple 로그인에 실패했어요. 다시 시도해주세요.");
+            logAuthError({ provider, stage: "client", error_code: "native_apple_failed", error_desc: msg });
+          }
+        }
+        return;
+      }
     }
     const { error: oauthError } = await createClient().auth.signInWithOAuth({
       provider,
