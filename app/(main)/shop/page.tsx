@@ -178,6 +178,20 @@ export default function ShopPage() {
     [products, filter],
   );
 
+  // 상품이 있는 카테고리만 칩으로 노출 — 빈 카테고리를 눌러 "준비 중"만 보는 동선 차단.
+  // 카테고리가 하나뿐이면 칩 줄 자체를 숨긴다("전체" 하나는 필터가 아니라 장식).
+  const availableFilters = useMemo(() => {
+    const present = new Set(products.map((p) => p.category));
+    const cats = FILTERS.filter((f) => f.key !== "all" && present.has(f.key as ProductCategory));
+    return cats.length >= 2 ? [FILTERS[0], ...cats] : [];
+  }, [products]);
+
+  // 딥링크로 들어온 카테고리에 상품이 없으면 전체로 되돌림
+  useEffect(() => {
+    if (loading || filter === "all") return;
+    if (!availableFilters.some((f) => f.key === filter)) setFilter("all");
+  }, [loading, filter, availableFilters]);
+
   return (
     <div className="px-4 pt-14 pb-24">
       <PageIntroModal
@@ -308,17 +322,19 @@ export default function ShopPage() {
         dismissKey="dosigongzon_shop_open_optin_dismissed_at"
       />
 
-      {/* ── 카테고리 필터 칩 ── */}
-      <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4">
-        {FILTERS.map((f) => {
-          const on = filter === f.key;
-          return (
-            <UIChip key={f.key} onClick={() => setFilter(f.key)} active={on} icon={<f.Icon size={13} />}>
-              {f.label}
-            </UIChip>
-          );
-        })}
-      </div>
+      {/* ── 카테고리 필터 칩 (상품 있는 카테고리 2개 이상일 때만) ── */}
+      {availableFilters.length > 0 && (
+        <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4">
+          {availableFilters.map((f) => {
+            const on = filter === f.key;
+            return (
+              <UIChip key={f.key} onClick={() => setFilter(f.key)} active={on} icon={<f.Icon size={13} />}>
+                {f.label}
+              </UIChip>
+            );
+          })}
+        </div>
+      )}
 
       {/* ── 상품 그리드 ── */}
       {loading ? (
