@@ -39,8 +39,11 @@
 4. **쇼핑 후원 지정 집행 UI** — 오픈 후 착수로 합의된 항목.
 5. **행정** — 통신판매업 신고 처리 통보 확인.
 6. **앱인토스 미니앱** — decisions/0008: `city-toss/` v1 코드·브릿지 배포 완료(2026-09-17). 남은 건 외부 등록 5단계(콘솔 앱 등록 appName dosigongzon → mTLS 인증서·복호화 키를 Vercel env → toss_identities SQL → 카카오맵 도메인 → .ait 업로드·QR 테스트·검토 요청).
-7. **iOS 앱** — 보류 중(사장님 확인). WKWebView·애플 로그인 작업이 별도 브랜치에 있으나 main
-   미반영. 재개 시 Desktop 키스토어·비밀번호 확보(Android 재출시와 공통 선행 조건)부터.
+7. **iOS 앱** — 2026-09-17 재개. 코드는 main의 `city-ios/`(브랜치 아님). App Store 반려 사유(7/5, 2.1(a)
+   "Apple 로그인 후 무한 로딩")를 네이티브 Sign in with Apple로 수정(b34b46fd). Mac 없이
+   `.github/workflows/ios-release.yml`(macOS 러너, 수동 서명)로 빌드·업로드 — 서명 재료는 Secrets 6종,
+   원본은 Desktop/애플앱키/github-actions-배포서명/. 남은 것: TestFlight 실기기 Apple 로그인 확인 →
+   App Store Connect에서 새 빌드 선택·심사 제출. iOS 키스토어 문제는 없음(Android TWA만 해당).
 
 ## 차단 요인
 
