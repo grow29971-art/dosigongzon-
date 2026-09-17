@@ -107,8 +107,6 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
-  // jsdom 기반 DOMPurify(tips 렌더 sink 정화)는 서버 외부 패키지로 두어 번들 문제 회피
-  serverExternalPackages: ["isomorphic-dompurify"],
   // next/image — Vercel Image Optimization 활성. 자동 WebP/AVIF + 디바이스별 리사이즈.
   // 서드파티 아바타(Google/Kakao)는 이미 CDN 최적화 상태라 개별 컴포넌트에서 unoptimized 유지.
   // quota 한계: Hobby 1000 source images/month (현재 사용 << 한계).

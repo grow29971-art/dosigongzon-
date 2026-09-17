@@ -67,7 +67,7 @@
 - 텔레그램 운영 알림에 PII를 싣지 않는다(2026-08-26 결격 청산 항목).
 - 서클 채팅 사진은 private 버킷 + 멤버 검증 후 signed URL. 공개 버킷에 넣지 않는다.
 - 사용자 입력 URL은 `sanitizeImageUrl`/`sanitizeHttpUrl` 통과 필수(XSS·SSRF 방어), 본문 HTML은
-  DOMPurify 계열로 소독.
+  파서 기반 sanitizer(`sanitize-html`, lib/html-sanitize-server.ts)로 소독.
 
 ## 자격증명 관리
 

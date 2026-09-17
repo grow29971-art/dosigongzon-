@@ -77,7 +77,7 @@
 
 ## 입력 검증
 
-- 사용자 입력 URL: `sanitizeImageUrl`/`sanitizeHttpUrl` 필수. HTML 본문: DOMPurify 소독 필수.
+- 사용자 입력 URL: `sanitizeImageUrl`/`sanitizeHttpUrl` 필수. HTML 본문: 렌더 시점 파서 기반 소독(`lib/html-sanitize-server.ts`) 필수.
 - 서버 에러 응답에 debug 정보 노출 금지.
 
 ## 테스트
