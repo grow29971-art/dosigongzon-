@@ -1,0 +1,120 @@
+name: ios-release
+
+# iOS 앱(city-ios/) 빌드·서명·App Store Connect 업로드 — Mac 없이 GitHub macOS 러너로.
+# 공개 리포라 macOS 러너 무료. 수동 실행(workflow_dispatch)만 — push마다 업로드하지 않는다.
+#
+# 필요한 리포 Secrets (Settings → Secrets and variables → Actions):
+#   ASC_KEY_ID      — App Store Connect API 키 ID (예: 2X9R4HXF34)
+#   ASC_ISSUER_ID   — Issuer ID (UUID)
+#   ASC_KEY_P8      — AuthKey_<KEY_ID>.p8 파일 내용 전체 (-----BEGIN PRIVATE KEY----- 포함)
+# API 키 권한은 Admin 또는 App Manager여야 자동 서명(인증서·프로파일 클라우드 생성)이 된다.
+#
+# 서명: CODE_SIGN_STYLE=Automatic + -allowProvisioningUpdates + API 키 → Xcode가 Apple Distribution
+# 인증서·프로파일을 클라우드에서 만든다(로컬 키체인 불필요). 팀 V63FY2Y4AT, 번들 kr.dosigongzon.app.
+# 빌드 번호는 run_number로 자동 증가(App Store는 같은 번호 재업로드를 거부한다).
+
+on:
+  workflow_dispatch:
+    inputs:
+      marketing_version:
+        description: "앱 버전(CFBundleShortVersionString), 예 1.0.1"
+        required: true
+        default: "1.0.1"
+      upload:
+        description: "App Store Connect에 업로드(false면 아카이브·서명까지만 검증)"
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      PROJECT: city-ios/도시공존.xcodeproj
+      SCHEME: 도시공존
+      TEAM_ID: V63FY2Y4AT
+      ARCHIVE: build/dosigongzon.xcarchive
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Xcode 버전
+        run: xcodebuild -version
+
+      - name: App Store Connect API 키 파일 생성
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          mkdir -p ~/private_keys build
+          printf '%s\n' "$ASC_KEY_P8" > ~/private_keys/AuthKey_${ASC_KEY_ID}.p8
+          chmod 600 ~/private_keys/AuthKey_${ASC_KEY_ID}.p8
+          echo "ASC_KEY_PATH=$HOME/private_keys/AuthKey_${ASC_KEY_ID}.p8" >> "$GITHUB_ENV"
+
+      - name: 아카이브 (자동 서명, 클라우드 인증서)
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$ARCHIVE" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            MARKETING_VERSION="${{ inputs.marketing_version }}" \
+            CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            SUPPORTS_MACCATALYST=NO \
+            | tee build/archive.log | grep -E "error:|warning: .*signing|\*\* ARCHIVE" || true
+          test -d "$ARCHIVE" || { echo "아카이브 실패 — build/archive.log 확인"; tail -n 80 build/archive.log; exit 1; }
+
+      - name: exportOptions.plist 작성
+        run: |
+          DEST=$([ "${{ inputs.upload }}" = "true" ] && echo upload || echo export)
+          cat > build/exportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>${DEST}</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>teamID</key><string>${TEAM_ID}</string>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          EOF
+          cat build/exportOptions.plist
+
+      - name: 내보내기 / App Store Connect 업로드
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -o pipefail
+          xcodebuild -exportArchive \
+            -archivePath "$ARCHIVE" \
+            -exportOptionsPlist build/exportOptions.plist \
+            -exportPath build/export \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            | tee build/export.log | grep -E "error:|Upload|EXPORT|Exported" || true
+          grep -qE "EXPORT SUCCEEDED" build/export.log || { echo "내보내기 실패"; tail -n 80 build/export.log; exit 1; }
+
+      - name: 산출물 보관 (로그 + ipa)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-${{ github.run_number }}
+          path: |
+            build/*.log
+            build/export/*.ipa
+          if-no-files-found: ignore
+          retention-days: 14
