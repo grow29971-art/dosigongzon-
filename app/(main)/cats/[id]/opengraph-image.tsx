@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getCatByIdServer } from "@/lib/cats-server";
 import { sanitizeOgImageUrl } from "@/lib/url-validate";
+import { ogPhotoDataUri } from "@/lib/og-photo";
 import {
   OGBrand,
   OG_CHIP,
@@ -26,7 +27,8 @@ export default async function CatOGImage({ params }: { params: Params }) {
   const name = cat?.name ?? "길고양이";
   const region = cat?.region ?? "우리 동네";
   // 사진이 없거나 허용 호스트 밖이면 빈 문자열 → 회색 면 + 이름으로 대체(플레이스홀더 서비스 미사용)
-  const photoUrl = sanitizeOgImageUrl(cat?.photo_url ?? null, "");
+  // satori는 webp를 못 그리므로 sharp로 jpeg data URI로 변환해 넣는다(lib/og-photo.ts). 실패 시 회색 면.
+  const photoUrl = await ogPhotoDataUri(sanitizeOgImageUrl(cat?.photo_url ?? null, ""));
   const likeCount = cat?.like_count ?? 0;
   const description = cat?.description?.slice(0, 60) ?? "길 위의 생명과 함께 걷는 따뜻한 한 걸음";
 

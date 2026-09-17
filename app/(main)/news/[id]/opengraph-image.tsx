@@ -2,6 +2,7 @@
 import { ImageResponse } from "next/og";
 import { createClient } from "@/lib/supabase/server";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { ogPhotoDataUri } from "@/lib/og-photo";
 import type { NewsItem } from "@/lib/news-repo";
 import {
   OGBrand,
@@ -45,7 +46,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
     news?.description?.slice(0, 90) ??
     news?.body?.replace(/\s+/g, " ").slice(0, 90) ??
     "길고양이·동물보호 관련 시민이 알아야 할 소식";
-  const image = sanitizeImageUrl(news?.image_url ?? null, "");
+  const image = await ogPhotoDataUri(sanitizeImageUrl(news?.image_url ?? null, ""), 640);
   const badge = BADGE_LABELS[news?.badge_type ?? "news"] ?? BADGE_LABELS.news;
   const sourceName = news?.source_name?.slice(0, 30) ?? null;
 

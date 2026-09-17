@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { getPostByIdServer } from "@/lib/posts-server";
 import { CATEGORY_MAP } from "@/lib/types";
 import { sanitizeOgImageUrl } from "@/lib/url-validate";
+import { ogPhotoDataUri } from "@/lib/og-photo";
 import {
   OGBrand,
   OG_CHIP,
@@ -31,8 +32,9 @@ export default async function PostOGImage({ params }: { params: Params }) {
   const author = post?.authorName ?? "도시공존";
   const likes = post?.likeCount ?? 0;
   const comments = post?.commentCount ?? 0;
+  // 커뮤니티 사진도 webp 업로드가 대부분 — jpeg data URI로 변환(lib/og-photo.ts), 실패 시 사진 없이
   const firstImage = post?.images?.[0]
-    ? sanitizeOgImageUrl(post.images[0], "")
+    ? await ogPhotoDataUri(sanitizeOgImageUrl(post.images[0], ""), 640)
     : "";
 
   return new ImageResponse(
