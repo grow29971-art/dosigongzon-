@@ -185,7 +185,7 @@ export async function POST(req: Request) {
       const unit = p.sale_price ?? p.price;
       const subtotal = unit * item.quantity;
       expectedProducts += subtotal;
-      expectedShipping += p.shipping_fee * item.quantity; // 품목당 합산 — computeCartTotal·웹훅·게스트 RPC와 동일 식
+      expectedShipping = Math.max(expectedShipping, p.shipping_fee); // 주문당 1회(합포장, 최대값) — computeCartTotal·웹훅·게스트 RPC와 동일 식
       if (p.is_donation || p.is_virtual) hasDonationOrVirtual = true;
       const correctDonation = donationForItem(
         { ...p, cost_price: embeddedCostPrice(p.product_costs) },
