@@ -102,3 +102,20 @@
   런타임 버전으로 안 풀리는 번들 구조 문제. 조치: 렌더 sink 정화를 `sanitize-html`(htmlparser2, DOM 없음)로 교체하고
   jsdom 의존 제거. 교훈: 서버 컴포넌트에서 jsdom 계열은 쓰지 않는다 — 파서 기반 sanitizer로 충분하고,
   서버 전용 모듈의 **로드 실패를 페이지 500으로 번지게 두지 말 것**.
+
+## 2026-09-17에 알게 된 것
+
+- **`.env.local`의 `NEXT_PUBLIC_SUPABASE_URL` 값 끝에도 리터럴 `
+`이 붙어 있다.** 파이썬/노드로 프로브할 때 따옴표·`
+`
+  제거 없이 쓰면 `getaddrinfo failed`. `scripts/watch-probe.mjs`의 loadEnv 패턴을 그대로 쓸 것.
+- **Bash 툴 heredoc에 백슬래시가 든 문자열을 넣으면 이스케이프가 변형된다.** 정규식·YAML·Swift 이스케이프를 고칠 땐
+  Edit 툴로 직접 치환하라(이날 세 번 헛돌았다).
+- **Supabase SQL 에디터에 Chrome 번역이 켜져 있으면 붙여넣기가 에디터에 안 들어가고 버튼이 "구하다/달리다"로 보인다.**
+  번역 끄고("영어 원문 표시") 다시. box/ SQL 헤더의 "⚠ Chrome 번역 OFF"가 이것.
+- **앱인토스 콘솔**: 토스 로그인·약관 등록 메뉴는 정산 정보 검토(약 2일)가 끝나야 열린다. 앱 정보 심사는 아이콘이
+  투명/둥근 모서리면 반려("배경색 포함 꽉 찬 사각형"). `city-toss/public/app-icon-1024.png`가 통과판.
+- **iOS CI 자동 서명은 기기 0대 팀에서 불가** — 아카이브가 개발용 프로파일을 요구한다. 수동 서명(인증서·프로파일을
+  Secrets로)이 답이고, App Store Connect는 iOS 26 SDK(Xcode 26, `macos-26` 러너) 빌드만 받는다. 세부는 `city-ios/AGENTS.md`.
+- **App Store Connect API로 반려된 제출을 되살리는 법**: 버전 PATCH(versionString)·빌드 relationship PATCH 후
+  `reviewSubmissionItems/{id}`에 `resolved: true` PATCH → UI의 "앱 심사에 다시 제출"이 활성화된다.
