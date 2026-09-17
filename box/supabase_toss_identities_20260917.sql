@@ -16,7 +16,7 @@
 --   service_role은 RLS를 우회하므로 정책이 필요 없다.
 --
 -- [검증] 실행 후:
---   1) anon 키로 GET /rest/v1/toss_identities?select=* → [] (0행, 200)
+--   1) anon 키로 GET /rest/v1/toss_identities?select=* → 401 permission denied (revoke 적용, 실측 2026-09-17)
 --   2) select count(*) from public.toss_identities;  -- 0
 --   3) 미니앱 QR 테스트로 토스 로그인 1회 → 1행 생성, auth.users에 toss-<userKey>@toss.dosigongzon.com 1명
 -- ══════════════════════════════════════════════════════════════
