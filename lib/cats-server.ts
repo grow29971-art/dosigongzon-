@@ -61,7 +61,7 @@ export async function getCatCareLogsCountServer(id: string): Promise<number> {
   return count ?? 0;
 }
 
-// ── 고양이 다이어리: 사진이 첨부된 cat_comments를 시간순으로 모음 ──
+// ── 고양이 다이어리: 사진이 첨부된 cat_comments + care_logs를 시간순으로 모음 ──
 export interface DiaryEntry {
   id: string;
   photo_url: string;
@@ -84,21 +84,47 @@ export async function getCatDiaryServer(catId: string, limit = 60): Promise<CatD
 
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("cat_comments")
-    .select("id, photo_url, body, author_name, author_avatar_url, created_at")
-    .eq("cat_id", catId)
-    .not("photo_url", "is", null)
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  // 사진 출처 2곳: 고양이 댓글 사진 + 돌봄 기록 사진 (2026-09-18 UX 감사 7번 — 상세의 돌봄 기록 폼에서
+  // 올린 사진이 "사진첩"에 안 보이면 안내 문구가 거짓이 된다). 비밀 기록은 RLS(care_logs_read)가 거른다.
+  const [comments, cares] = await Promise.all([
+    supabase
+      .from("cat_comments")
+      .select("id, photo_url, body, author_name, author_avatar_url, created_at")
+      .eq("cat_id", catId)
+      .not("photo_url", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(limit),
+    supabase
+      .from("care_logs")
+      .select("id, photo_url, memo, author_name, author_avatar_url, logged_at")
+      .eq("cat_id", catId)
+      .not("photo_url", "is", null)
+      .order("logged_at", { ascending: false })
+      .limit(limit),
+  ]);
 
-  if (error) {
-    console.error("[cats-server] getCatDiaryServer failed:", error);
+  if (comments.error) {
+    console.error("[cats-server] getCatDiaryServer failed:", comments.error);
     return { entries: [], totalPhotos: 0, uniqueDays: 0 };
   }
+  if (cares.error) console.error("[cats-server] getCatDiaryServer care_logs failed:", cares.error);
+
+  const careEntries: DiaryEntry[] = ((cares.data ?? []) as {
+    id: string; photo_url: string; memo: string | null; author_name: string | null; author_avatar_url: string | null; logged_at: string;
+  }[]).map((c) => ({
+    id: `care-${c.id}`,
+    photo_url: c.photo_url,
+    body: c.memo ?? "",
+    author_name: c.author_name,
+    author_avatar_url: c.author_avatar_url,
+    created_at: c.logged_at,
+  }));
 
   // 안전한 URL만 통과 — 카운트와 그리드가 일치하도록 같은 필터 적용
-  const entries = ((data ?? []) as DiaryEntry[]).filter((e) => isSafeImageUrl(e.photo_url));
+  const entries = [...((comments.data ?? []) as DiaryEntry[]), ...careEntries]
+    .filter((e) => isSafeImageUrl(e.photo_url))
+    .sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+    .slice(0, limit);
 
   // 고유 날짜 수 (KST 기준)
   const dayKeys = new Set(

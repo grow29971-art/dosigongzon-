@@ -495,7 +495,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           {/* 위 스탯카드의 "돌봄다이어리"(care_logs 개수)와 이름이 겹쳐서,
               두 숫자가 안 맞으면 고장난 것처럼 보였다. 이건 사진 모음이다. (2026-08-09) */}
           <h2 className="text-[17px] font-bold text-text-main tracking-tight">
-            {cat.name} 사진첩
+            {cat.name} 돌봄 사진첩
           </h2>
           {diary.totalPhotos > 0 && (
             <span className="text-[13px] text-text-sub tabular-nums">
@@ -504,8 +504,9 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           )}
         </div>
 
-        {/* 오늘 상태 안내 — 오늘 사진 있으면 칭찬, 없으면 유도 */}
-        {(() => {
+        {/* 오늘 상태 안내 — 오늘 사진 있으면 칭찬, 없으면 유도. 사진이 0장일 땐 아래 빈 상태 하나만 보인다
+            (2026-09-18 UX 감사 7번: 상단 등록 사진 5장 아래 "사진 없음"+CTA 2개가 겹쳐 모순처럼 읽혔다) */}
+        {diary.entries.length > 0 && (() => {
           const todayKst = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
           const todayCount = diary.entries.filter(
             (e) => new Date(e.created_at).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }) === todayKst,
@@ -513,7 +514,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           const hasTodayPhoto = todayCount > 0;
           return (
             <Link
-              href={`/map?cat=${cat.id}`}
+              href={currentUserId ? "#care" : `/map?cat=${cat.id}`}
               className="flex items-center gap-3 mb-3 px-3 py-3 press"
               style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
             >
@@ -529,7 +530,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                 <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
                   {hasTodayPhoto
                     ? "한 장 더 남기면 다이어리가 더 두꺼워져요"
-                    : "지도에서 사진과 함께 돌봄 기록을 남겨보세요"}
+                    : "돌봄 기록에 사진을 붙이면 여기에 쌓여요"}
                 </p>
               </div>
               <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
@@ -541,10 +542,10 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           // 빈 상태 — 첫 사진 유도
           <div className="py-6 text-center" style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}>
             <p className="text-[13px] text-text-sub leading-relaxed">
-              아직 사진이 없어요. 지도에서 한 장 올려주세요.
+              돌봄하며 찍은 사진이 여기에 날짜별로 쌓여요. 아직 한 장도 없어요.
             </p>
             <Link
-              href={`/map?cat=${cat.id}`}
+              href={currentUserId ? "#care" : `/map?cat=${cat.id}`}
               className="inline-flex items-center gap-1.5 mt-3 h-10 px-4 text-white text-[13px] font-semibold press-strong"
               style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
             >
@@ -594,7 +595,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
 
             {/* 더 올리기 CTA — 작게 */}
             <Link
-              href={`/map?cat=${cat.id}`}
+              href={currentUserId ? "#care" : `/map?cat=${cat.id}`}
               className="mt-3 flex items-center justify-center gap-1.5 h-10 text-[13px] font-semibold press text-text-main"
               style={{ background: "var(--color-gray-100)", borderRadius: "var(--radius-input)" }}
             >
