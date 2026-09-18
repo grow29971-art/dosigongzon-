@@ -44,6 +44,9 @@
    `.github/workflows/ios-release.yml`(macOS 러너, 수동 서명)로 빌드·업로드 — 서명 재료는 Secrets 6종,
    원본은 Desktop/애플앱키/github-actions-배포서명/. **1.0.1(5) 심사 제출 완료(2026-09-17, 실기기 미검증
    — 사장님 결정)**. 재반려 시 TestFlight 실기기 확인 선행. iOS 키스토어 문제는 없음(Android TWA만 해당).
+   2026-09-18 App Store Connect 실측: 상태 "심사 대기 중", Apple 신규 메시지 없음. 같은 날 Apple Developer
+   Program License Agreement(8/18 발행분, 마감 10/2)를 developer.apple.com에서 동의 완료(수락일 9/18 표기
+   확인) — 계약 미동의는 심사 차단 요인에서 제외됨.
 
 ## 차단 요인
 
