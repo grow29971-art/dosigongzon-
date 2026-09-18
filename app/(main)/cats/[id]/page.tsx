@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { josa } from "@/lib/josa";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -369,7 +370,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               <p className="text-[15px] font-semibold text-text-main leading-tight">
                 {communityStats.uniqueCaretakers > 0 ? (
                   <>
-                    이웃 {communityStats.uniqueCaretakers}명이 {cat.name}을(를) 함께 돌보고 있어요
+                    이웃 {communityStats.uniqueCaretakers}명이 {josa(cat.name, "을/를")} 함께 돌보고 있어요
                   </>
                 ) : (
                   <>

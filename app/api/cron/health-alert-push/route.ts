@@ -2,6 +2,7 @@
 // health_status caution/danger 고양이 중 최근 3일 돌봄 없는 아이를
 // 같은 동네 활동 유저에게 푸시. 마케팅 푸시 동의 유저만.
 
+import { josa } from "@/lib/josa";
 import webpush from "web-push";
 import { createServiceClient } from "@/lib/supabase/service";
 
@@ -147,7 +148,7 @@ export async function POST(request: Request) {
     const severity = cat.health_status === "danger" ? "위험" : "주의";
     const title = `🐾 ${severity} 상태 ${cat.name}`;
     const body = daysSince
-      ? `${cat.region}의 ${cat.name}이(가) ${daysSince}일째 안부가 없어요. 한 번 들러주실 수 있나요?`
+      ? `${cat.region}의 ${josa(cat.name, "이/가")} ${daysSince}일째 안부가 없어요. 한 번 들러주실 수 있나요?`
       : `${cat.region}의 ${cat.name}이(가) ${severity} 상태인데 아직 돌봄 기록이 없어요.`;
     const url = `/cats/${cat.id}`;
 

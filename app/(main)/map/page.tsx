@@ -1,5 +1,6 @@
 "use client";
 
+import { josa } from "@/lib/josa";
 import { CAT_TAG_PRESETS, toggleCatTag } from "@/lib/cat-tags";
 import { GEOLOCATION_ENABLED, GEO_DISABLED_MESSAGE } from "@/lib/geo";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
@@ -929,7 +930,7 @@ export default function MapPage() {
     const title = `${selectedCat.name} · ${selectedCat.region ?? "우리 동네"} | 도시공존`;
     const text = selectedCat.description
       ? selectedCat.description
-      : `${selectedCat.region ?? "우리 동네"}에 사는 ${selectedCat.name}을(를) 함께 돌봐주세요 🐾`;
+      : `${selectedCat.region ?? "우리 동네"}에 사는 ${josa(selectedCat.name, "을/를")} 함께 돌봐주세요 🐾`;
 
     const nav = typeof navigator !== "undefined" ? (navigator as Navigator) : null;
 
@@ -959,7 +960,7 @@ export default function MapPage() {
     const title = `${selectedCat.name} · ${selectedCat.region ?? "우리 동네"}`;
     const description = selectedCat.description
       ? selectedCat.description.slice(0, 100)
-      : `${selectedCat.region ?? "우리 동네"}에 사는 ${selectedCat.name}을(를) 함께 돌봐주세요 🐾`;
+      : `${selectedCat.region ?? "우리 동네"}에 사는 ${josa(selectedCat.name, "을/를")} 함께 돌봐주세요 🐾`;
     // 지도 페이지의 og:image 는 지도 것이라 못 쓰고, 손 조립 /cats/{id}/opengraph-image 는 (main) 그룹에서 404.
     // 고양이 사진(있으면) → 없으면 루트 정적 OG.
     const imageUrl =
