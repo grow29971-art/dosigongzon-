@@ -248,8 +248,10 @@ export default function MapPage() {
   const [catCardTab, setCatCardTab] = useState<"carelog" | "community">("carelog");
   const [showCats, setShowCats] = useState(true);
   const [todayVisit, setTodayVisit] = useState<number | null>(null);
-  const [showHospitals, setShowHospitals] = useState(true);
-  const [showPharmacies, setShowPharmacies] = useState(true);
+  // 2026-09-18 UX 감사: 병원 3,782·약국 마커가 고양이 273을 덮어 첫 화면에 고양이가 0마리 보였다.
+  // 코어는 고양이 — 병원·약국은 필요할 때 켠다(칩은 그대로).
+  const [showHospitals, setShowHospitals] = useState(false);
+  const [showPharmacies, setShowPharmacies] = useState(false);
   const [mapError, setMapError] = useState("");
 
   // ── 고양이 좋아요 ──
@@ -2353,6 +2355,8 @@ export default function MapPage() {
           });
           const alertedCount = alertedInView.length;
           const hasAlert = alertedCount > 0;
+          // 경보가 없을 땐 카드를 그리지 않는다 — 첫 화면 상단 4단 스택의 한 칸(2026-09-18 UX 감사)
+          if (!hasAlert) return null;
 
           // 경보가 있는 동 목록
           const alertDongs = new Map<string, number>();
