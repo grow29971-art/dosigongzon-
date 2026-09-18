@@ -13,6 +13,7 @@ import ShareCatButton from "@/app/components/ShareCatButton";
 import { AdoptionBadge, AdoptionInquireButton } from "@/app/components/AdoptionBadge";
 import PickCatSignupCta from "@/app/components/PickCatSignupCta";
 import FirstFeedBar from "@/app/components/FirstFeedBar";
+import CareLogTab from "@/app/components/CareLogTab";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -478,6 +479,16 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         </div>
       </div>
 
+      {/* 돌봄 기록 — 상세에서 바로 남긴다 (2026-09-18 UX 감사 1번).
+          이전엔 모든 돌봄 CTA가 /map?cat= 으로 되돌려 보내 상세→지도→시트→탭 3단이었다.
+          지도 시트와 같은 CareLogTab(목록·시각·입력 폼·사진)을 그대로 붙인다. */}
+      {currentUserId && (
+        <section id="care" className="px-4 mt-5 scroll-mt-4">
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight mb-2.5">돌봄 기록</h2>
+          <CareLogTab catId={cat.id} isLoggedIn currentUserId={currentUserId} />
+        </section>
+      )}
+
       {/* 다이어리 — 시간이 쌓인 사진 갤러리 */}
       <div className="px-4 mt-5">
         <div className="flex items-center justify-between mb-2.5">
@@ -612,14 +623,14 @@ export default async function CatDetailPage({ params }: { params: Params }) {
              pending_care 커밋과 onboarding_pick 발화를 거치지 않아
              계측 밖 두 번째 가입 경로가 생긴다) */}
         {currentUserId && (
-          <Link
-            href={`/map?cat=${cat.id}`}
+          <a
+            href="#care"
             className="flex items-center justify-center gap-2 h-12 text-white press"
             style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
           >
             <PawPrint size={16} />
-            <span className="text-[15px] font-semibold">지도에서 돌봄하기</span>
-          </Link>
+            <span className="text-[15px] font-semibold">돌봄 기록 남기기</span>
+          </a>
         )}
         {cat.health_status !== "danger" && (
           <ShareCatButton
