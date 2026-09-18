@@ -1025,6 +1025,20 @@ export default function MapPage() {
     document.head.appendChild(script);
   }, [apiKey]);
 
+  // ── 타일 감시: SDK·초기화는 됐는데 타일이 한 장도 안 그려지면(구형 WebView·GPU 문제) 빈 화면이
+  //    영원히 남는다. 12초 안에 타일 <img>가 없으면 안내를 띄운다. (2026-09-18 UX 감사 9번, 에뮬레이터 재현)
+  useEffect(() => {
+    if (!mapReady || mapError) return;
+    const t = setTimeout(() => {
+      const container = mapContainerRef.current;
+      if (!container) return;
+      if (container.querySelector("img") === null) {
+        setMapError("지도 그림이 그려지지 않아요. 브라우저를 최신으로 업데이트하거나 다른 브라우저로 열어보세요.");
+      }
+    }, 12000);
+    return () => clearTimeout(t);
+  }, [mapReady, mapError]);
+
   // ── 실시간 GPS 추적 (거부해도 기본 중심으로 폴백) ──
   // LBS 신고 전 측위 차단 — lib/geo.ts 참조.
   // watchPosition으로 유저가 움직이면 내 위치 마커도 따라 움직인다(2026-07-27).
@@ -2501,6 +2515,23 @@ export default function MapPage() {
           >
             <p className="text-[15px] font-bold text-text-main mb-1">지도를 불러올 수 없어요</p>
             <p className="text-[13px] text-text-sub leading-relaxed">{mapError}</p>
+            <div className="flex gap-2 mt-3">
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="flex-1 h-10 text-[13px] font-semibold text-white press"
+                style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
+              >
+                다시 시도
+              </button>
+              <Link
+                href="/areas"
+                className="flex-1 h-10 flex items-center justify-center text-[13px] font-semibold text-text-main press"
+                style={{ background: "var(--color-gray-100)", borderRadius: "var(--radius-input)" }}
+              >
+                동네 목록으로
+              </Link>
+            </div>
           </div>
         </div>
       )}
