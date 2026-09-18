@@ -10,11 +10,13 @@
 //    — 첫 24시간은 사장님이 직접 답할 시간(새 글은 텔레그램으로 알림). 봇은 그 뒤에도 댓글 0일 때만.
 //  - 댓글은 반드시 author_title=staff("운영" 배지). 사람인 척하지 않는다.
 //  - 푸시는 글쓴이 1명에게만, 페이로드는 {title, body, url} 계약 준수.
+//  - 지난 24시간 유저 새 글(전 카테고리)은 사장님 텔레그램으로 — 제목·카테고리·링크만(PII 금지, security.md).
 
 import webpush from "web-push";
 import { createServiceClient } from "@/lib/supabase/service";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { STAFF_TITLE_ID, isBotAuthor, personaFor, pickRandomNickname, type Persona } from "@/lib/community-personas";
+import { sendTelegramToAdmin } from "@/lib/telegram";
 
 export const maxDuration = 60;
 
@@ -81,6 +83,27 @@ async function handle(request: Request): Promise<Response> {
   }
   const supabase = createServiceClient();
 
+  // 사장님 알림 — 지난 24시간 유저 새 글(봇 제외, 전 카테고리). 9/6 도움 요청 글이 12일 무응답으로
+  // 방치된 뒤 추가(2026-09-18). 본문·닉네임은 싣지 않는다.
+  const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+  const { data: fresh } = await supabase
+    .from("posts")
+    .select("id, title, category, author_id, author_name, author_title, comment_count")
+    .eq("hidden", false)
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
+    .limit(20);
+  const freshUser = ((fresh ?? []) as { id: string; title: string; category: string; author_id: string | null; author_name: string | null; author_title: string | null; comment_count: number }[])
+    .filter((p) => !isBotAuthor(p));
+  let notified = 0;
+  if (freshUser.length > 0) {
+    const lines = [
+      `[커뮤니티 새 글 ${freshUser.length}건 — 24시간 안에 직접 답해 주세요]`,
+      ...freshUser.map((p) => `- (${p.category}) ${p.title.slice(0, 50)} · 댓글 ${p.comment_count}\n  https://dosigongzon.com/community/${p.id}`),
+    ];
+    notified = await sendTelegramToAdmin(lines.join("\n"));
+  }
+
   // 후보: 자유게시판, 숨김 아님, 봇 글 아님, 댓글 0, 24시간~7일 사이
   const from = new Date(Date.now() - 7 * 86400 * 1000).toISOString();
   const to = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
@@ -101,7 +124,7 @@ async function handle(request: Request): Promise<Response> {
   }
   const userPosts = ((rows ?? []) as PostRow[]).filter((p) => !isBotAuthor(p));
   if (userPosts.length === 0) {
-    return Response.json({ ok: true, skipped: "대상 글 없음" });
+    return Response.json({ ok: true, skipped: "대상 글 없음", notified });
   }
 
   // 이미 페르소나 댓글이 달린 글 제외
@@ -113,7 +136,7 @@ async function handle(request: Request): Promise<Response> {
   const done = new Set(((staffCommented ?? []) as { post_id: string }[]).map((c) => c.post_id));
   const target = userPosts.find((p) => !done.has(p.id));
   if (!target) {
-    return Response.json({ ok: true, skipped: "전부 댓글 완료" });
+    return Response.json({ ok: true, skipped: "전부 댓글 완료", notified });
   }
 
   const { data: admins } = await supabase.from("admins").select("user_id").limit(1);
@@ -197,6 +220,7 @@ async function handle(request: Request): Promise<Response> {
     source: comment.source,
     pushed,
     pushFailed,
+    notified,
   });
 }
 
