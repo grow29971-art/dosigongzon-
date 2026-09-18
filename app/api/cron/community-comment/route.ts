@@ -1,10 +1,13 @@
 // 운영 페르소나 첫 댓글 — Vercel Cron 매일 20:30 KST (11:30 UTC)
 // 배경: 글을 올렸는데 반응이 0이면 다시 안 온다(Day0 활성화). 반응 없는 실사용자 글에
 // 운영 페르소나가 첫 댓글 1개를 남기고 글쓴이에게 푸시로 알린다.
-// 규칙(2026-09-16):
-//  - 하루 최대 1건. 최근 20시간 내 페르소나 댓글이 있으면 스킵.
+// 규칙(2026-09-16, 9/18 개정):
+//  - 하루 최대 1건. 상한은 "해당 글에 이미 운영 댓글이 있는가"로만 판단한다.
+//    (구 규칙 "최근 20시간 내 운영 댓글 있으면 스킵"은 exe 봇이 봇 글에 다는 댓글까지 세어
+//     9/16~17 매일 스킵됐다 — 유저 글 응답 경로가 굶던 원인. 2026-09-18 원탁회의)
 //  - 대상: 자유게시판(free)만. 긴급·돌봄 부탁·임보·입양·중고마켓은 제외(실제 이해관계가 걸린 글).
-//  - 봇 글·숨김 글·이미 페르소나 댓글이 달린 글 제외. 올라온 지 2시간~7일 사이 글만.
+//  - 봇 글·숨김 글·이미 댓글(사람이든 운영이든)이 달린 글 제외. 올라온 지 24시간~7일 사이 글만
+//    — 첫 24시간은 사장님이 직접 답할 시간(새 글은 텔레그램으로 알림). 봇은 그 뒤에도 댓글 0일 때만.
 //  - 댓글은 반드시 author_title=staff("운영" 배지). 사람인 척하지 않는다.
 //  - 푸시는 글쓴이 1명에게만, 페이로드는 {title, body, url} 계약 준수.
 
@@ -78,21 +81,9 @@ async function handle(request: Request): Promise<Response> {
   }
   const supabase = createServiceClient();
 
-  // 일일 상한 — 최근 20시간 내 페르소나 댓글이 있으면 스킵
-  const cooldown = new Date(Date.now() - 20 * 3600 * 1000).toISOString();
-  const { data: recentStaff } = await supabase
-    .from("post_comments")
-    .select("id")
-    .eq("author_title", STAFF_TITLE_ID)
-    .gte("created_at", cooldown)
-    .limit(1);
-  if (recentStaff && recentStaff.length > 0) {
-    return Response.json({ ok: true, skipped: "최근 운영 댓글 존재" });
-  }
-
-  // 후보: 자유게시판, 숨김 아님, 봇 글 아님, 2시간~7일 사이
+  // 후보: 자유게시판, 숨김 아님, 봇 글 아님, 댓글 0, 24시간~7일 사이
   const from = new Date(Date.now() - 7 * 86400 * 1000).toISOString();
-  const to = new Date(Date.now() - 2 * 3600 * 1000).toISOString();
+  const to = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
   const { data: rows, error: qErr } = await supabase
     .from("posts")
     .select("id, title, content, author_id, author_name, author_title, comment_count, created_at")
@@ -100,9 +91,9 @@ async function handle(request: Request): Promise<Response> {
     .eq("hidden", false)
     .eq("is_pinned", false)
     .not("author_id", "is", null)
+    .eq("comment_count", 0)
     .gte("created_at", from)
     .lte("created_at", to)
-    .order("comment_count", { ascending: true })
     .order("created_at", { ascending: false })
     .limit(30);
   if (qErr) {
