@@ -35,11 +35,11 @@ export default function PageIntroModal(props: {
   const { storageKey, badge, title, items, buttonLabel = "시작하기", reopenSignal = 0 } = props;
   const [show, setShow] = useState(false);
 
-  // 4일에 한 번만 노출 (매번 피로 방지). 쿨다운은 계정별로 독립 —
+  // 계정당 1회만 노출. (2026-09-18 UX 감사: 4일 쿨다운은 주 1회 오는 유저에게 "매번 뜨는 안내"였다.)
   // 유저 id를 키에 넣어, 같은 브라우저라도 새 계정은 처음처럼 안내가 뜬다. 비로그인은 'anon'.
+  // 다시 보고 싶으면 각 페이지의 "이용안내 다시 보기" 버튼.
   useEffect(() => {
     let cancelled = false;
-    const REMIND_MS = 4 * 24 * 60 * 60 * 1000; // 4일
     (async () => {
       let uid = "anon";
       try {
@@ -50,7 +50,7 @@ export default function PageIntroModal(props: {
       if (cancelled) return;
       const tsKey = `${storageKey}_${uid}_ts`;
       let due = true;
-      try { due = Date.now() - Number(localStorage.getItem(tsKey) || 0) > REMIND_MS; } catch { due = true; }
+      try { due = !localStorage.getItem(tsKey); } catch { due = true; }
       if (!due) return;
       setTimeout(() => {
         if (cancelled) return;

@@ -24,10 +24,9 @@ const ITEMS = [
 export default function MapIntroModal() {
   const [show, setShow] = useState(false);
 
-  // 4일에 한 번만 노출 (계정별 독립 쿨다운)
+  // 계정당 1회만 노출 (2026-09-18: 4일 쿨다운 폐지 — PageIntroModal과 동일 사유)
   useEffect(() => {
     let cancelled = false;
-    const REMIND_MS = 4 * 24 * 60 * 60 * 1000;
     (async () => {
       let uid = "anon";
       try {
@@ -38,7 +37,7 @@ export default function MapIntroModal() {
       if (cancelled) return;
       const tsKey = `dosigongzon_intro_map_${uid}_ts`;
       let due = true;
-      try { due = Date.now() - Number(localStorage.getItem(tsKey) || 0) > REMIND_MS; } catch { due = true; }
+      try { due = !localStorage.getItem(tsKey); } catch { due = true; }
       if (!due) return;
       setTimeout(() => {
         if (cancelled) return;

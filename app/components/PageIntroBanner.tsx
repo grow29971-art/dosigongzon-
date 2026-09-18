@@ -3,7 +3,7 @@
 // 페이지 상단 "이 페이지 사용법" 안내 배너.
 // 2026-09-16 「익숙한 동네앱」 리디자인: 틴트 그라디언트·아이콘 박스·accent 색을 걷어내고
 // 흰 면 + 1px 헤어라인. 제목 15px 600, 본문 13px text-sub, CTA는 텍스트 링크.
-// X로 dismiss하면 7일 동안 다시 안 뜸(storage 로직은 그대로).
+// X로 dismiss하면 다시 안 뜸.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -34,8 +34,8 @@ export default function PageIntroBanner(props: Props) {
       if (raw) {
         const ts = parseInt(raw, 10);
         const now = Date.now();
-        // 미래 timestamp/비정상 값 배제 (영구 숨김 악용 방지)
-        if (!isNaN(ts) && ts > 0 && ts <= now && now - ts < 7 * 24 * 60 * 60 * 1000) {
+        // 한 번 닫으면 다시 안 뜬다 (2026-09-18: 7일 재노출 폐지). 비정상 값만 배제.
+        if (!isNaN(ts) && ts > 0 && ts <= now) {
           return;
         }
       }
