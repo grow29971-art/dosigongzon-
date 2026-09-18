@@ -89,7 +89,7 @@ export default function SignupNudgeBar() {
             가입하면 고양이 등록·돌봄 기록 가능!
           </p>
           <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
-            구글로 <b className="font-semibold text-text-main">10초 가입</b> · 동네 이웃과 함께 돌봐요
+            카카오·구글로 <b className="font-semibold text-text-main">1초 가입</b> · 동네 이웃과 함께 돌봐요
           </p>
         </div>
         <Link

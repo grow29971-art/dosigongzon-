@@ -60,6 +60,9 @@ const SITE_URL = "https://dosigongzon.com";
 
 // 앱/난로/쉼터 3카드 소개 블록 — 2026-09-02 유입 급증 대응으로 숨김(첫인상=라이브 활동 우선)
 const SHOW_ABOUT_PILLARS = false;
+// 2026-09-18 랜딩 다이어트 — 21섹션·10화면·가입 CTA 4개였다. 첫 방문자 동선(스포트라이트·히어로·안전·시작법·
+// 최근 등록·동네·FAQ·만든 사람)만 남기고 나머지는 이 플래그로 숨김(삭제 아님).
+const SHOW_LANDING_EXTRAS = false;
 
 // 공용 스타일 — 흰 면 + 1px 헤어라인 섹션 컨테이너 (그림자 없음)
 const PANEL: React.CSSProperties = {
@@ -304,6 +307,8 @@ export default async function HomeLanding({
         </Link>
       </section>
 
+      {/* 2026-09-18 랜딩 다이어트(UX 감사 5번) — 숨김: 왜 돌봐야 하나·활발한 동네 */}
+      {SHOW_LANDING_EXTRAS && (<>
       {/* 왜 길고양이를 돌봐야 하나 — 히어로 직후 최상단. 비길집사 도시민 어필 핵심. */}
       <section className="px-5 mt-8">
         <h2 className="text-[20px] font-bold text-text-main leading-snug tracking-tight mb-1">
@@ -413,6 +418,7 @@ export default async function HomeLanding({
         </section>
       )}
 
+      </>)}
       {/* 안전 정책 — 가입 직전 신뢰 봉합. 학대 우려 길집사 대상 핵심 메시지. */}
       <section className="px-5 mt-10">
         <SectionHeader title="고양이 위치, 어떻게 지키나요?" />
@@ -534,6 +540,8 @@ export default async function HomeLanding({
       {/* 1000명 이벤트 배너 — 가입 전환 강력 트리거 */}
       {eventSlot}
 
+      {/* 2026-09-18 랜딩 다이어트(UX 감사 5번) — 숨김: 길집사 TOP3·인용문 */}
+      {SHOW_LANDING_EXTRAS && (<>
       {/* 이번 주 활동 길집사 TOP 3 — 살아있는 커뮤니티 사회적 증명 */}
       {topCaretakers.length > 0 && (
         <section className="px-5 mt-6">
@@ -606,6 +614,7 @@ export default async function HomeLanding({
         </div>
       </section>
 
+      </>)}
       {/* 최근 등록된 고양이들 */}
       {data.recentCats.length > 0 && (
         <section className="px-5 mt-6 cv-auto">
@@ -683,6 +692,8 @@ export default async function HomeLanding({
         <TextLink href="/areas" label="전국 구·동별 길고양이 지도" />
       </section>
 
+      {/* 2026-09-18 랜딩 다이어트(UX 감사 5번) — 숨김: 통계·가이드 8종·꿀팁·HOT·임보·핵심 가치 */}
+      {SHOW_LANDING_EXTRAS && (<>
       {/* 숫자로 보는 도시공존 — 컴팩트한 통계 스트립 */}
       <section className="px-5 mt-8 cv-auto">
         <div className="px-4 py-3 flex items-center justify-around" style={PANEL}>
@@ -767,6 +778,7 @@ export default async function HomeLanding({
         </div>
       </section>
 
+      </>)}
       {/* FAQ (SEO 본문) */}
       <section className="px-5 mt-8 cv-auto">
         <SectionHeader title="자주 묻는 질문" />
@@ -788,6 +800,8 @@ export default async function HomeLanding({
         </div>
       </section>
 
+      {/* 2026-09-18 랜딩 다이어트(UX 감사 5번) — 숨김: 공유 CTA·기술 자산 */}
+      {SHOW_LANDING_EXTRAS && (<>
       {/* 공유 CTA */}
       <section className="px-5 mt-8 cv-auto">
         <div className="p-4" style={PANEL}>
@@ -817,6 +831,7 @@ export default async function HomeLanding({
         </div>
       </section>
 
+      </>)}
       {/* 만든 사람 — 1인 운영자 정체성 */}
       <section className="px-5 mt-8 cv-auto">
         <div className="p-4" style={PANEL}>
