@@ -1,5 +1,6 @@
 "use client";
 
+import { CAT_TAG_PRESETS, toggleCatTag } from "@/lib/cat-tags";
 import { GEOLOCATION_ENABLED, GEO_DISABLED_MESSAGE } from "@/lib/geo";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import {
@@ -140,10 +141,7 @@ const MARKER_PRIMARY_RGB = "176,92,54";
 const REGION_SLOT_RGB = { 1: "176,92,54", 2: "94,94,94" } as const;
 const REGION_SLOT_COLOR = { 1: "var(--color-primary)", 2: "var(--color-gray-600)" } as const;
 
-const CAT_TAG_OPTIONS = [
-  "TNR 완료","TNR 필요","이어팁","사람 친화","겁 많음","성묘",
-  "어린 고양이","새끼 동반","야행성","온순","예민","식탐 많음",
-];
+const CAT_TAG_OPTIONS = CAT_TAG_PRESETS;
 
 function formatRelativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -3371,7 +3369,7 @@ export default function MapPage() {
                         const active = editTags.includes(tag);
                         return (
                           <button key={tag} type="button"
-                            onClick={() => setEditTags((prev) => active ? prev.filter((t) => t !== tag) : [...prev, tag])}
+                            onClick={() => setEditTags((prev) => toggleCatTag(prev, tag))}
                             className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-all ${active ? "bg-primary text-white" : "bg-surface-alt text-text-sub border border-border"}`}>
                             {tag}
                           </button>

@@ -1,5 +1,6 @@
 "use client";
 
+import { CAT_TAG_PRESETS, toggleCatTag } from "@/lib/cat-tags";
 import { GEOLOCATION_ENABLED } from "@/lib/geo";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -32,20 +33,7 @@ interface AddCatModalProps {
   duplicateCandidates?: readonly Cat[];
 }
 
-const TAG_PRESETS = [
-  "TNR 완료",
-  "TNR 필요",
-  "이어팁",
-  "사람 친화",
-  "겁 많음",
-  "성묘",
-  "어린 고양이",
-  "새끼 동반",
-  "야행성",
-  "온순",
-  "예민",
-  "식탐 많음",
-];
+const TAG_PRESETS = CAT_TAG_PRESETS;
 
 // 이미지를 maxPx 폭으로 리사이즈 후 JPEG base64 반환 (요청 크기 제한 대응)
 function resizeToBase64(file: File, maxPx = 800): Promise<string> {
@@ -240,9 +228,7 @@ export default function AddCatModal({
   };
 
   const toggleTag = (tag: string) => {
-    setTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-    );
+    setTags((prev) => toggleCatTag(prev, tag));
   };
 
   const handleSubmit = async () => {
