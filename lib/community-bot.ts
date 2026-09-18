@@ -16,12 +16,15 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/service";
 import { LEGACY_BOT_NAMES, LEGACY_PERSONA_IDS, STAFF_TITLE_ID, isBotAuthor, isValidBotNickname, personaFor, type Persona } from "@/lib/community-personas";
 
-// 2026-09-16 사장님: 자동 모드에서 글은 1시간마다, 댓글은 2시간마다 여러 개 → 상한 상향 (exe 가 아무리 눌러도 여기서 막는다)
-export const POSTS_PER_DAY_CAP = 15;
-export const COMMENTS_PER_DAY_CAP = 40;
+// 2026-09-18 원탁회의: 9/16~18 봇 글 22건 → 조회 합계 19(중앙값 0)·유저 댓글 0, 봇 댓글 22건은 전부 봇 글에.
+// 유저 글 월 1건 게시판에서 봇 글 15/일은 유일한 유저 글을 밀어내고 "운영이 혼자 떠드는 곳"으로 읽힌다.
+// 봇의 역할을 "글 생산"에서 "유저 글 첫 반응"으로 되돌림 — 글·댓글 상한 감량, 봇↔봇 댓글 중단.
+// (exe 가 아무리 눌러도 여기서 막는다. exe 쪽 간격 env는 사장님 손)
+export const POSTS_PER_DAY_CAP = 2;
+export const COMMENTS_PER_DAY_CAP = 10;
 export const REPLIES_PER_DAY_CAP = 30;
-/** 봇 글 하나에 다른 닉네임의 봇 댓글(최상위)은 이만큼까지 */
-export const OWN_POST_COMMENTS_CAP = 2;
+/** 봇 글 하나에 다른 닉네임의 봇 댓글(최상위) — 0 = 봇끼리 대화 금지(9/18). 유저가 봇 글에 단 댓글의 답글(reply)은 별도 */
+export const OWN_POST_COMMENTS_CAP = 0;
 /** 이용자 글 하나에 봇 댓글(최상위, 서로 다른 닉네임)은 이만큼까지 */
 export const USER_POST_COMMENTS_CAP = 2;
 /** 댓글 대상 카테고리 — 긴급(도움을 기다리는 글에 봇 공감은 오해를 부름)·중고마켓(거래)은 제외 */
