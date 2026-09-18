@@ -70,7 +70,20 @@ export default function PwaInstallPrompt() {
   const [showIosHint, setShowIosHint] = useState(false);
   const [visible, setVisible] = useState(false);
 
+  // 비로그인에겐 띄우지 않는다 — 가입 바(SignupNudgeBar)와 하단에 겹쳐 지도 첫 화면의 1/4을 먹었다.
+  // 설치는 가입 뒤의 일. (2026-09-18 UX 감사 2번)
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   useEffect(() => {
+    let cancelled = false;
+    import("@/lib/supabase/client")
+      .then(({ createClient }) => createClient().auth.getUser())
+      .then(({ data }) => { if (!cancelled) setLoggedIn(!!data.user); })
+      .catch(() => { if (!cancelled) setLoggedIn(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn !== true) return;
     if (isStandalone() || isDismissedRecently()) return;
 
     // 방문 카운터 증가 + 충족 여부 확인
@@ -118,7 +131,7 @@ export default function PwaInstallPrompt() {
       window.removeEventListener("beforeinstallprompt", onBeforeInstall as EventListener);
       window.removeEventListener("appinstalled", onInstalled);
     };
-  }, []);
+  }, [loggedIn]);
 
   const dismiss = () => {
     setVisible(false);
