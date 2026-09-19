@@ -15,7 +15,10 @@ export const maxDuration = 300;
 // 서브 fetch 무음 실패). 프로덕션 도메인 고정 + 실패 가시화.
 const DISPATCH_ORIGIN = process.env.CRON_DISPATCH_ORIGIN || "https://dosigongzon.com";
 
-const JOBS = ["retention-report", "weekly-digest"] as const;
+// weekly-digest 보류(2026-09-19 회의): 수신 52명 전원이 동의 기록 없는 default-true
+// (supabase_email_optin_migration.sql "동의한 것으로 간주")인데 본문은 "(광고)" 표기 →
+// 재동의 UI 전까지 발송 중단. 롤백: 배열에 "weekly-digest" 복원.
+const JOBS = ["retention-report"] as const;
 
 async function handle(request: Request) {
   const cronSecret = process.env.CRON_SECRET;

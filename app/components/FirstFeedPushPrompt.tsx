@@ -5,6 +5,8 @@
 // "앱 알림"이 아니라 방금 밥 준 아이의 대리 프레임("○○ 소식만")으로 묻는다.
 // 죄책감 프레임 금지 원칙 — "굶어요" 대신 "기다려요/궁금해해요".
 // 수락 시에만 시스템 허용창 → 구독 → marketing_push_enabled 동의 통합(7/22 회의 방식).
+// 색은 토큰만 — 9/16 리디자인으로 부모(FirstFeedBar·PendingCareHandoff)가 흰 카드가 되면서
+// 테라코타 시절의 흰 글씨가 안 보이던 결함(9/19 회의) 수리. 하드코딩 흰색 금지.
 
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
@@ -69,18 +71,18 @@ export default function FirstFeedPushPrompt({ catName }: { catName: string }) {
 
   if (done) {
     return (
-      <p className="mt-2.5 text-[13px] font-bold text-center" style={{ color: "rgba(255,255,255,0.85)" }}>
+      <p className="mt-2.5 text-[13px] font-bold text-center text-text-main">
         좋아요! {catName} 소식이 오면 살짝 알려드릴게요
       </p>
     );
   }
 
   return (
-    <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
-      <p className="text-[13px] font-bold text-white text-center leading-snug">
+    <div className="mt-3 pt-3" style={{ borderTop: "1px solid var(--color-divider)" }}>
+      <p className="text-[13px] font-bold text-text-main text-center leading-snug">
         {catName} 소식만 받아볼래요?
       </p>
-      <p className="text-[11px] text-center mt-0.5" style={{ color: "rgba(255,255,255,0.7)" }}>
+      <p className="text-[11px] text-center mt-0.5 text-text-sub">
         내일 밥때가 되면 {catName}가 살짝 알려드려요
       </p>
       <div className="mt-2 flex gap-2">
@@ -89,7 +91,7 @@ export default function FirstFeedPushPrompt({ catName }: { catName: string }) {
           onClick={enable}
           disabled={busy}
           className="flex-[1.4] flex items-center justify-center gap-1.5 h-10 text-[13px] font-semibold press transition-transform disabled:opacity-60"
-          style={{ background: "var(--color-surface)", color: "var(--color-primary-dark)", borderRadius: "var(--radius-input)" }}
+          style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
         >
           <Bell size={13} /> {busy ? "켜는 중..." : "소식 받기"}
         </button>
@@ -97,12 +99,12 @@ export default function FirstFeedPushPrompt({ catName }: { catName: string }) {
           type="button"
           onClick={() => setShow(false)}
           className="flex-1 h-10 text-[13px] font-semibold press transition-transform"
-          style={{ background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.75)", borderRadius: "var(--radius-input)" }}
+          style={{ background: "var(--color-surface-alt)", color: "var(--color-text-sub)", borderRadius: "var(--radius-input)" }}
         >
           괜찮아요
         </button>
       </div>
-      <p className="text-[9px] text-center mt-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>
+      <p className="text-[9px] text-center mt-1.5 text-text-muted">
         켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 해제 가능
       </p>
     </div>

@@ -111,11 +111,9 @@ export default function CareLogCelebration({
               className="px-4 py-3.5 text-center"
               style={{ background: "var(--color-sage-soft)", borderRadius: "var(--radius-card-sm)" }}
             >
+              {/* "저녁에 리마인더" 문구 삭제(9/19) — care-commit-date를 읽어 발송하는 코드가 없어 거짓 약속이었다 */}
               <p className="text-[13px] font-semibold inline-flex items-center gap-1" style={{ color: "var(--color-sage)" }}>
                 <Check size={14} /> 내일 다시 뵈어요
-              </p>
-              <p className="text-[11px] mt-0.5 text-text-sub">
-                저녁에 리마인더를 보내드릴게요
               </p>
             </div>
           ) : (
