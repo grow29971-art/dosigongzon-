@@ -511,6 +511,7 @@ export interface PostMetrics {
   id: string;
   viewCount: number;
   likeCount: number;
+  /** 운영(staff)·비밀 댓글을 뺀 이용자 댓글 수 */
   commentCount: number;
   createdAt: string;
   /** 운영 댓글을 뺀 이용자 댓글 샘플 (비밀 댓글 제외, 최신 8개) */
@@ -549,8 +550,11 @@ export async function collectMetrics(
       .order("created_at", { ascending: false })
       .limit(400);
     const byPost = new Map<string, CommentRow[]>();
+    // 이용자 댓글 수 — posts.comment_count 는 운영(staff) 댓글까지 세서 봇이 자기 댓글을 반응으로 학습했다(2026-09-19)
+    const userCount = new Map<string, number>();
     for (const c of (cmts ?? []) as CommentRow[]) {
       if (c.author_title === STAFF_TITLE_ID || c.is_secret) continue;
+      userCount.set(c.post_id, (userCount.get(c.post_id) ?? 0) + 1);
       const list = byPost.get(c.post_id) ?? [];
       if (list.length < 8) list.push(c);
       byPost.set(c.post_id, list);
@@ -560,7 +564,7 @@ export async function collectMetrics(
         id: p.id,
         viewCount: p.view_count ?? 0,
         likeCount: p.like_count ?? 0,
-        commentCount: p.comment_count ?? 0,
+        commentCount: userCount.get(p.id) ?? 0,
         createdAt: p.created_at,
         replies: (byPost.get(p.id) ?? []).map((c) => ({ authorName: c.author_name ?? "익명", body: c.body.slice(0, 200), createdAt: c.created_at })),
       });
