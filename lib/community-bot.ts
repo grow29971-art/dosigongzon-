@@ -23,8 +23,8 @@ import { LEGACY_BOT_NAMES, LEGACY_PERSONA_IDS, STAFF_TITLE_ID, isBotAuthor, isVa
 export const POSTS_PER_DAY_CAP = 2;
 export const COMMENTS_PER_DAY_CAP = 10;
 export const REPLIES_PER_DAY_CAP = 30;
-/** 봇 글 하나에 다른 닉네임의 봇 댓글(최상위) — 0 = 봇끼리 대화 금지(9/18). 유저가 봇 글에 단 댓글의 답글(reply)은 별도 */
-export const OWN_POST_COMMENTS_CAP = 0;
+/** 봇 글 하나에 다른 닉네임의 봇 댓글(최상위). 9/18 에 0 으로 껐다가 9/20 사장님 결정("글에 비해 댓글이 너무 없다")으로 글당 2 복귀. 유저가 봇 글에 단 댓글의 답글(reply)은 별도 */
+export const OWN_POST_COMMENTS_CAP = 2;
 /** 이용자 글 하나에 봇 댓글(최상위, 서로 다른 닉네임)은 이만큼까지 */
 export const USER_POST_COMMENTS_CAP = 2;
 /** 댓글 대상 카테고리 — 긴급(도움을 기다리는 글에 봇 공감은 오해를 부름)·중고마켓(거래)은 제외 */
