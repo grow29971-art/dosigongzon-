@@ -11,7 +11,7 @@
 export const PAYMENT_ENABLED: boolean = false;
 
 export const PAYMENT_DISABLED_MESSAGE =
-  "결제 시스템을 연결하는 중이에요. 정식 오픈 때 알려드릴게요.";
+  "정식 오픈 전이라 테스트 결제창만 열려요. 실제 결제·주문은 되지 않아요.";
 
 // 토스페이먼츠 결제 수수료율 (VAT 포함) — 발주 다이제스트의 "남는 돈" 계산용.
 // ⚠ 현재는 계약 확정 전이라 일반 요율 3.3%로 보수적으로 잡음(남는 돈이 실제보다

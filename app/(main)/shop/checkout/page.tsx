@@ -168,8 +168,33 @@ export default function CheckoutPage() {
   //  결제위젯 UI는 전자결제 이용 신청 후 위젯 키 발급 시 전환 검토)
   const handleSubmit = async () => {
     setError("");
-    // 통신판매업 신고 완료 전 실화폐 결제 하드락
-    if (!PAYMENT_ENABLED) { setError(PAYMENT_DISABLED_MESSAGE); return; }
+    // 실화폐 결제 하드락(게이트 off) — 대신 "심사 모드": 주문 생성 없이 테스트 결제창만 연다.
+    // 토스페이먼츠 계약심사(2026-09-18)가 "실제 구매 경로에서 결제창 호출 확인"을 요구해서,
+    // /shop/payment-demo 와 같은 데모 호출(DEMO- 주문번호·승인 API 미호출·복귀는 데모 페이지)을
+    // 주문서 버튼에 얹었다(사장님 승인 2026-09-20). 게이트가 켜지면 이 분기는 자연히 죽는다.
+    if (!PAYMENT_ENABLED) {
+      if (!TOSS_CLIENT_KEY || items.length === 0) { setError(PAYMENT_DISABLED_MESSAGE); return; }
+      setSubmitting(true);
+      try {
+        const toss = await loadTossPayments(TOSS_CLIENT_KEY);
+        const payment = toss.payment({ customerKey: ANONYMOUS });
+        await payment.requestPayment({
+          method: "CARD",
+          amount: { currency: "KRW", value: finalAmount },
+          orderId: `DEMO-${Date.now()}`,
+          orderName: `${items[0].product.name}${items.length > 1 ? ` 외 ${items.length - 1}건` : ""} (심사용 데모)`,
+          successUrl: `${window.location.origin}/shop/payment-demo?result=success`,
+          failUrl: `${window.location.origin}/shop/payment-demo?result=fail`,
+          card: { useEscrow: false, flowMode: "DEFAULT", useCardPoint: false, useAppCardOnly: false },
+        });
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "";
+        if (msg && !msg.includes("취소")) setError(msg);
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
     if (!virtualOnly) {
       if (!recipientName.trim()) { setError("수령인 이름을 입력해주세요."); return; }
       if (!recipientPhone.trim() || !/^[\d-]{9,13}$/.test(recipientPhone.trim())) {
@@ -580,8 +605,8 @@ export default function CheckoutPage() {
               {PAYMENT_DISABLED_MESSAGE}
             </p>
           )}
-          <UIButton size="lg" full onClick={handleSubmit} disabled={submitting || !PAYMENT_ENABLED}>
-            {!PAYMENT_ENABLED ? "결제 준비 중" : submitting ? "주문 처리 중…" : `${formatWon(finalAmount)} 결제하기`}
+          <UIButton size="lg" full onClick={handleSubmit} disabled={submitting}>
+            {submitting ? "주문 처리 중…" : `${formatWon(finalAmount)} 결제하기`}
           </UIButton>
         </div>
       )}
