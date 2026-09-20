@@ -21,7 +21,7 @@ from public.products;
 
 -- 스키마 캐시 새로고침
 notify pgrst, 'reload schema';
-
+a
 -- ──────────────────────────────────────────
 -- 되돌리기(다시 보이게):  update public.products set is_active = true;
 --
