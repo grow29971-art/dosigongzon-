@@ -69,7 +69,7 @@ async function generateTip(topic: (typeof TOPICS)[number]): Promise<Draft | null
     "당신은 길고양이 돌봄 앱 '도시공존'의 돌봄 가이드 편집자입니다. 한국 도시 길고양이 돌봄 실무 기준으로 씁니다.",
     `주제(검색어): ${topic.query}`,
     "이 검색어로 검색한 사람이 바로 답을 얻는 실용 가이드 글 1편을 한국어로 작성하세요.",
-    "형식: HTML 조각만(전체 문서 아님). <h2> 소제목 3~5개, 각 소제목 아래 <p> 또는 <ul><li>. 첫 단락은 두 문장 요약.",
+    "형식: HTML 조각만(전체 문서 아님). 제목은 본문에 넣지 말고 첫 요소는 두 문장 요약 <p>. 그 다음 <h2> 소제목 3~5개, 각 소제목 아래 <p> 또는 <ul><li>.",
     "분량: 본문 텍스트 1,200~2,000자. 마지막 <h2>는 '자주 묻는 질문'으로 Q&A 2~3개.",
     "금지: 특정 지역·급식소 위치·개인 언급, 진단·처방 단정(병원 상담 권유는 가능), 근거 없는 수치, 과장·이모지, 앱 광고 문구.",
     "말투: 존댓말, 담백하게. 사람 호칭은 '길집사'.",
@@ -84,7 +84,8 @@ async function generateTip(topic: (typeof TOPICS)[number]): Promise<Draft | null
       const parsed = JSON.parse(text) as { title?: string; description?: string; body?: string };
       const title = (parsed.title ?? "").trim();
       const description = (parsed.description ?? "").trim().slice(0, 160);
-      const body = sanitizeTipBody((parsed.body ?? "").trim());
+      // 모델이 제목을 첫 <h2>로 한 번 더 쓰는 버릇 — 페이지 상단 제목과 겹치므로 떼어낸다
+      const body = sanitizeTipBody((parsed.body ?? "").trim().replace(/^\s*<h2[^>]*>[^<]*<\/h2>\s*/i, ""));
       const textLen = body.replace(/<[^>]+>/g, "").length;
       const h2 = (body.match(/<h2/g) ?? []).length;
       if (title.length >= 8 && title.length <= 40 && description.length >= 40 && textLen >= 900 && h2 >= 3) {
