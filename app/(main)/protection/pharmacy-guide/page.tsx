@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BackButton from "./BackButton";
+import { isMiniApp } from "@/lib/miniapp";
 
 const LAST_UPDATED = "2026-04-19";
 
@@ -422,10 +423,16 @@ export default async function PharmacyGuidePage() {
                 <h3 className="text-[17px] font-bold text-text-main mb-2 leading-tight">{p.name}</h3>
                 <p className="text-[13px] text-text-sub leading-relaxed mb-4">{p.description}</p>
 
-                {p.usage_info && (
+                {/* 미니앱(앱인토스)은 투약 횟수·용량 문구를 싣지 않는다 — 심사 요건(특정 약품 투약·용량 지시 금지) */}
+                {p.usage_info && !isMiniApp() && (
                   <div className="px-3.5 py-3 rounded-xl mb-2.5" style={{ backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
                     <p className="text-[11px] font-bold mb-1 text-text-sub">사용법</p>
                     <p className="text-[13px] text-text-main leading-relaxed">{p.usage_info}</p>
+                  </div>
+                )}
+                {isMiniApp() && (
+                  <div className="px-3.5 py-3 rounded-xl mb-2.5" style={{ backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+                    <p className="text-[13px] text-text-main leading-relaxed">용량·투여 방법은 동물약국 또는 수의사와 상담하세요. 이 안내는 제품 일반 정보이며 진단·처방이 아닙니다.</p>
                   </div>
                 )}
 

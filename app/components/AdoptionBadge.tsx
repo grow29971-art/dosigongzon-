@@ -5,6 +5,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { isMiniApp } from "@/lib/miniapp";
 import { HandHeart } from "lucide-react";
 import { ADOPTION_MAP, type AdoptionStatus } from "@/lib/cats-repo";
 
@@ -50,6 +51,8 @@ export function AdoptionInquireButton({
 
   if (!status || !caretakerId) return null;
   if (caretakerId === currentUserId) return null; // 본인 고양이엔 안 보임
+  // 미니앱(앱인토스)은 쪽지가 없어 문의 경로 자체가 없다 — 이용자 간 사적 연락 수단 0 (심사 확인 사항)
+  if (isMiniApp()) return null;
 
   const meta = ADOPTION_MAP[status];
 
