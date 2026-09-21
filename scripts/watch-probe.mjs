@@ -124,8 +124,9 @@ function loadCronExpectations() {
   // KST 요일별: 수요일 engagement-push, 토요일 onboarding-nudge → UTC 00:00 기준 같은 날
   list.push({ name: "engagement-push", min: 0, hour: 0, dow: [3], via: "daily-dispatch" });
   list.push({ name: "onboarding-nudge", min: 0, hour: 0, dow: [6], via: "daily-dispatch" });
-  // weekly-dispatch 서브잡 (일 23:00 UTC)
-  for (const n of ["retention-report", "weekly-digest"])
+  // weekly-dispatch 서브잡 (일 23:00 UTC). weekly-digest는 2026-09-19 회의로 발송 보류(디스패처 배열에서 제외) —
+  // 재동의 UI 후 복원 시 여기도 "weekly-digest" 복원.
+  for (const n of ["retention-report"])
     list.push({ name: n, min: 0, hour: 23, dow: [0], via: "weekly-dispatch" });
   return list;
 }
