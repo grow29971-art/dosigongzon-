@@ -4,17 +4,22 @@ export const metadata = {
 
 // 2026-07-12 전면 개정 — 국외 이전 고지(개보법 §28-8), AI 챗봇·결제·행태정보 추가,
 // 실제 처리 현황과 불일치 항목 수정 (FCM→자체 웹푸시, GPS 측위 현재 미수집)
+// 2026-09-21 앱인토스 토스 로그인 항목(userKey만 보관) 추가
 export default function PrivacyPage() {
   return (
     <main style={{ maxWidth: 800, margin: '0 auto', padding: '40px 24px', lineHeight: 1.8, color: 'var(--color-text-main)' }}>
       <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>개인정보 처리방침</h1>
-      <p style={{ color: 'var(--color-text-light)', marginBottom: 40 }}>최종 수정일: 2026년 7월 12일</p>
+      <p style={{ color: 'var(--color-text-light)', marginBottom: 40 }}>최종 수정일: 2026년 9월 21일</p>
 
       <section style={{ marginBottom: 32 }}>
         <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>1. 수집하는 개인정보 항목</h2>
         <p>도시공존(이하 "서비스")은 서비스 제공을 위해 다음과 같은 정보를 수집합니다.</p>
         <ul style={{ paddingLeft: 20, marginTop: 8 }}>
           <li>이메일 주소 (회원가입 시)</li>
+          <li>
+            토스 앱(앱인토스)에서 토스 로그인으로 가입·이용하는 경우: 토스가 발급하는 회원 식별 키(userKey).
+            이름·이메일·전화번호·CI 등 실명 정보는 저장하지 않으며, 식별 키는 도시공존 계정과 연결하는 용도로만 씁니다.
+          </li>
           <li>닉네임 및 프로필 사진 (선택)</li>
           <li>이용자가 직접 입력하는 활동 지역 정보 (동 단위, 선택)</li>
           <li>웹푸시 구독 정보 (알림 수신 동의 시, 브라우저 푸시 엔드포인트)</li>
