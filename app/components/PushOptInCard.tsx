@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Bell, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
+import { hideInMiniApp } from "@/lib/miniapp";
 
 const DISMISS_KEY = "dosigongzon_push_optin_dismissed_at";
 const DISMISS_DAYS = 7;
@@ -20,7 +21,7 @@ interface PushOptInCardProps {
   dismissKey?: string;
 }
 
-export default function PushOptInCard({
+function PushOptInCard({
   title = "내 글에 댓글 달리면 알려드릴까요?",
   description = "중요한 순간 놓치지 않게 알림으로 알려드려요",
   dismissKey = DISMISS_KEY,
@@ -161,3 +162,6 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const rawData = atob(base64);
   return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
+
+// 앱인토스 미니앱에서는 숨김(웹푸시·쇼핑·서클·초대 링크 없음)
+export default hideInMiniApp<PushOptInCardProps>(PushOptInCard);

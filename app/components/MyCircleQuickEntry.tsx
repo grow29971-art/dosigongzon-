@@ -11,8 +11,9 @@ import { ShieldCheck, MessageCircle, Users, Loader2, UserPlus } from "lucide-rea
 import { useAuth } from "@/lib/auth-context";
 import { getOrCreateMyCircle, countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 import { listMyUnreadCircles } from "@/lib/circle-chat-repo";
+import { hideInMiniApp } from "@/lib/miniapp";
 
-export default function MyCircleQuickEntry() {
+function MyCircleQuickEntry() {
   const { user } = useAuth();
   const [circleId, setCircleId] = useState<string | null>(null);
   const [memberCount, setMemberCount] = useState(0);
@@ -132,3 +133,6 @@ export default function MyCircleQuickEntry() {
     </section>
   );
 }
+
+// 앱인토스 미니앱에서는 숨김(웹푸시·쇼핑·서클·초대 링크 없음)
+export default hideInMiniApp(MyCircleQuickEntry);

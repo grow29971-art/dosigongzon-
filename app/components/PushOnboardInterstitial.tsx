@@ -9,10 +9,11 @@
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { hideInMiniApp } from "@/lib/miniapp";
 
 export const PUSH_GATE_SEEN_PREFIX = "dosigongzon_push_gate_seen_";
 
-export default function PushOnboardInterstitial() {
+function PushOnboardInterstitial() {
   const { user } = useAuth();
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -133,3 +134,6 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const rawData = atob(base64);
   return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
+
+// 앱인토스 미니앱에서는 숨김(웹푸시·쇼핑·서클·초대 링크 없음)
+export default hideInMiniApp(PushOnboardInterstitial);

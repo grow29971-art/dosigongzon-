@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Download, ChevronRight, Check, Share, PlusSquare, X } from "lucide-react";
 import { track } from "@vercel/analytics";
+import { hideInMiniApp } from "@/lib/miniapp";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -34,7 +35,7 @@ function isIosSafari(): boolean {
  * - iOS Safari: "홈 화면에 추가" 방법 안내 모달
  * - iOS 크롬/파파이어폭스: 사파리로 열라는 안내
  */
-export default function InstallAppMenuItem() {
+function InstallAppMenuItem() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [installed, setInstalled] = useState(false);
   const [iosModalOpen, setIosModalOpen] = useState(false);
@@ -195,3 +196,6 @@ export default function InstallAppMenuItem() {
     </>
   );
 }
+
+// 앱인토스 미니앱에서는 숨김(웹푸시·쇼핑·서클·초대 링크 없음)
+export default hideInMiniApp(InstallAppMenuItem);

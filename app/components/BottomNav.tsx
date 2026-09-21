@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { isMiniApp } from "@/lib/miniapp";
 import {
   Home, Map, Bot, MessagesSquare, ShoppingBag, User,
   type LucideIcon,
@@ -69,7 +70,7 @@ export default function BottomNav() {
       }}
     >
       <div className="flex items-stretch px-2 pt-2 pb-1.5 mx-auto" style={{ minHeight: 60, maxWidth: "30rem" }}>
-        {tabs.map(({ href, label, Icon, wip }) => {
+        {tabs.filter((t) => !(isMiniApp() && t.href === "/shop")).map(({ href, label, Icon, wip }) => {
           const on = isActive(href);
           return (
             <Link

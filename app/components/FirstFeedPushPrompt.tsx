@@ -11,8 +11,9 @@
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { hideInMiniApp } from "@/lib/miniapp";
 
-export default function FirstFeedPushPrompt({ catName }: { catName: string }) {
+function FirstFeedPushPrompt({ catName }: { catName: string }) {
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -117,3 +118,6 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const rawData = atob(base64);
   return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
+
+// 앱인토스 미니앱에서는 숨김(웹푸시·쇼핑·서클·초대 링크 없음)
+export default hideInMiniApp(FirstFeedPushPrompt);

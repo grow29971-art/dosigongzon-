@@ -13,8 +13,9 @@ import { Heart, ChevronRight, PawPrint } from "lucide-react";
 import { listProducts, type Product } from "@/lib/shop-repo";
 import { readWishlist, toggleWishlist } from "@/lib/wishlist";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { hideInMiniApp } from "@/lib/miniapp";
 
-export default function ShopPreviewStrip() {
+function ShopPreviewStrip() {
   const [products, setProducts] = useState<Product[]>([]);
   const [wish, setWish] = useState<string[]>([]);
 
@@ -108,3 +109,6 @@ export default function ShopPreviewStrip() {
     </div>
   );
 }
+
+// 앱인토스 미니앱에서는 숨김(웹푸시·쇼핑·서클·초대 링크 없음)
+export default hideInMiniApp(ShopPreviewStrip);

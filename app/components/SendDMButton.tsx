@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Mail } from "lucide-react";
+import { isMiniApp } from "@/lib/miniapp";
 
 interface Props {
   userId: string | null;
@@ -13,7 +14,8 @@ interface Props {
 export default function SendDMButton({ userId, userName, currentUserId, size = "xs" }: Props) {
   const router = useRouter();
 
-  if (!userId || userId === currentUserId) return null;
+  // 미니앱(앱인토스)은 쪽지 없음 — 채팅 필수 사항 미충족
+  if (!userId || userId === currentUserId || isMiniApp()) return null;
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();

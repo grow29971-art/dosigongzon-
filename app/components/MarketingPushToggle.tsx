@@ -5,12 +5,13 @@ import { BellRing, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { track } from "@vercel/analytics";
 import SquareToggle from "@/app/components/ui/SquareToggle";
+import { hideInMiniApp } from "@/lib/miniapp";
 
 /**
  * 마케팅성 푸시(주간 동네 소식, 지역 채팅 유도 등) 수신 설정.
  * 댓글·쪽지·돌봄 같은 "트랜잭션성" 푸시는 이 설정과 무관하게 작동.
  */
-export default function MarketingPushToggle() {
+function MarketingPushToggle() {
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -84,3 +85,6 @@ export default function MarketingPushToggle() {
     </div>
   );
 }
+
+// 앱인토스 미니앱에서는 숨김(웹푸시·쇼핑·서클·초대 링크 없음)
+export default hideInMiniApp(MarketingPushToggle);

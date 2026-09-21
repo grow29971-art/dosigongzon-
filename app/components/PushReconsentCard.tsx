@@ -11,11 +11,12 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { BellRing, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { hideInMiniApp } from "@/lib/miniapp";
 
 const DISMISS_KEY = "dosigongzon_push_reconsent_dismissed_at";
 const DISMISS_DAYS = 7;
 
-export default function PushReconsentCard() {
+function PushReconsentCard() {
   const pathname = usePathname();
   const { user } = useAuth();
   const [show, setShow] = useState(false);
@@ -167,3 +168,6 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const rawData = atob(base64);
   return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
+
+// 앱인토스 미니앱에서는 숨김(웹푸시·쇼핑·서클·초대 링크 없음)
+export default hideInMiniApp(PushReconsentCard);

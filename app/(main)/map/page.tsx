@@ -83,6 +83,7 @@ import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import { getMyBlockedIdSet } from "@/lib/blocks-repo";
 import TitleBadge from "@/app/components/TitleBadge";
 import SendDMButton from "@/app/components/SendDMButton";
+import { isMiniApp } from "@/lib/miniapp";
 import SafetyCallSheet from "@/app/components/SafetyCallSheet";
 import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 import type { Post } from "@/lib/types";
@@ -2538,7 +2539,7 @@ export default function MapPage() {
 
       {/* 채팅 FAB — 전체 채팅만 활성. 동네 채팅은 가입자 늘면 재활성화 예정.
           P2 flag on이면 상세 도구를 연 경우에만 (기능 자체는 유지, 2차 영역). */}
-      {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && detailToolsVisible && (
+      {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && detailToolsVisible && !isMiniApp() && (
         <div className="absolute bottom-6 left-4 z-30 flex flex-col items-start gap-1.5">
           {/* 전체 채팅 — 모든 지역이 함께 쓰는 방 */}
           <button
@@ -2687,8 +2688,8 @@ export default function MapPage() {
         />
       )}
 
-      {/* 첫 진입 시 동네/전체 채팅 사용법 안내 (30일 dismiss) */}
-      <MapChatGuideModal />
+      {/* 첫 진입 시 동네/전체 채팅 사용법 안내 (30일 dismiss) — 미니앱은 채팅 없음 */}
+      {!isMiniApp() && <MapChatGuideModal />}
 
       {/* 채팅방 — 동네(현재 구) 또는 전체 */}
       {chatOpen && chatArea && (

@@ -9,11 +9,12 @@ import { useEffect, useState } from "react";
 import { Bell, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
+import { hideInMiniApp } from "@/lib/miniapp";
 
 const DISMISS_KEY = "dosigongzon_push_care_cue_dismissed_at";
 const DISMISS_DAYS = 14;
 
-export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
+function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
   const { user } = useAuth();
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -142,3 +143,6 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const rawData = atob(base64);
   return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
+
+// 앱인토스 미니앱에서는 숨김(웹푸시·쇼핑·서클·초대 링크 없음)
+export default hideInMiniApp(PushCareCueOptIn);

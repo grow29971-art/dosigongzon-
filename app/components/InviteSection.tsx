@@ -9,8 +9,9 @@ import { Copy, Check, Share2, Users, Loader2 } from "lucide-react";
 import { getMyInviteInfo, type MyInviteInfo } from "@/lib/invites-repo";
 import { shareToKakao } from "@/lib/kakao-share";
 import { track } from "@vercel/analytics";
+import { hideInMiniApp } from "@/lib/miniapp";
 
-export default function InviteSection() {
+function InviteSection() {
   const [info, setInfo] = useState<MyInviteInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -166,3 +167,6 @@ export default function InviteSection() {
     </div>
   );
 }
+
+// 앱인토스 미니앱에서는 숨김(웹푸시·쇼핑·서클·초대 링크 없음)
+export default hideInMiniApp(InviteSection);
