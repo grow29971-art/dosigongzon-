@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState, type ComponentType } from "react";
-import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from "react-router";
+import { HashRouter, Navigate, Route, Routes, useLocation, useParams } from "react-router";
 import { AuthProvider } from "@/lib/auth-context";
 import { ToastProvider } from "@/app/components/Toast";
 import BottomNav from "@/app/components/BottomNav";
@@ -7,6 +7,7 @@ import { supabase } from "./lib/supabase";
 import Login from "./pages/Login";
 import ServerPage from "./ServerPage";
 import { isMiniAppBlockedPath } from "./shims/miniapp-routes";
+import { ErrorBoundary, ErrorToast } from "./ErrorOverlay";
 
 // 본 앱 화면을 그대로 라우팅한다. "use client" 페이지는 lazy 컴포넌트로, async 서버 페이지는 ServerPage 어댑터로.
 // 미니앱 제외 경로(shims/miniapp-routes.ts)는 홈으로 보낸다.
@@ -40,7 +41,9 @@ function Shell() {
   if (isMiniAppBlockedPath(pathname)) return <Navigate to="/" replace />;
   return (
     <div className="min-h-dvh" style={{ background: "var(--color-surface)" }}>
+      <ErrorToast />
       <main className="pb-24 mx-auto w-full max-w-lg">
+        <ErrorBoundary key={pathname}>
         <Routes>
           <Route path="/" element={C(() => import("./pages/Home"))} />
           <Route path="/map" element={<><Suspense fallback={null}><MapIntroSheet /></Suspense>{C(() => import("@/app/(main)/map/page"))}</>} />
@@ -103,6 +106,7 @@ function Shell() {
           <Route path="/z/:zoneId" element={S(() => import("@/app/z/[zoneId]/page"))} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </ErrorBoundary>
       </main>
       <BottomNav />
     </div>
@@ -126,12 +130,14 @@ export default function App() {
   if (!authed) return <Login onLoggedIn={() => setAuthed(true)} />;
 
   return (
-    <BrowserRouter>
+    // HashRouter: 토스 정적 호스팅은 /mypage 같은 중첩 경로의 직접 로드(새로고침·백그라운드 복귀·본 앱 코드의 location.href 대입)를
+    // 보장하지 않는다. 해시 라우팅이면 전체 로드가 항상 index.html로 떨어진다.
+    <HashRouter>
       <AuthProvider>
         <ToastProvider>
           <Shell />
         </ToastProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
