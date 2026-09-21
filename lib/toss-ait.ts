@@ -103,7 +103,8 @@ function decryptField(encryptedBase64: string): string {
 
 // 이름·이메일만 복호화한다 — 전화·CI는 요청 scope에 없고, 받더라도 저장하지 않는다.
 export async function fetchTossUser(accessToken: string): Promise<TossUser> {
-  const { status, data } = await mtlsRequest<TossUserRaw>(`${AUTH_API_BASE}/login-me`, "GET", undefined, { Authorization: accessToken });
+  // 문서: "Bearer 형식의 Access Token" — 토큰만 보내면 4010(인증 정보를 찾을 수 없어요). 9/21 QR 테스트 실측.
+  const { status, data } = await mtlsRequest<TossUserRaw>(`${AUTH_API_BASE}/login-me`, "GET", undefined, { Authorization: `Bearer ${accessToken}` });
   if (status !== 200 || data.resultType !== "SUCCESS" || data.success?.userKey === undefined) {
     throw new Error(`토스 사용자 조회 실패 (${status} ${data.error?.errorCode ?? ""})`);
   }
