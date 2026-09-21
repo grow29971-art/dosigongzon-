@@ -12,17 +12,13 @@
   },
   "dependencies": {
     "@apps-in-toss/web-framework": "3.4.1",
-    "@supabase/supabase-js": "^2.116.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-router": "^7.9.0"
   },
   "devDependencies": {
     "@apps-in-toss/devtools": "3.4.1",
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
-    "typescript": "~5.7.2",
     "vite": "^6.2.0"
   },
   "allowScripts": {

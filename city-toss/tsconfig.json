@@ -10,7 +10,26 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "types": ["vite/client"]
+    "allowJs": true,
+    "types": ["vite/client", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@/lib/supabase/client": ["src/shims/supabase-client.ts"],
+      "@/lib/supabase/server": ["src/shims/supabase-server.ts"],
+      "@/lib/supabase/anon": ["src/shims/supabase-anon.ts"],
+      "@/lib/supabase/service": ["src/shims/forbidden.ts"],
+      "@/lib/html-sanitize-server": ["src/shims/html-sanitize-server.ts"],
+      "@/*": ["../*"],
+      "next/link": ["src/shims/next-link.tsx"],
+      "next/navigation": ["src/shims/next-navigation.ts"],
+      "next/image": ["src/shims/next-image.tsx"],
+      "next/dynamic": ["src/shims/next-dynamic.ts"],
+      "next/script": ["src/shims/next-script.tsx"],
+      "next/cache": ["src/shims/next-cache.ts"],
+      "next/headers": ["src/shims/forbidden.ts"],
+      "@sentry/nextjs": ["src/shims/sentry.ts"],
+      "server-only": ["src/shims/empty.ts"]
+    }
   },
-  "include": ["src", "apps-in-toss.config.ts", "vite.config.ts"]
+  "include": ["src", "apps-in-toss.config.ts"]
 }

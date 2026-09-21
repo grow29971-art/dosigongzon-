@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Device } from "@apps-in-toss/web-framework";
 import { loginWithToss } from "../lib/auth";
+import { supabase } from "../lib/supabase";
 
 interface Props { onLoggedIn: () => void }
 
@@ -12,6 +13,16 @@ export default function Login({ onLoggedIn }: Props) {
   const [agreed, setAgreed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // 로컬 개발 전용: ?dev_token_hash=<magiclink hashed_token> 로 세션 생성(scripts/dev-session.mjs). 프로덕션 번들엔 없음.
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+    const th = new URLSearchParams(window.location.search).get("dev_token_hash");
+    if (!th) return;
+    supabase().auth.verifyOtp({ token_hash: th, type: "magiclink" }).then(({ error: e }) => {
+      if (e) setError(e.message); else { history.replaceState(null, "", "/"); onLoggedIn(); }
+    });
+  }, [onLoggedIn]);
 
   async function handleLogin() {
     setBusy(true); setError(null);
@@ -26,33 +37,40 @@ export default function Login({ onLoggedIn }: Props) {
   }
 
   return (
-    <div className="page">
-      <img className="logo" src="/icon-192.png" alt="" />
-      <h1 className="title">도시공존</h1>
-      <p className="sub">우리 동네 길고양이를 지도에 기록하고, 이웃과 함께 돌봐요.</p>
+    <div className="min-h-dvh px-4 pt-6 pb-8 mx-auto w-full max-w-lg" style={{ background: "var(--color-surface)", color: "var(--color-text-main)" }}>
+      <img src="/icon-192.png" alt="" className="w-16 h-16 rounded-2xl mt-6 mb-2" />
+      <h1 className="text-[22px] font-extrabold tracking-tight mb-1">도시공존</h1>
+      <p className="text-[14px] mb-4" style={{ color: "var(--color-text-sub)" }}>우리 동네 길고양이를 지도에 기록하고, 이웃과 함께 돌봐요.</p>
 
-      <div className="card">
-        <p style={{ margin: "0 0 6px", fontWeight: 700 }}>이 앱에서 할 수 있는 것</p>
-        <ul style={{ margin: 0, paddingLeft: 18, color: "var(--text-sub)", fontSize: 14 }}>
-          <li>동네 지도에서 이웃이 돌보는 고양이 보기</li>
+      <div className="rounded-xl p-4" style={{ border: "1px solid var(--color-border)" }}>
+        <p className="font-bold mb-1.5">이 앱에서 할 수 있는 것</p>
+        <ul className="list-disc pl-[18px] text-[14px] space-y-0.5" style={{ color: "var(--color-text-sub)" }}>
+          <li>동네 지도에서 이웃이 돌보는 고양이 보기 · 새 고양이 등록</li>
           <li>밥·물·간식·건강 체크를 돌봄 기록으로 남기기</li>
+          <li>커뮤니티 글·댓글, 보호 지침, AI 집사, 고양이별 추모</li>
           <li>고양이 위치는 실제 자리에서 수백 m 떨어진 대략의 위치만 표시돼요</li>
         </ul>
       </div>
 
-      <label className="check">
-        <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+      <label className="flex items-start gap-2.5 text-[14px] my-4" style={{ color: "var(--color-text-sub)" }}>
+        <input type="checkbox" className="w-5 h-5 mt-[1px]" style={{ accentColor: "var(--color-primary)" }} checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
         <span>
-          <button className="link" type="button" onClick={() => Device.openURL(TERMS_URL)}>이용약관</button>과{" "}
-          <button className="link" type="button" onClick={() => Device.openURL(PRIVACY_URL)}>개인정보처리방침</button>에 동의해요
+          <button className="underline" type="button" style={{ color: "var(--color-text-main)" }} onClick={() => Device.openURL(TERMS_URL)}>이용약관</button>과{" "}
+          <button className="underline" type="button" style={{ color: "var(--color-text-main)" }} onClick={() => Device.openURL(PRIVACY_URL)}>개인정보처리방침</button>에 동의해요
         </span>
       </label>
 
-      {error && <p className="error">{error}</p>}
-      <button className="btn" disabled={!agreed || busy} onClick={handleLogin}>
+      {error && <p className="text-[13px] my-2" style={{ color: "var(--color-danger, #d1433b)" }}>{error}</p>}
+      <button
+        type="button"
+        className="w-full min-h-[52px] rounded-xl font-bold text-[16px] text-white disabled:opacity-45"
+        style={{ background: "var(--color-primary)" }}
+        disabled={!agreed || busy}
+        onClick={handleLogin}
+      >
         {busy ? "로그인 중…" : "토스로 시작하기"}
       </button>
-      <p className="muted" style={{ marginTop: 12 }}>
+      <p className="text-[13px] mt-3" style={{ color: "var(--color-text-light)" }}>
         토스 로그인으로 받은 정보는 계정 식별에만 쓰고, 이름·연락처는 지도에 표시되지 않아요.
       </p>
     </div>
