@@ -90,10 +90,14 @@ const securityHeaders = [
     key: "Cross-Origin-Resource-Policy",
     value: "same-origin",
   },
-  // 다른 오리진 팝업과의 상호작용 제한 (타이밍 공격 차단)
+  // 다른 오리진 팝업과의 상호작용 제한 (타이밍 공격 차단).
+  // same-origin → same-origin-allow-popups (2026-09-21): 토스페이먼츠 결제창이 카드사 인증(비씨 페이북 등)을
+  // 이름 붙인 팝업(window.open → form target)으로 여는데, same-origin이면 팝업이 다른 브라우징 컨텍스트 그룹으로
+  // 떨어져 카드사 폼이 그 창을 못 찾고 about:blank로 남는다(토스 계약심사 9/21 지적, 스크린샷 실측). 토스 개발자센터
+  // 권고값 그대로. 우리가 여는 팝업만 opener 관계를 유지하고, 남이 우리를 팝업으로 열 때의 차단은 그대로다.
   {
     key: "Cross-Origin-Opener-Policy",
-    value: "same-origin",
+    value: "same-origin-allow-popups",
   },
 ];
 
