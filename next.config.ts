@@ -147,15 +147,16 @@ const nextConfig: NextConfig = {
           { key: "Access-Control-Max-Age", value: "86400" },
         ],
       },
-      // 앱인토스 미니앱(city-toss/) → 토스 로그인 브릿지 CORS. 같은 키는 뒤 항목이 이긴다(Next 규칙).
+      // 앱인토스 미니앱(city-toss/) → 본 앱 API CORS. 토스 로그인 브릿지뿐 아니라 본 앱 화면들이 그대로 부르는
+      // /api/*(Bearer 세션, lib/supabase/server.ts)도 같은 오리진 4종에만 연다. 같은 키는 뒤 항목이 이긴다(Next 규칙).
       // 오리진은 토스가 호스팅하는 tossmini.com 하위 4종(SDK 3.x web/private-web, 8/25 이후 apps/private-apps).
       {
-        source: "/api/toss/:path*",
+        source: "/api/:path*",
         has: [{ type: "header", key: "origin", value: "https://dosigongzon\\.(?<sub>web|private-web|apps|private-apps)\\.tossmini\\.com" }],
         headers: [
           { key: "Access-Control-Allow-Origin", value: "https://dosigongzon.:sub.tossmini.com" },
-          { key: "Access-Control-Allow-Methods", value: "POST, OPTIONS" },
-          { key: "Access-Control-Allow-Headers", value: "Content-Type" },
+          { key: "Access-Control-Allow-Methods", value: "GET, POST, PUT, PATCH, DELETE, OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type, Authorization" },
           { key: "Access-Control-Max-Age", value: "86400" },
           { key: "Vary", value: "Origin" },
         ],
