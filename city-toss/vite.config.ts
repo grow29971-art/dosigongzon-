@@ -25,8 +25,9 @@ function readPublicEnv(): Record<string, string> {
   const mine = (k: string) => process.env[k] ?? "";
   out.NEXT_PUBLIC_SUPABASE_URL ||= mine("VITE_SUPABASE_URL");
   out.NEXT_PUBLIC_SUPABASE_ANON_KEY ||= mine("VITE_SUPABASE_ANON_KEY");
-  out.NEXT_PUBLIC_KAKAO_MAP_KEY ||= mine("VITE_KAKAO_JS_KEY");
-  out.NEXT_PUBLIC_KAKAO_JS_KEY ||= mine("VITE_KAKAO_JS_KEY");
+  // 카카오 키는 미니앱 전용(VITE_KAKAO_JS_KEY, tossmini 도메인 등록본)이 본 앱 키(dosigongzon.com 등록본)보다 우선 —
+  // 본 앱 키로 로드하면 도메인 불일치로 SDK 403 → "지도를 불러올 수 없어요"(9/21 실기기 실측).
+  if (mine("VITE_KAKAO_JS_KEY")) { out.NEXT_PUBLIC_KAKAO_MAP_KEY = mine("VITE_KAKAO_JS_KEY"); out.NEXT_PUBLIC_KAKAO_JS_KEY = mine("VITE_KAKAO_JS_KEY"); }
   // 미니앱에서 꺼 두는 것: 웹푸시·픽셀·터스타일·토스페이먼츠 위젯
   for (const k of ["NEXT_PUBLIC_VAPID_PUBLIC_KEY", "NEXT_PUBLIC_META_PIXEL_ID", "NEXT_PUBLIC_TURNSTILE_SITE_KEY", "NEXT_PUBLIC_TOSS_CLIENT_KEY"]) delete out[k];
   return out;
