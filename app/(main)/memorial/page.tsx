@@ -17,6 +17,7 @@ import { catArtWalkSvg } from "@/lib/cat-art";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { deleteCatByAdmin } from "@/lib/support-repo";
 import CatStarPlanet from "@/app/components/CatStarPlanet";
+import { SkeletonListRow } from "@/app/components/Skeleton";
 
 // 2026-09-16 리디자인 「익숙한 동네앱」: 밤하늘 그라디언트·별밭·글로우를 걷어내고
 // 흰 면 + 헤어라인 구분선 리스트. 고양이별의 정서는 카피와 행성 아이콘(CatStarPlanet)으로만 남긴다.
@@ -236,9 +237,7 @@ export default function MemorialPage() {
 
         {/* 목록 */}
         {cats === null && (
-          <p className="text-center text-[15px] mt-10 text-text-light">
-            불러오는 중…
-          </p>
+          <div className="flex flex-col gap-2 mt-4"><SkeletonListRow /><SkeletonListRow /><SkeletonListRow /><SkeletonListRow /></div>
         )}
 
         {cats?.length === 0 && (

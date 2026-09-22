@@ -48,6 +48,7 @@ import { countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 import UIListRow from "@/app/components/ui/ListRow";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { catArtWalkSvg } from "@/lib/cat-art";
+import { SkeletonListRow } from "@/app/components/Skeleton";
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -568,7 +569,7 @@ export default function MyPage() {
               </h2>
             </div>
             {dataLoading && myCats.length === 0 ? (
-              <EmptyBox>불러오는 중...</EmptyBox>
+              <div className="flex flex-col gap-2"><SkeletonListRow /><SkeletonListRow /><SkeletonListRow /></div>
             ) : myCats.length === 0 ? (
               <EmptyBox>
                 <p className="mb-2">아직 등록한 고양이가 없어요</p>
@@ -645,7 +646,7 @@ export default function MyPage() {
               </h2>
             </div>
             {dataLoading && myComments.length === 0 ? (
-              <EmptyBox>불러오는 중...</EmptyBox>
+              <div className="flex flex-col gap-2"><SkeletonListRow /><SkeletonListRow /><SkeletonListRow /></div>
             ) : myComments.length === 0 ? (
               <EmptyBox>지도에서 고양이를 골라 첫 기록을 남겨보세요</EmptyBox>
             ) : (

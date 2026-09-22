@@ -9,6 +9,7 @@ import { ChevronLeft, PawPrint, MapPin, Map } from "lucide-react";
 import { getNeighborhoodCollection, type NeighborhoodCollection } from "@/lib/collection-repo";
 import { thumbnailUrl } from "@/lib/cats-repo";
 import { catArtWalkSvg } from "@/lib/cat-art";
+import { SkeletonCatCard } from "@/app/components/Skeleton";
 
 export default function CollectionPage() {
   const [data, setData] = useState<NeighborhoodCollection | null>(null);
@@ -35,7 +36,7 @@ export default function CollectionPage() {
 
       <div className="px-4 pt-4 max-w-lg mx-auto w-full">
         {loading && (
-          <p className="text-center text-[13px] text-text-sub py-16">도감을 불러오는 중…</p>
+          <div className="grid grid-cols-3 gap-2 py-4"><SkeletonCatCard /><SkeletonCatCard /><SkeletonCatCard /><SkeletonCatCard /><SkeletonCatCard /><SkeletonCatCard /></div>
         )}
 
         {!loading && data && !data.hasRegion && (
