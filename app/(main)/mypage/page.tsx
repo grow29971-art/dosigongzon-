@@ -733,8 +733,8 @@ export default function MyPage() {
                 <UIListRow
                   href="/mypage/journey"
                   icon={<Footprints size={20} strokeWidth={1.8} />}
-                  title="당신의 여정"
-                  subtitle="쌓아온 발자취와 따뜻한 순간들 보기"
+                  title="내 활동 기록"
+                  subtitle="등록·기록·댓글 이력 보기"
                 />
               )}
               {SHOW_MONTHLY_REPORT && (
@@ -742,7 +742,7 @@ export default function MyPage() {
                   href="/mypage/monthly-report"
                   icon={<TrendingUp size={20} strokeWidth={1.8} />}
                   title="이번 달 성장 리포트"
-                  subtitle="이번 달 내가 얼마나 채웠는지 한눈에 보기"
+                  subtitle="이번 달 기록·등록·댓글 수"
                 />
               )}
               <UIListRow
@@ -755,7 +755,7 @@ export default function MyPage() {
                 href="/mypage/watching"
                 icon={<Heart size={20} strokeWidth={1.8} />}
                 title="내가 지켜보는 아이"
-                subtitle="하트 누른 고양이들을 모아봐요"
+                subtitle="하트 누른 고양이 목록"
               />
               {SHOW_CARETAKERS && (
                 <UIListRow
@@ -770,7 +770,7 @@ export default function MyPage() {
                   href="/ranking"
                   icon={<Trophy size={20} strokeWidth={1.8} />}
                   title="길집사 활동 랭킹"
-                  subtitle="내 활동 점수와 동네 길집사 순위를 확인해요"
+                  subtitle="내 점수와 동네 순위"
                 />
               )}
               {/* 다음 설정 항목들은 각자 위 헤어라인을 그리므로 이 행은 아래 선을 생략 */}
@@ -789,7 +789,7 @@ export default function MyPage() {
                 href="/guide"
                 icon={<BookOpen size={20} strokeWidth={1.8} />}
                 title="사용 가이드"
-                subtitle="10가지 핵심 기능 설명을 한눈에"
+                subtitle="핵심 기능 10가지 설명"
                 style={{ borderTop: "1px solid var(--color-divider)" }}
               />
             </div>

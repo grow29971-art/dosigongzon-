@@ -30,7 +30,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
   // satori는 webp를 못 그리므로 sharp로 jpeg data URI로 변환해 넣는다(lib/og-photo.ts). 실패 시 회색 면.
   const photoUrl = await ogPhotoDataUri(sanitizeOgImageUrl(cat?.photo_url ?? null, ""));
   const likeCount = cat?.like_count ?? 0;
-  const description = cat?.description?.slice(0, 60) ?? "길 위의 생명과 함께 걷는 따뜻한 한 걸음";
+  const description = cat?.description?.slice(0, 60) ?? "우리 동네 길고양이 돌봄 기록";
 
   return new ImageResponse(
     (

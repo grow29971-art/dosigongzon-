@@ -7,8 +7,8 @@ import { getMyJourneyServer, type Milestone } from "@/lib/journey-server";
 import EmptyState from "@/app/components/ui/EmptyState";
 
 export const metadata: Metadata = {
-  title: "당신의 여정",
-  description: "도시공존에서 쌓아온 발자취와 따뜻한 순간들",
+  title: "내 활동 기록",
+  description: "도시공존에서 남긴 등록·기록·댓글 이력",
   robots: { index: false, follow: false },
 };
 
@@ -43,10 +43,10 @@ export default async function JourneyPage() {
           마이페이지
         </Link>
         <h1 className="text-[24px] font-bold text-text-main mb-1.5">
-          당신의 여정
+          내 활동 기록
         </h1>
         <p className="text-[13px] text-text-sub leading-relaxed">
-          총 {items.length}개의 순간이 모였어요.
+          기록 {items.length}개
         </p>
       </div>
 
@@ -56,7 +56,7 @@ export default async function JourneyPage() {
           <EmptyState
             className="card p-6"
             icon={<Footprints size={28} strokeWidth={1.5} />}
-            title="여정이 막 시작됐어요"
+            title="아직 기록이 없어요"
             desc="고양이를 등록하거나 댓글을 남기면 여기에 쌓여요."
           />
         ) : (
