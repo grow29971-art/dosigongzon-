@@ -182,6 +182,10 @@ body {
   transform: scale(0.96);
   opacity: 0.85;
 }
+/* 작은 아이콘 버튼(20~28px)의 터치 영역을 44px 근처로 — 보이는 크기는 그대로, 히트 영역만 확장.
+   (2026-09-22 디자인 감사, UX 규칙 "터치 타깃 44×44") position이 static이면 relative로 승격된다. */
+button.press-strong:not(.absolute):not(.fixed):not(.sticky):not(.relative) { position: relative; }
+button.press-strong::after { content: ""; position: absolute; inset: -8px; }
 
 /* 사각 칩 — 텍스트 칩/배지의 rounded-full 대체 (아바타·원형 아이콘 버튼은 원형 유지) */
 .chip-square { border-radius: var(--radius-square); }
