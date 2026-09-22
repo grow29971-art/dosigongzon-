@@ -13,10 +13,9 @@ const DISMISS_KEY = "dosigongzon_signup_nudge_dismissed";
 const DISMISS_TTL_HOURS = 24;
 
 // 이 경로들에서만 노출 (로그인/가입/온보딩·관리자 등 제외)
+// 홈 랜딩·고양이 상세는 화면 자체에 가입 CTA가 있어 띠배너까지 겹치면 CTA 3~4개가 쌓인다(9/22 감사) → 제외
 const SHOW_PATTERNS = [
-  /^\/$/,
   /^\/map$/,
-  /^\/cats\//,
   /^\/areas(\/|$)/,
   /^\/protection(\/|$)/,
   /^\/hospitals$/,

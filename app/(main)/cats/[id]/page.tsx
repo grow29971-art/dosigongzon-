@@ -246,23 +246,16 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               </>
             )}
           </p>
-          <div className="flex gap-2">
-            {/* 온보딩 pick 지점 — pending_care 커밋 + onboarding_pick 계측 후 가입으로 */}
-            <PickCatSignupCta catId={cat.id} catName={cat.name} />
-            <Link
-              href="/"
-              className="flex-1 flex items-center justify-center h-10 text-[13px] font-semibold press text-text-main"
-              style={{ background: "var(--color-gray-100)", borderRadius: "var(--radius-input)" }}
-            >
-              더 둘러보기
-            </Link>
-          </div>
+          {/* 온보딩 pick 지점 — pending_care 커밋 + onboarding_pick 계측 후 가입으로.
+              CTA는 하나만 — "더 둘러보기" 고스트 버튼(채움+고스트 쌍 = 전형적 AI 배치)은 뒤로가기가 대신한다(9/22 감사) */}
+          <PickCatSignupCta catId={cat.id} catName={cat.name} />
         </div>
       )}
 
       {/* 입양·임보 문의 CTA (상태 있고 본인 고양이 아닐 때).
           고양이별로 간 아이에겐 띄우지 않는다 — 떠난 아이에게 "입양 문의하기"는 잔인하다 */}
-      {cat.adoption_status && !cat.memorial_at && (
+      {/* 비로그인은 어차피 /login으로 보내는 버튼이라 위 가입 CTA와 중복 — 로그인 유저에게만 */}
+      {cat.adoption_status && !cat.memorial_at && currentUserId && (
         <div className="px-4 mt-3">
           <AdoptionInquireButton
             status={cat.adoption_status}
