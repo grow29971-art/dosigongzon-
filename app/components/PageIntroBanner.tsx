@@ -24,7 +24,7 @@ interface Props {
   accent?: string;
 }
 
-export default function PageIntroBanner(props: Props) {
+function PageIntroBannerInner(props: Props) {
   const { id, title, description, ctaLabel, ctaHref } = props; // accent는 의도적으로 읽지 않는다
   const [visible, setVisible] = useState(false);
 
@@ -90,4 +90,12 @@ export default function PageIntroBanner(props: Props) {
       </div>
     </div>
   );
+}
+
+// 2026-09-22 디자인 감사: 페이지마다 뜨는 "이 화면은 이런 곳이에요" 모달·배너는 AI 생성 앱의 1순위 지문
+// (첫 진입 오버레이 중첩·설명문 과다). 당근·토스는 화면이 스스로 설명한다. 되살리려면 이 플래그만 true.
+const SHOW_PAGE_INTROS = false;
+export default function PageIntroBanner(props: Parameters<typeof PageIntroBannerInner>[0]) {
+  if (!SHOW_PAGE_INTROS) return null;
+  return <PageIntroBannerInner {...props} />;
 }
