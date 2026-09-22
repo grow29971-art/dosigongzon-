@@ -105,7 +105,7 @@ function FirstFeedPushPrompt({ catName }: { catName: string }) {
           괜찮아요
         </button>
       </div>
-      <p className="text-[9px] text-center mt-1.5 text-text-muted">
+      <p className="text-[11px] text-center mt-1.5 text-text-muted">
         켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 해제 가능
       </p>
     </div>

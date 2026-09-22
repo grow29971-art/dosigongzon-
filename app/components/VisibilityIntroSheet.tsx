@@ -116,7 +116,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
                       </p>
                       {key === "circle" && (
                         <span
-                          className="text-[10px] font-medium px-1.5 py-0.5 chip-square text-text-sub"
+                          className="text-[11px] font-medium px-1.5 py-0.5 chip-square text-text-sub"
                           style={{ border: "1px solid var(--color-border)" }}
                         >
                           NEW

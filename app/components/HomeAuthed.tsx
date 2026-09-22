@@ -799,7 +799,7 @@ export default function HomeAuthed({
                       <Bell size={20} className="text-text-sub" />
                       {unreadCount > 0 && (
                         <span
-                          className="absolute top-0 right-0 min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center text-[9px] font-bold"
+                          className="absolute top-0 right-0 min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center text-[11px] font-bold"
                           style={{ background: "var(--color-error)", color: "var(--color-surface)" }}
                         >
                           {unreadCount > 99 ? "99+" : unreadCount}

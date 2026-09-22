@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { isMiniApp } from "@/lib/miniapp";
 import {
-  Home, Map, Bot, MessagesSquare, ShoppingBag, User,
+  Home, Map, MessagesSquare, ShoppingBag, User,
   type LucideIcon,
 } from "lucide-react";
 
@@ -28,8 +28,9 @@ type Tab = { href: string; label: string; Icon: LucideIcon; wip?: boolean };
 const legacyTabs: Tab[] = [
   { href: "/", label: "홈", Icon: Home },
   { href: "/map", label: "지도", Icon: Map },
-  // 가이드 → AI집사로 라벨/아이콘 변경 (2026-07-11) — 목적지는 그대로 /tips (AI집사 챗봇 위치)
-  { href: "/tips", label: "AI집사", Icon: Bot },
+  // AI집사 탭 제거(2026-09-22 디자인 감사: 하단 탭 ≤5 규칙). 홈 헤더 Bot 아이콘·마이페이지·보호지침에서 /tips 진입 — 이중 진입점 유지.
+  // 복원: 아래 줄 주석 해제.
+  // { href: "/tips", label: "AI집사", Icon: Bot },
   { href: "/community", label: "커뮤니티", Icon: MessagesSquare },
   // 카드게임 탭 숨김 (2026-07-10) — 복원 시 아래 줄 주석 해제
   // { href: "/mypage/cards", label: "카드게임", Icon: Gamepad2 },

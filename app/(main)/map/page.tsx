@@ -2433,7 +2433,7 @@ export default function MapPage() {
 
       {/* 저작권 표시 */}
       <div className="absolute bottom-1 left-2 z-[1] pointer-events-none">
-        <span className="text-[9px]" style={{ color: "rgba(0,0,0,0.4)" }}>
+        <span className="text-[11px]" style={{ color: "rgba(0,0,0,0.4)" }}>
           © Kakao Corp. · 공공데이터포털(data.go.kr)
         </span>
       </div>
@@ -2525,7 +2525,7 @@ export default function MapPage() {
             <Globe size={18} strokeWidth={2.2} className="text-white shrink-0" />
             <div>
               <p className="text-[13px] font-bold text-white leading-tight">전체</p>
-              <p className="text-[9px] font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>전체 채팅</p>
+              <p className="text-[11px] font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>전체 채팅</p>
             </div>
           </button>
 
@@ -2593,7 +2593,7 @@ export default function MapPage() {
                   aria-hidden="true"
                 />
                 <span
-                  className="absolute -top-1.5 -right-1.5 text-[9px] font-bold px-1.5 py-0.5 chip-square text-white z-10"
+                  className="absolute -top-1.5 -right-1.5 text-[11px] font-bold px-1.5 py-0.5 chip-square text-white z-10"
                   style={{ background: "var(--color-gray-900)" }}
                 >
                   NEW
@@ -2618,7 +2618,7 @@ export default function MapPage() {
             style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "var(--shadow-raised)" }}
           >
             <p className="text-[11px] font-semibold text-text-main leading-snug">우리 동네 고양이를 등록하고 품앗이 케어해보세요</p>
-            <p className="text-[9px] text-text-light mt-0.5 leading-snug">
+            <p className="text-[11px] text-text-light mt-0.5 leading-snug">
               고양이 위치는 보안상 동 단위로 표기돼요.
               <br />
               안심하고 등록해주세요 — 내가 못 가는 시간엔 이웃이 지켜줘요
@@ -2719,7 +2719,7 @@ export default function MapPage() {
                           <span className="text-[11px] font-semibold text-text-sub">{msg.author_name ?? "익명"}</span>
                           {msg.author_level && (
                             <span
-                              className="text-[9px] font-bold px-1 py-[1px] rounded-md tabular-nums"
+                              className="text-[11px] font-bold px-1 py-[1px] rounded-md tabular-nums"
                               style={{
                                 backgroundColor: getLevelColor(msg.author_level),
                                 color: "var(--color-surface)",
@@ -2742,7 +2742,7 @@ export default function MapPage() {
                         {msg.body}
                       </div>
                       <div className={`flex items-center gap-1.5 mt-0.5 px-1 ${isMe ? "justify-end" : ""}`}>
-                        <span className="text-[9px] text-text-light">
+                        <span className="text-[11px] text-text-light">
                           {new Date(msg.created_at).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}
                         </span>
                       </div>
@@ -2854,7 +2854,7 @@ export default function MapPage() {
                       <div className="flex items-center gap-1.5">
                         <span className="text-[15px] font-semibold text-text-main truncate">{cat.name}</span>
                         {isAlerted && (
-                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md" style={{ backgroundColor: "var(--color-error)", color: "#fff" }}>경보</span>
+                          <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-md" style={{ backgroundColor: "var(--color-error)", color: "#fff" }}>경보</span>
                         )}
                       </div>
                       {cat.description && (
@@ -2863,7 +2863,7 @@ export default function MapPage() {
                       {(cat.tags ?? []).length > 0 && (
                         <div className="flex gap-1 mt-1">
                           {cat.tags.slice(0, 3).map((tag) => (
-                            <span key={tag} className="text-[9px] px-1.5 py-0.5 rounded-md" style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-text-light)" }}>{tag}</span>
+                            <span key={tag} className="text-[11px] px-1.5 py-0.5 rounded-md" style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-text-light)" }}>{tag}</span>
                           ))}
                         </div>
                       )}
@@ -3808,7 +3808,7 @@ export default function MapPage() {
                               }}
                             >
                               <span
-                                className="text-[9px] font-bold"
+                                className="text-[11px] font-bold"
                                 style={{ color: isAlert ? "var(--color-error)" : "var(--color-primary)" }}
                               >
                                 {c.author_name?.charAt(0) ?? "?"}
@@ -3823,7 +3823,7 @@ export default function MapPage() {
                           </span>
                           {c.author_level && (
                             <span
-                              className="text-[9px] font-bold px-1.5 py-[1px] rounded-md tabular-nums"
+                              className="text-[11px] font-bold px-1.5 py-[1px] rounded-md tabular-nums"
                               style={{
                                 backgroundColor: getLevelColor(c.author_level),
                                 color: "var(--color-surface)",

@@ -77,7 +77,7 @@ const hairlineStyle = (active: boolean, fill = "var(--color-text-main)"): React.
 function LevelTag({ level }: { level: number }) {
   return (
     <span
-      className="text-[9px] font-semibold px-1.5 py-[1px] tabular-nums text-text-sub"
+      className="text-[11px] font-semibold px-1.5 py-[1px] tabular-nums text-text-sub"
       style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
     >
       Lv.{level}
@@ -750,7 +750,7 @@ function CommentItem({
           </span>
           {c.is_secret && (
             <span
-              className="inline-flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-[1px] text-text-sub"
+              className="inline-flex items-center gap-0.5 text-[11px] font-semibold px-1.5 py-[1px] text-text-sub"
               style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
             >
               <Lock size={9} /> 비밀

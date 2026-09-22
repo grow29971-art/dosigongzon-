@@ -391,7 +391,7 @@ function SectionUsers({ items }: { items: UserHit[] }) {
                   <p className="text-[15px] font-semibold text-text-main truncate">{u.nickname}</p>
                   {u.admin_title && (
                     <span
-                      className="text-[10px] font-medium px-1.5 py-0.5 shrink-0 text-text-sub"
+                      className="text-[11px] font-medium px-1.5 py-0.5 shrink-0 text-text-sub"
                       style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
                     >
                       {u.admin_title}

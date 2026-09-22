@@ -106,7 +106,7 @@ export default async function PopularPostsPage() {
                     <Image src={post.images[0]} alt={post.title} fill sizes="56px" style={{ objectFit: "cover" }} />
                     {post.images.length > 1 && (
                       <span
-                        className="absolute bottom-0.5 right-0.5 text-[9px] font-semibold px-1 z-10"
+                        className="absolute bottom-0.5 right-0.5 text-[11px] font-semibold px-1 z-10"
                         style={{
                           backgroundColor: "rgba(0,0,0,0.6)",
                           color: "var(--color-surface)",
@@ -153,7 +153,7 @@ export default async function PopularPostsPage() {
                         className="w-4 h-4 rounded-full flex items-center justify-center"
                         style={{ backgroundColor: "var(--color-gray-200)" }}
                       >
-                        <span className="text-[9px] font-semibold text-text-sub">
+                        <span className="text-[11px] font-semibold text-text-sub">
                           {post.authorName.charAt(0)}
                         </span>
                       </div>
@@ -161,7 +161,7 @@ export default async function PopularPostsPage() {
                     <span className="text-[11px] text-text-sub font-semibold">{post.authorName}</span>
                     {post.authorLevel && (
                       <span
-                        className="text-[9px] font-semibold px-1 py-[0.5px] text-text-sub"
+                        className="text-[11px] font-semibold px-1 py-[0.5px] text-text-sub"
                         style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
                       >
                         Lv.{post.authorLevel}
