@@ -4,34 +4,7 @@ import { useEffect, useState } from "react";
 import { useRef } from "react";
 import PageIntroModal from "@/app/components/PageIntroModal";
 import Image from "next/image";
-import {
-  User,
-  LogOut,
-  Loader2,
-  Cat as CatIcon,
-  MessageCircle,
-  AlertTriangle,
-  MapPin,
-  ChevronRight,
-  Camera,
-  Pencil,
-  Check,
-  X,
-  MessageSquare,
-  Inbox,
-  BookOpen,
-  UserPlus,
-  Sparkles,
-  Trophy,
-  Ban,
-  ShieldCheck,
-  TrendingUp,
-  Star,
-  Heart,
-  Bot,
-  Lock,
-  FileText,
-} from "lucide-react";
+import { User, LogOut, Loader2, Cat as CatIcon, MessageCircle, AlertTriangle, MapPin, ChevronRight, Camera, Pencil, Check, X, MessageSquare, Inbox, BookOpen, UserPlus, Trophy, Ban, ShieldCheck, TrendingUp, Star, Heart, Bot, Lock, FileText, Smile, Footprints } from "lucide-react";
 import dynamic from "next/dynamic";
 const InquiryModal = dynamic(() => import("@/app/components/InquiryModal"), { ssr: false });
 const ActivityFeedPreview = dynamic(() => import("@/app/components/ActivityFeedPreview"), { ssr: false });
@@ -530,7 +503,7 @@ export default function MyPage() {
                           <span className="font-semibold text-text-main ml-auto">{perks.dailyPostLimit === 0 ? "무제한" : `${perks.dailyPostLimit}개/일`}</span>
                         </div>
                         <div className="flex items-center gap-1.5 text-[11px] text-text-sub">
-                          {perks.canUseSpecialEmoji ? <Sparkles size={14} /> : <Lock size={14} />}
+                          {perks.canUseSpecialEmoji ? <Smile size={14} /> : <Lock size={14} />}
                           <span>특별 이모지</span>
                           <span className={`font-semibold ml-auto ${perks.canUseSpecialEmoji ? "text-text-main" : "text-text-light"}`}>{perks.canUseSpecialEmoji ? "사용 가능" : "Lv.3+"}</span>
                         </div>
@@ -759,7 +732,7 @@ export default function MyPage() {
               {SHOW_JOURNEY && (
                 <UIListRow
                   href="/mypage/journey"
-                  icon={<Sparkles size={20} strokeWidth={1.8} />}
+                  icon={<Footprints size={20} strokeWidth={1.8} />}
                   title="당신의 여정"
                   subtitle="쌓아온 발자취와 따뜻한 순간들 보기"
                 />

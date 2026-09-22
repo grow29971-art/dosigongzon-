@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Sparkles } from "lucide-react";
+import { Users, PawPrint } from "lucide-react";
 
 interface SocialProof {
   activeCaretakersToday: number;
@@ -57,7 +57,7 @@ export default function SocialProofStrip() {
       {activeCaretakersToday > 0 ? (
         <Users size={20} className="shrink-0" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
       ) : (
-        <Sparkles size={20} className="shrink-0" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
+        <PawPrint size={20} className="shrink-0" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
       )}
 
       <div className="flex-1 min-w-0">

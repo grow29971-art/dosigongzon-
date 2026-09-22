@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Footprints } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getMyJourneyServer, type Milestone } from "@/lib/journey-server";
 import EmptyState from "@/app/components/ui/EmptyState";
@@ -55,7 +55,7 @@ export default async function JourneyPage() {
         {items.length === 0 ? (
           <EmptyState
             className="card p-6"
-            icon={<Sparkles size={28} strokeWidth={1.5} />}
+            icon={<Footprints size={28} strokeWidth={1.5} />}
             title="여정이 막 시작됐어요"
             desc="고양이를 등록하거나 댓글을 남기면 여기에 쌓여요."
           />

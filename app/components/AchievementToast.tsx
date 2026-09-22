@@ -70,8 +70,8 @@ export default function AchievementToast({
   const share = async () => {
     const text =
       current.kind === "level_up"
-        ? `🎉 도시공존에서 ${current.title} 달성! 우리 동네 길고양이 돌보는 중 🐾`
-        : `🏆 도시공존 '${current.title}' 업적을 해제했어요! 🐾`;
+        ? `도시공존에서 ${current.title} 달성 — 우리 동네 길고양이 돌보는 중`
+        : `도시공존 '${current.title}' 업적을 해제했어요`;
     const url = "https://dosigongzon.com";
     try {
       if (typeof navigator !== "undefined" && navigator.share) {

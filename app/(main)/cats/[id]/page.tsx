@@ -3,7 +3,7 @@ import { josa } from "@/lib/josa";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, Sparkles, Star, Heart, MessageCircle, FileText, Award, ChevronRight, HeartPulse, TriangleAlert } from "lucide-react";
+import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, Star, Heart, MessageCircle, FileText, Award, ChevronRight, HeartPulse, TriangleAlert, Check } from "lucide-react";
 import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer, getCatGuardianServer, getCatDesignatedFundServer } from "@/lib/cats-server";
 import { GENDER_MAP, HEALTH_MAP, thumbnailUrl } from "@/lib/cats-repo";
 import { catArtWalkSvg } from "@/lib/cat-art";
@@ -520,7 +520,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
             >
               <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
-                {hasTodayPhoto ? <Sparkles size={20} /> : <Camera size={20} />}
+                {hasTodayPhoto ? <Check size={20} /> : <Camera size={20} />}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-semibold text-text-main leading-tight">

@@ -6,7 +6,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, Sparkles, ArrowRight } from "lucide-react";
+import { X, ArrowRight, PawPrint } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
 const DISMISS_KEY = "dosigongzon_signup_nudge_dismissed";
@@ -83,7 +83,7 @@ export default function SignupNudgeBar() {
           marginRight: 12,
         }}
       >
-        <Sparkles size={20} className="shrink-0" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
+        <PawPrint size={20} className="shrink-0" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-text-main leading-snug">
             가입하면 고양이 등록·돌봄 기록 가능!

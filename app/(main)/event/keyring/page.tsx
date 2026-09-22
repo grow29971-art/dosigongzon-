@@ -110,7 +110,7 @@ export default function KeyringEventPage() {
       const cat = myCats?.find((c) => c.id === selectedCatId);
       setDone(true);
       setEnteredCatName(cat?.name ?? null);
-      toast.success(`${cat?.name ?? "고양이"} 모양 키링 응모 완료!`);
+      toast.success(`${cat?.name ?? "고양이"} 모양 키링 응모를 받았어요`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "응모 중 오류 발생");
     } finally {
@@ -219,7 +219,7 @@ export default function KeyringEventPage() {
               <Gift size={36} className="mx-auto mb-3 text-text-main" />
             )}
             <p className="text-[17px] font-bold text-text-main mb-2">
-              {done ? "응모 완료!" : "이미 응모하셨어요"}
+              {done ? "응모 완료" : "이미 응모하셨어요"}
             </p>
             {enteredCatName && (
               <p className="text-[13px] font-bold mb-1" style={{ color: "var(--color-primary)" }}>
@@ -231,7 +231,7 @@ export default function KeyringEventPage() {
             </p>
             <div className="flex items-center justify-center gap-1.5 mt-3 text-[13px]" style={{ color: "var(--color-primary)" }}>
               <Users size={12} />
-              <b>친구를 초대하면 추첨이 더 빨리 시작돼요!</b>
+              <b>친구를 초대하면 추첨이 더 빨리 시작돼요</b>
             </div>
             <Link
               href="/"

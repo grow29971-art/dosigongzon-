@@ -29,7 +29,7 @@ export default function HomeStreakCard({
   const headline = s === 0
     ? (hasToday ? "오늘 돌봄을 시작했어요" : "오늘 첫 돌봄을 기록해보세요")
     : hasToday
-      ? `${s}일 연속 돌봄 중!`
+      ? `${s}일 연속 돌봄 중`
       : `${s}일 연속 — 오늘도 이어가볼까요?`;
   const kstHourForSubline = new Date(
     new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }),
@@ -38,11 +38,11 @@ export default function HomeStreakCard({
   const subline = s === 0
     ? "1건만 기록해도 연속 일수가 시작돼요"
     : urgentSubline
-      ? `${s}일 연속 기록이 오늘 끊길 수 있어요. 한 줄이면 돼요!`
+      ? `${s}일 연속 기록이 오늘 끊길 수 있어요. 한 줄이면 돼요`
       : !hasToday
         ? "아직 오늘 기록이 없어요. 끊기지 않게"
         : s >= 7
-          ? "대단해요! 꾸준함이 아이들을 지켜요"
+          ? "꾸준함이 아이들을 지켜요"
           : "매일 조금씩이 가장 큰 힘이에요";
 
   const dayLabels = ["월", "화", "수", "목", "금", "토", "일"];
@@ -141,14 +141,14 @@ export default function HomeStreakCard({
           {streakInfo.longestStreak >= 2 && (
             <p className="mt-3 text-[11px] text-text-light">
               {streakInfo.isRecord
-                ? `역대 최장 기록 갱신 중! (${streakInfo.longestStreak}일)`
+                ? `역대 최장 기록 갱신 중 (${streakInfo.longestStreak}일)`
                 : `역대 최장 ${streakInfo.longestStreak}일 · 돌파까지 ${streakInfo.longestStreak - s + 1}일`}
             </p>
           )}
 
           <p className="mt-1.5 text-[11px] text-text-light">
             {progress >= 100
-              ? "주간 개근 달성! +5점 · 업적 잠금 해제"
+              ? "주간 개근 달성 · +5점 · 업적 잠금 해제"
               : s >= 100
               ? "100일 연속 · +100점 유지 중"
               : s >= 30

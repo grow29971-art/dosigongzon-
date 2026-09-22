@@ -18,9 +18,9 @@ const CATEGORIES = Object.entries(CATEGORY_MAP) as [PostCategory, typeof CATEGOR
 const MAX_IMAGES = 4;
 
 // 돌봄 부탁 글 양식 — 위치는 쪽지로만(안전 계약). 빈 내용일 때만 자동 채움.
-const SITTER_TEMPLATE = `📅 기간: 예) 9/1(월)~9/5(금) 아침 1회
-🐱 아이들: 예) 2마리 · 사료는 제가 준비해둘게요
-🙏 부탁: 밥·물만 부탁드려요
+const SITTER_TEMPLATE = `기간: 예) 9/1(월)~9/5(금) 아침 1회
+아이들: 예) 2마리 · 사료는 제가 준비해둘게요
+부탁: 밥·물만 부탁드려요
 ※ 정확한 밥자리 위치는 공개글 대신 쪽지로만 알려드려요`;
 
 export default function WritePage() {

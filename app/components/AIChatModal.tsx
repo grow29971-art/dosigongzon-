@@ -34,7 +34,7 @@ export default function AIChatModal({
     {
       id: 0,
       role: "ai",
-      text: `안녕하세요 ${addressName}! 도시공존 AI 집사예요.\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!`,
+      text: `안녕하세요 ${addressName}, 도시공존 AI 집사예요.\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!`,
     },
   ]);
 
@@ -45,7 +45,7 @@ export default function AIChatModal({
         m.id === 0 && m.role === "ai"
           ? {
               ...m,
-              text: `안녕하세요 ${addressName}! 도시공존 AI 집사예요.\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!`,
+              text: `안녕하세요 ${addressName}, 도시공존 AI 집사예요.\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!`,
             }
           : m,
       ),

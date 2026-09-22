@@ -178,7 +178,7 @@ export default function WeeklyCheckinCard() {
 
       {justGranted > 0 && (
         <p className="text-[13px] font-medium text-center mt-2" style={{ color: "var(--color-sage)" }}>
-          {justGranted}P 적립! 쇼핑에서 1P=1원으로 쓸 수 있어요
+          {justGranted}P 적립 · 쇼핑에서 1P=1원으로 쓸 수 있어요
         </p>
       )}
       <p className="text-[11px] text-text-light mt-2 text-center">

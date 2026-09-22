@@ -12,7 +12,7 @@ export default function MonthlyReportShareButton({ text }: { text: string }) {
       return;
     }
     await navigator.clipboard.writeText(text);
-    toast.success("리포트 내용을 클립보드에 복사했어요!");
+    toast.success("리포트 내용을 클립보드에 복사했어요");
   };
 
   return (

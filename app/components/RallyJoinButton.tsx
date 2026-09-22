@@ -117,7 +117,7 @@ export default function RallyJoinButton() {
         {done ? (
           <>
             <Check size={16} />
-            참여 완료! 8월 8일에 만나요
+            참여 완료 — 8월 8일에 만나요
           </>
         ) : (
           <>

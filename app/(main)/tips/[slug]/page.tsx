@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink, Eye, Clock, ChevronRight, List as ListIcon, Sparkles } from "lucide-react";
+import { ArrowLeft, ExternalLink, Eye, Clock, ChevronRight, List as ListIcon, FileText } from "lucide-react";
 import {
   getTipBySlugServer,
   getRelatedTipsServer,
@@ -379,7 +379,7 @@ function RelatedRow({ tip }: { tip: Tip }) {
           className="shrink-0 rounded-lg flex items-center justify-center"
           style={{ width: 56, height: 56, background: "var(--color-gray-100)" }}
         >
-          <Sparkles size={18} strokeWidth={1.4} className="text-text-light" />
+          <FileText size={18} strokeWidth={1.4} className="text-text-light" />
         </div>
       )}
       <div className="flex-1 min-w-0">

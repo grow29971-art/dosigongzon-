@@ -5,7 +5,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Sparkles, ChevronRight, Eye, Clock, ExternalLink, Pin, BookOpen, Bot, Siren, Baby, Stethoscope, Snowflake, Pill, Heart, Phone, Scale, AlertTriangle } from "lucide-react";
+import { ArrowLeft, ChevronRight, Eye, Clock, ExternalLink, Pin, BookOpen, Bot, Siren, Baby, Stethoscope, Snowflake, Pill, Heart, Phone, Scale, AlertTriangle, FileText, UtensilsCrossed } from "lucide-react";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import PageIntroModal from "@/app/components/PageIntroModal";
@@ -146,7 +146,7 @@ export default async function TipsIndexPage() {
               { href: "/protection/kitten-guide", label: "새끼 발견", sub: "이런 땐 데려와요", Icon: Baby },
               { href: "/protection/disease-guide", label: "질병 신호", sub: "증상 체크", Icon: Heart },
               { href: "/protection/trapping-guide", label: "TNR·포획", sub: "안전한 절차", Icon: Stethoscope },
-              { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles },
+              { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: UtensilsCrossed },
               { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake },
               { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill },
               { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone },
@@ -191,7 +191,7 @@ export default async function TipsIndexPage() {
       {/* ── 꿀팁 매거진 헤더 (토스식 17px 위계) ── */}
       <div className="px-4 mb-2.5">
         <div className="flex items-center gap-1.5 px-1">
-          <Sparkles size={15} className="text-text-sub" />
+          <BookOpen size={15} className="text-text-sub" />
           <h2 className="text-[17px] font-bold text-text-main tracking-tight">
             도시공존 꿀팁 매거진
           </h2>
@@ -222,7 +222,7 @@ export default async function TipsIndexPage() {
             className="text-center py-16 rounded-xl bg-white"
             style={{ border: "1px solid var(--color-border)" }}
           >
-            <Sparkles size={36} strokeWidth={1.2} className="mx-auto mb-3 text-text-light opacity-30" />
+            <BookOpen size={36} strokeWidth={1.2} className="mx-auto mb-3 text-text-light opacity-30" />
             <p className="text-[13px] text-text-sub font-semibold">아직 등록된 꿀팁이 없어요</p>
             <p className="text-[11px] text-text-light mt-1">
               곧 유용한 길고양이 돌봄 정보를 올려드릴게요
@@ -321,7 +321,7 @@ function TipCard({ tip }: { tip: Tip }) {
         {photo ? (
           <Image src={photo} alt={tip.title} fill sizes="72px" style={{ objectFit: "cover" }} />
         ) : (
-          <Sparkles size={20} strokeWidth={1.4} className="text-text-light" />
+          <FileText size={20} strokeWidth={1.4} className="text-text-light" />
         )}
       </div>
     </Link>

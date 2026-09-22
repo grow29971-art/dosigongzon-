@@ -5,30 +5,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  MapPin,
-  Wind,
-  Sun,
-  Cloud,
-  CloudRain,
-  CloudSnow,
-  CloudLightning,
-  CloudDrizzle,
-  CloudFog,
-  Loader2,
-  WifiOff,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp,
-  Sparkles,
-  Bell,
-  Bot,
-  Search,
-  ShoppingBag, Flame, PawPrint,
-  FileText, HandHeart, ShieldCheck,
-  Award, Cat as CatIcon, ClipboardList, Shield, Heart, MessageCircle,
-  Gift, BookOpen, Trophy, Cake, Newspaper, Lightbulb,
-} from "lucide-react";
+import { MapPin, Wind, Sun, Cloud, CloudRain, CloudSnow, CloudLightning, CloudDrizzle, CloudFog, Loader2, WifiOff, ChevronRight, ChevronDown, ChevronUp, Bell, Bot, Search, ShoppingBag, Flame, PawPrint, FileText, HandHeart, ShieldCheck, Award, Cat as CatIcon, ClipboardList, Shield, Heart, MessageCircle, Gift, BookOpen, Trophy, Cake, Newspaper, Lightbulb, MessageSquare } from "lucide-react";
 import dynamic from "next/dynamic";
 // 업적 토스트 — 업적 잠금 해제 시에만 보임. ssr 끄고 lazy.
 const AchievementToast = dynamic(() => import("@/app/components/AchievementToast"), { ssr: false });
@@ -494,7 +471,7 @@ export default function HomeAuthed({
             kind: "level_up",
             emoji: lvl.emoji,
             title: `Lv.${lvl.level} ${lvl.title}`,
-            subtitle: "레벨이 올랐어요! 새 혜택을 확인해보세요",
+            subtitle: "레벨이 올랐어요. 새 혜택을 확인해보세요",
             color: "var(--color-primary)",
           });
         }
@@ -922,14 +899,14 @@ export default function HomeAuthed({
               const tips: { text: string }[] = [];
 
               if (t <= -10) {
-                tips.push({ text: "극한 추위! 숨숨집 내부에 핫팩을 넣어주세요. 물이 얼지 않게 자주 교체해주세요." });
+                tips.push({ text: "극한 추위예요. 숨숨집 내부에 핫팩을 넣어주세요. 물이 얼지 않게 자주 교체해주세요." });
               } else if (t <= 0) {
                 tips.push({ text: "물이 얼 수 있어요. 따뜻한 물로 하루 2회 이상 교체해주세요." });
                 tips.push({ text: "스티로폼 숨숨집에 짚이나 담요를 깔아주세요." });
               } else if (t <= 5) {
                 tips.push({ text: "쌀쌀해요. 쉼터 점검하고 입구가 바람을 막는지 확인해주세요." });
               } else if (t >= 33) {
-                tips.push({ text: "폭염 주의! 그늘진 곳에 시원한 물을 놓아주세요. 사료가 상하기 쉬워요." });
+                tips.push({ text: "폭염이에요. 그늘진 곳에 시원한 물을 놓아주세요. 사료가 상하기 쉬워요." });
               } else if (t >= 28) {
                 tips.push({ text: "더워요. 물을 자주 갈아주고 그늘에 밥을 놓아주세요." });
               }
@@ -949,7 +926,7 @@ export default function HomeAuthed({
               }
 
               if (tips.length === 0 && t >= 10 && t <= 25) {
-                tips.push({ text: "돌봄하기 좋은 날씨예요. 오늘도 아이들을 챙겨주셔서 감사해요!" });
+                tips.push({ text: "돌봄하기 좋은 날씨예요. 오늘도 아이들을 챙겨주셔서 감사해요." });
               }
 
               // 날씨 조건 → 관련 쇼핑 카테고리 맥락 다리
@@ -1663,7 +1640,7 @@ export default function HomeAuthed({
           border: "1px solid var(--color-border)",
         }}
       >
-        <Sparkles size={20} className="shrink-0 mt-0.5 text-text-sub" />
+        <Lightbulb size={20} className="shrink-0 mt-0.5 text-text-sub" />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] text-text-main leading-relaxed">
             {fact}
@@ -1852,7 +1829,7 @@ export default function HomeAuthed({
             }}
           >
             <div className="flex items-center gap-2 min-w-0">
-              <Sparkles size={16} className="text-text-sub" />
+              <MessageSquare size={16} className="text-text-sub" />
               <span className="text-[15px] font-medium text-text-main truncate">
                 지난 방문 이후 새 글 {newPostsCount}개
               </span>
@@ -1923,7 +1900,7 @@ export default function HomeAuthed({
           border: "1px solid var(--color-border)",
         }}
       >
-        <Sparkles size={20} className="shrink-0 text-text-sub" />
+        <BookOpen size={20} className="shrink-0 text-text-sub" />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-text-main">꿀팁게시판</p>
           <p className="text-[13px] text-text-sub mt-0.5">

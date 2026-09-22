@@ -8,33 +8,7 @@ import { unstable_cache } from "next/cache";
 import { thumbnailUrl } from "@/lib/cats-repo";
 import { catArtWalkSvg } from "@/lib/cat-art";
 import CatSpotlightRow, { type SpotlightCat } from "@/app/components/CatSpotlightRow";
-import {
-  MapPin,
-  Heart,
-  Sparkles,
-  ShieldCheck,
-  ChevronRight,
-  PawPrint,
-  Bell,
-  Download,
-  BriefcaseMedical,
-  Cat as CatIcon,
-  Stethoscope,
-  Pill,
-  Utensils,
-  Home as HomeIcon,
-  Hand,
-  Code2,
-  Bot,
-  Lock,
-  Radio,
-  Mail,
-  Dices,
-  Ghost,
-  Ban,
-  Camera,
-  FileText,
-} from "lucide-react";
+import { MapPin, Heart, ShieldCheck, ChevronRight, PawPrint, Bell, Download, BriefcaseMedical, Cat as CatIcon, Stethoscope, Pill, Utensils, Home as HomeIcon, Hand, Code2, Bot, Lock, Radio, Mail, Dices, Ghost, Ban, Camera, FileText, BadgeCheck } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
 import { getGuCounts } from "@/lib/region-counts";
@@ -766,7 +740,7 @@ export default async function HomeLanding({
             desc="건강 상태가 위험한 아이는 동네에 빠르게 알려 구조로 이어집니다."
           />
           <ValueRow
-            icon={<Sparkles size={20} />}
+            icon={<BadgeCheck size={20} />}
             title="무료 · 광고 없음"
             desc="광고 없는 무료 서비스. 시민의 자발적 기록으로 운영됩니다."
           />

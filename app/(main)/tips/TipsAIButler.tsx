@@ -4,7 +4,7 @@
 // 채팅 카드 + 자주 묻는 질문. 비로그인 시 로그인 유도 카드.
 
 import Link from "next/link";
-import { Bot, Sparkles } from "lucide-react";
+import { Bot, MessageSquare } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import AIChatCard from "@/app/components/AIChatCard";
 
@@ -50,7 +50,7 @@ export default function TipsAIButler() {
           <AIChatCard />
 
           <div className="flex items-center gap-1.5 mt-4 mb-2 px-1">
-            <Sparkles size={13} className="text-text-sub" />
+            <MessageSquare size={13} className="text-text-sub" />
             <h2 className="text-[13px] font-bold text-text-main tracking-tight">AI 집사에게 자주 묻는 질문</h2>
           </div>
           <div className="grid grid-cols-2 gap-2">

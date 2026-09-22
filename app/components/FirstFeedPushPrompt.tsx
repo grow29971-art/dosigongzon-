@@ -73,7 +73,7 @@ function FirstFeedPushPrompt({ catName }: { catName: string }) {
   if (done) {
     return (
       <p className="mt-2.5 text-[13px] font-bold text-center text-text-main">
-        좋아요! {catName} 소식이 오면 살짝 알려드릴게요
+        {catName} 소식이 오면 살짝 알려드릴게요
       </p>
     );
   }

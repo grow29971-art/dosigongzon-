@@ -6,7 +6,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sparkles, X } from "lucide-react";
+import { X, Award } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 
@@ -74,7 +74,7 @@ export default function FoundingMemberBanner() {
         <X size={16} style={{ color: "var(--color-text-light)" }} />
       </button>
       <div className="flex items-start gap-3 pr-7">
-        <Sparkles size={20} className="shrink-0 mt-0.5" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
+        <Award size={20} className="shrink-0 mt-0.5" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-text-main mb-0.5">
             창립 멤버에 합류하셨어요

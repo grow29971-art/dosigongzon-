@@ -68,7 +68,7 @@ export default function ExperimentPage() {
       }
       setNotice(
         data.already
-          ? { kind: "ok", text: "오늘 이 활동은 이미 기록되어 있어요. 고마워요!" }
+          ? { kind: "ok", text: "오늘 이 활동은 이미 기록되어 있어요" }
           : { kind: "ok", text: `${EXPERIMENT_ACTIVITY_MAP[type].label} 기록 완료. 오늘도 고생하셨어요.` },
       );
       await load();

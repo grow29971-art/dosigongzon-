@@ -4,44 +4,7 @@ import { josa } from "@/lib/josa";
 import { CAT_TAG_PRESETS, toggleCatTag } from "@/lib/cat-tags";
 import { GEOLOCATION_ENABLED, GEO_DISABLED_MESSAGE } from "@/lib/geo";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import {
-  X,
-  MapPin,
-  Heart,
-  Plus,
-  Loader2,
-  Send,
-  AlertTriangle,
-  MessageCircle,
-  Globe,
-  Shield,
-  Phone,
-  Copy,
-  Check,
-  Camera,
-  ThumbsUp,
-  ThumbsDown,
-  Flag,
-  ChevronDown,
-  ChevronUp,
-  Trash2,
-  Star,
-  LocateFixed,
-  Stethoscope,
-  Clock,
-  ChevronRight,
-  Pencil,
-  Save,
-  Share2,
-  Search,
-  SlidersHorizontal,
-  Sparkles,
-  PhoneCall,
-  PawPrint,
-  QrCode,
-  Users,
-  Lock,
-} from "lucide-react";
+import { X, MapPin, Heart, Plus, Loader2, Send, AlertTriangle, MessageCircle, Globe, Shield, Phone, Copy, Check, Camera, ThumbsUp, ThumbsDown, Flag, ChevronDown, ChevronUp, Trash2, Star, LocateFixed, Stethoscope, Clock, ChevronRight, Pencil, Save, Share2, Search, SlidersHorizontal, PhoneCall, PawPrint, QrCode, Users, Lock } from "lucide-react";
 import UIChip from "@/app/components/ui/Chip";
 import dynamic from "next/dynamic";
 // 모달·고급 패널은 첫 페인트 후로 코드 스플리팅 (열기 전엔 다운로드 안 함)
@@ -2733,7 +2696,7 @@ export default function MapPage() {
                 <div className="flex flex-col items-center justify-center h-full text-text-light">
                   <MessageCircle size={32} strokeWidth={1.2} className="mb-2 opacity-30" />
                   <p className="text-[13px]">아직 대화가 없어요</p>
-                  <p className="text-[11px] mt-0.5">첫 메시지를 보내보세요!</p>
+                  <p className="text-[11px] mt-0.5">첫 메시지를 남겨보세요</p>
                 </div>
               )}
               {chatMessages.map((msg) => {
@@ -3312,7 +3275,7 @@ export default function MapPage() {
                   >
                     <div className="flex items-center gap-2.5">
                       {hasTodayPhoto ? (
-                        <Sparkles size={18} className="shrink-0 text-text-sub" />
+                        <Check size={18} className="shrink-0 text-text-sub" />
                       ) : (
                         <Camera size={18} className="shrink-0 text-text-sub" />
                       )}

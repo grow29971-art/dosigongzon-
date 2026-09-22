@@ -33,7 +33,7 @@ export default function ShareCatButton({ catId, name, region, description, urgen
       : `${name} · ${region}`;
     const desc = urgent
       ? description
-        ? `건강 상태 위험! ${description.slice(0, 80)}`
+        ? `건강 상태 위험 — ${description.slice(0, 80)}`
         : `${region}의 ${name}이(가) 건강 상태가 위험해요. 근처 길집사의 도움이 필요합니다 🚨`
       : description
       ? description.slice(0, 100)
