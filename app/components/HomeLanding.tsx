@@ -37,6 +37,11 @@ const SHOW_ABOUT_PILLARS = false;
 // 2026-09-18 랜딩 다이어트 — 21섹션·10화면·가입 CTA 4개였다. 첫 방문자 동선(스포트라이트·히어로·안전·시작법·
 // 최근 등록·동네·FAQ·만든 사람)만 남기고 나머지는 이 플래그로 숨김(삭제 아님).
 const SHOW_LANDING_EXTRAS = false;
+// 2026-09-22 디자인 감사(taste-skill 밀도 규칙): 랜딩은 첫인상이다. 기술 용어 5줄(RLS·EXIF·WebP)·3단계 안내·특징 4줄은 히어로와 중복 → 숨김.
+// 위치 보호는 두 줄 요약 + FAQ 링크로 대체. 되살리려면 플래그만 true.
+const SHOW_SAFETY_DETAIL = false;
+const SHOW_START_STEPS = false;
+const SHOW_WHY_SECTION = false;
 
 // 공용 스타일 — 흰 면 + 1px 헤어라인 섹션 컨테이너 (그림자 없음)
 const PANEL: React.CSSProperties = {
@@ -405,11 +410,13 @@ export default async function HomeLanding({
               정확한 자리는 누구도 모릅니다
             </p>
             <p className="text-[13px] text-text-sub leading-relaxed">
-              좌표는 <b className="font-semibold text-text-main">동(洞) 단위</b>까지만 처리됩니다.
-              여러 겹의 방어로 더 좁힐 수 없게 막아두었어요.
+              등록할 때부터 좌표를 흐려서 저장하고, 사진의 위치 정보는 지웁니다.
+              걱정되는 아이는 내가 승인한 이웃에게만 보이게 할 수 있어요.
             </p>
           </div>
         </div>
+        {!SHOW_SAFETY_DETAIL && <TextLink href="/faq" label="위치 보호 방식 자세히 보기" />}
+        {SHOW_SAFETY_DETAIL && (<>
 
         {/* Private Circle — 가장 강한 신뢰 도구. 학대 공포 원천 차단. */}
         <div className="mb-3 overflow-hidden" style={PANEL}>
@@ -482,10 +489,12 @@ export default async function HomeLanding({
             강한 억제력입니다. 도시공존은 그 시선을 모으려고 만들어진 도구예요.
           </p>
         </div>
+        </>)}
 
       </section>
 
       {/* 이렇게 시작해보세요 — 3단계 액션 가이드 */}
+      {SHOW_START_STEPS && (
       <section className="px-5 mt-10">
         <SectionHeader title="이렇게 시작해보세요" desc="처음이라도 괜찮아요. 1분이면 첫 한 줄을 남길 수 있어요." />
         <div style={PANEL}>
@@ -510,6 +519,7 @@ export default async function HomeLanding({
         </div>
         <TextLink href="/guide" label="10가지 기능 한 화면에서 보기" />
       </section>
+      )}
 
       {/* 1000명 이벤트 배너 — 가입 전환 강력 트리거 */}
       {eventSlot}
@@ -725,6 +735,7 @@ export default async function HomeLanding({
       {adoptionSlot}
 
       {/* 핵심 가치 */}
+      {SHOW_WHY_SECTION && (
       <section className="px-5 mt-6 cv-auto">
         <SectionHeader title="왜 도시공존인가요?" />
         <div style={PANEL}>
@@ -751,6 +762,7 @@ export default async function HomeLanding({
           />
         </div>
       </section>
+      )}
 
       </>)}
       {/* FAQ (SEO 본문) */}
