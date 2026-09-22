@@ -22,7 +22,10 @@ function toPath(href: Href): string {
 }
 const Link = forwardRef<HTMLAnchorElement, Props>(function Link({ href, replace, scroll, prefetch, shallow, onClick, children, ...rest }, ref) {
   void scroll; void prefetch; void shallow;
-  const to = toPath(href);
+  let to = toPath(href);
+  // 자사 사이트 절대 URL(https://dosigongzon.com/...)은 앱 안 라우트로
+  const self = /^https?:\/\/(www\.)?dosigongzon\.com(\/[^\s]*)?$/i.exec(to);
+  if (self) to = self[2] || "/";
   if (/^(https?:)?\/\//.test(to) || to.startsWith("mailto:") || to.startsWith("tel:")) {
     return (
       <a

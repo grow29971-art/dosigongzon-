@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState, type ComponentType } from "react";
-import { HashRouter, Navigate, Route, Routes, useLocation, useParams } from "react-router";
+import { HashRouter, Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router";
 import { AuthProvider } from "@/lib/auth-context";
 import { ToastProvider } from "@/app/components/Toast";
 import BottomNav from "@/app/components/BottomNav";
@@ -28,6 +28,13 @@ const P = (load: () => Promise<{ default: ParamsPage }>) => {
   const L = lazy(load);
   return <Suspense fallback={<Loading />}><WithParams Page={L} /></Suspense>;
 };
+
+function BackToLogin() {
+  const nav = useNavigate();
+  return (
+    <button type="button" className="m-4 text-[14px] underline" style={{ color: "var(--color-text-sub)" }} onClick={() => nav("/")}>← 돌아가기</button>
+  );
+}
 
 function Loading() {
   return <div className="flex items-center justify-center min-h-[50vh] text-sm" style={{ color: "var(--color-text-light)" }}>불러오는 중…</div>;
@@ -127,17 +134,25 @@ export default function App() {
   }, []);
 
   if (authed === null) return <Loading />;
-  if (!authed) return <Login onLoggedIn={() => setAuthed(true)} />;
 
   return (
     // HashRouter: 토스 정적 호스팅은 /mypage 같은 중첩 경로의 직접 로드(새로고침·백그라운드 복귀·본 앱 코드의 location.href 대입)를
     // 보장하지 않는다. 해시 라우팅이면 전체 로드가 항상 index.html로 떨어진다.
     <HashRouter>
-      <AuthProvider>
-        <ToastProvider>
-          <Shell />
-        </ToastProvider>
-      </AuthProvider>
+      {authed ? (
+        <AuthProvider>
+          <ToastProvider>
+            <Shell />
+          </ToastProvider>
+        </AuthProvider>
+      ) : (
+        // 비로그인: 로그인 화면 + 약관·처리방침(앱 안에서 읽을 수 있어야 한다 — 외부 브라우저 의존 금지)
+        <Routes>
+          <Route path="/terms" element={<div className="mx-auto w-full max-w-lg"><BackToLogin />{S(() => import("@/app/terms/page"))}</div>} />
+          <Route path="/privacy" element={<div className="mx-auto w-full max-w-lg"><BackToLogin />{S(() => import("@/app/privacy/page"))}</div>} />
+          <Route path="*" element={<Login onLoggedIn={() => setAuthed(true)} />} />
+        </Routes>
+      )}
     </HashRouter>
   );
 }

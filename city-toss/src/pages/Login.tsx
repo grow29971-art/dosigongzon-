@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { Device } from "@apps-in-toss/web-framework";
+import { Link } from "react-router";
 import { loginWithToss } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 
 interface Props { onLoggedIn: () => void }
 
-const TERMS_URL = "https://dosigongzon.com/terms";
-const PRIVACY_URL = "https://dosigongzon.com/privacy";
-
 // 진입 화면 — 앱인토스 체크리스트: 서비스 설명 + 토스 로그인만. 자사 로그인 없음.
+// 약관·처리방침은 외부 브라우저가 아니라 앱 안 라우트(/terms·/privacy)로 연다 — 자사 사이트 이동 금지·"외부 링크가 열리지 않아요" 반려(-4·-6) 대응.
 export default function Login({ onLoggedIn }: Props) {
   const [agreed, setAgreed] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -55,8 +53,8 @@ export default function Login({ onLoggedIn }: Props) {
       <label className="flex items-start gap-2.5 text-[14px] my-4" style={{ color: "var(--color-text-sub)" }}>
         <input type="checkbox" className="w-5 h-5 mt-[1px]" style={{ accentColor: "var(--color-primary)" }} checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
         <span>
-          <button className="underline" type="button" style={{ color: "var(--color-text-main)" }} onClick={() => Device.openURL(TERMS_URL)}>이용약관</button>과{" "}
-          <button className="underline" type="button" style={{ color: "var(--color-text-main)" }} onClick={() => Device.openURL(PRIVACY_URL)}>개인정보처리방침</button>에 동의해요
+          <Link to="/terms" className="underline" style={{ color: "var(--color-text-main)" }}>이용약관</Link>과{" "}
+          <Link to="/privacy" className="underline" style={{ color: "var(--color-text-main)" }}>개인정보처리방침</Link>에 동의해요
         </span>
       </label>
 

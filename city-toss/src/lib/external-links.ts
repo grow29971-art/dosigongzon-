@@ -9,7 +9,15 @@ export function installExternalLinkBridge(): void {
     if (/^(mailto:|tel:|sms:)/i.test(href)) return true;
     try { return new URL(href, location.href).origin !== location.origin; } catch { return false; }
   };
-  const open = (href: string) => { void Device.openURL(href).catch((e) => console.warn("[openURL]", href, e)); };
+  // 자사 사이트(dosigongzon.com) 링크는 외부로 보내지 않고 앱 안 해시 라우트로 — 체크리스트 "자사 서비스 이동 유도 금지".
+  const SELF = /^(www\.)?dosigongzon\.com$/i;
+  const open = (href: string) => {
+    try {
+      const u = new URL(href, location.href);
+      if (SELF.test(u.hostname)) { location.hash = "#" + u.pathname + u.search; return; }
+    } catch { /* 스킴 URL 등 */ }
+    void Device.openURL(href).catch((e) => console.warn("[openURL]", href, e));
+  };
 
   document.addEventListener("click", (e) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey) return;
