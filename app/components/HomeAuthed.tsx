@@ -578,9 +578,9 @@ export default function HomeAuthed({
   const SHOW_CHECKIN = true;              // 주간 돌봄 보드(쇼핑 포인트 적립) — 코인·냥상자·일일출석은 2026-08-29 폐지
   const SHOW_POPULAR_CATS = false;        // 2026-08-15 홈 다이어트(B11): 돌봄왕 TOP3·인기 TOP5 랭킹 숨김 — WAU 한 자리에 랭킹은 공허. 7/16 회의로 켰던 것, 유저 늘면 복원
   const SHOW_EVENT_BANNERS = false;       // 파운딩멤버 등 이벤트 배너
-  const SHOW_CIRCLE_ENTRY = true;         // 서클 빠른 진입 — "혼자→같이" 리텐션 앵커(2026-07-16 회의)
-  const SHOW_INVITE = true;               // 초대 섹션 — 바이럴 유입(catCount>0 가드). (2026-07-16 회의)
-  const SHOW_SOCIAL_PROOF = true;         // 사회적 증명 스트립 — 동네 활발함 신호(데이터 없으면 자동 숨김). (2026-07-16 회의)
+  const SHOW_CIRCLE_ENTRY = false;        // 2026-09-22 디자인 감사: 홈 카드 다이어트(마이페이지 서클 항목도 이미 숨김). 서클 빠른 진입 — "혼자→같이" 리텐션 앵커(2026-07-16 회의)
+  const SHOW_INVITE = false;              // 2026-09-22 디자인 감사: 홈 카드 다이어트(초대 링크 복사 0건). 초대 섹션 — 바이럴 유입(catCount>0 가드). (2026-07-16 회의)
+  const SHOW_SOCIAL_PROOF = false;        // 2026-09-22 디자인 감사: 홈 카드 다이어트(랜딩과 중복). 사회적 증명 스트립 — 동네 활발함 신호(데이터 없으면 자동 숨김). (2026-07-16 회의)
   // 날씨→쇼핑 카테고리 다리 — 2026-07-21 쇼핑 동선 회의로 ON.
   // 2026-08-07 OFF: 상품이 전부 비활성이라 이 링크만 유일하게 빈 쇼핑으로 보내는
   // 데드엔드가 됐다(ShopPreviewStrip은 0개면 자동 숨김인데 이 다리는 가드가 없었다).
