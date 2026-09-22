@@ -42,6 +42,7 @@ const SHOW_LANDING_EXTRAS = false;
 const SHOW_SAFETY_DETAIL = false;
 const SHOW_START_STEPS = false;
 const SHOW_WHY_SECTION = false;
+const SHOW_HERO_META = false;
 
 // 공용 스타일 — 흰 면 + 1px 헤어라인 섹션 컨테이너 (그림자 없음)
 const PANEL: React.CSSProperties = {
@@ -229,16 +230,16 @@ export default async function HomeLanding({
           <span className="text-primary">한 화면에서 함께 돌봐요.</span>
         </h1>
         <p className="text-[15px] text-text-sub mt-3 leading-relaxed">
-          길집사가 길고양이의
-          <b className="font-semibold text-text-main"> TNR·건강·급식</b> 기록을 실시간으로 남기고,
-          긴급한 아이를 동네 이웃과 빠르게 잇는 전국 길고양이 돌봄 지도예요.
+          동네 고양이를 지도에 올리고, 밥·건강 기록을 이웃과 함께 남겨요.
         </p>
+        {/* 2026-09-22 디자인 감사: "PWA 지원·비공개 좌표" 기술 캡션과 방문자 카운터는 히어로에서 뺐다(SHOW_HERO_META).
+            위치 보호는 아래 섹션이, 방문자 수는 사회적 증명이 아니라 소음이었다. */}
+        {SHOW_HERO_META && (<>
         <p className="text-[13px] mt-2 leading-relaxed text-text-light">
           급식소 정확 좌표는 비공개 · 광고 없는 무료 운영 · PWA 지원
         </p>
-
-        {/* 방문자 수 실시간 (client) */}
         <TodayVisitors />
+        </>)}
 
         {/* 사회적 증명 — 오늘 활동 유저 + 이번 주 신규 */}
         <SocialProofStrip />
@@ -272,7 +273,7 @@ export default async function HomeLanding({
         <p className="mt-2 text-center text-[11px] text-text-light">
           {/* 같은 페이지 아래(:606)에 "1초 가입"이 있어 숫자가 서로 달랐다.
               카카오·구글 OAuth 한 번이므로 그쪽에 맞춘다. (2026-08-09) */}
-          1초 가입 · 광고 없는 무료 운영
+          카카오·구글로 바로 가입 · 광고 없음
         </p>
 
         {/* 처음이신가요? 가이드 링크 */}
