@@ -66,3 +66,10 @@
 - `GET metrics?postIds=a,b&commentIds=x,y` → `{ ok, posts:[{id,viewCount,likeCount,commentCount,createdAt,replies:[{authorName,body,createdAt}]}], comments:[{id,postId,createdAt,repliesAfter,authorReplied}] }`
   (각 50개까지. replies 는 운영·비밀 댓글을 뺀 최신 8개). exe 의 회고(자가 학습) 루프가 1·6·24·72·168시간 뒤에 부른다.
 - 공통 실패: `{ ok:false, error }` + 4xx/5xx. 텍스트 생성은 exe 쪽(Claude)이 하고 서버는 검증·저장만 한다.
+
+## 6. 마케팅봇 → `/api/bot/marketing/*` (2026-09-26)
+
+- 소비자: 네이버 블로그 자동 발행(`C:\Users\grow2\city-marketing\blog`)·스레드봇의 주간 보고.
+- 인증: 5절과 같은 `Bearer <COMMUNITY_BOT_SECRET | CRON_SECRET>`.
+- `GET signups?since=<ISO>` (기본 7일 전) → `{ ok, since, total, bySource:{ naverblog:n, threads:n, instagram:n, naver:n, direct:n, unknown:n, ... } }`
+  `profiles.created_at >= since` 인 가입을 `signup_source` 별로 센다(없으면 `unknown` — 출처는 가입 후 첫 로그인 때 기록되므로 막 가입한 사람은 잠시 unknown). 개인정보 없음.
