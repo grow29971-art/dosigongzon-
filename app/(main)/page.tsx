@@ -6,7 +6,7 @@ import { cookies, headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import HomeAuthed from "@/app/components/HomeAuthed";
 import HomeLanding from "@/app/components/HomeLanding";
-import HelloScreen, { HELLO_SEEN_COOKIE } from "@/app/components/HelloScreen";
+import HelloScreen from "@/app/components/HelloScreen";
 import WeeklyHotPosts from "@/app/components/WeeklyHotPosts";
 import AdoptionSeekingSection from "@/app/components/AdoptionSeekingSection";
 import Event1000Banner from "@/app/components/Event1000Banner";
@@ -30,7 +30,8 @@ export default async function HomePage() {
   }
   // 비로그인 첫 방문엔 첫 방문 화면(HelloScreen)을 홈 위에 덮는다 — 버튼을 누르면 쿠키로 다시 안 뜬다.
   // HomeLanding은 그대로 SSR되고, 검색 로봇에겐 덮개를 안 씌운다(전면 가림막은 모바일 검색 순위 감점 대상).
-  const seen = (await cookies()).has(HELLO_SEEN_COOKIE);
+  // 쿠키 이름은 HelloScreen과 같게 — "use client" 모듈의 상수는 서버에서 import하면 문자열이 아니라 클라이언트 참조가 된다.
+  const seen = (await cookies()).has("hello_seen");
   const isCrawler = /bot|crawl|spider|slurp|yeti|daum|facebookexternalhit|kakaotalk-scrap/i.test((await headers()).get("user-agent") ?? "");
   return (
     <>

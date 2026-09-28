@@ -5,10 +5,8 @@ import Link from "next/link";
 
 // 첫 방문 화면 — 그림 한 장 + 버튼 하나. /hello(인스타 링크)와 비로그인 첫 방문 홈(오버레이)에서 같이 쓴다.
 // 버튼을 누르면 hello_seen 쿠키를 심어 홈에서 다시 뜨지 않게 한다(app/(main)/page.tsx가 읽음).
-export const HELLO_SEEN_COOKIE = "hello_seen";
-
 function markSeen() {
-  document.cookie = `${HELLO_SEEN_COOKIE}=1; max-age=31536000; path=/; samesite=lax`;
+  document.cookie = `hello_seen=1; max-age=31536000; path=/; samesite=lax`;
 }
 
 export default function HelloScreen({ overlay = false }: { overlay?: boolean }) {
