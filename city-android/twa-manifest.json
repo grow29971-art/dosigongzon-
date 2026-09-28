@@ -20,8 +20,8 @@
     "path": "C:\\Users\\1\\Desktop\\city-android\\signing.keystore",
     "alias": "my-key-alias"
   },
-  "appVersionName": "1.4",
-  "appVersionCode": 15,
+  "appVersionName": "1.5",
+  "appVersionCode": 16,
   "shortcuts": [
     {
       "name": "지도",
