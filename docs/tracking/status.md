@@ -125,7 +125,7 @@
    선행 조건 2개(기록 0 수신자 분기·측정 이벤트) 붙여 보류. **사장님 손 5종**: 9/6 글 답글·조롱 댓글 숨김·
    기록자 개인 쪽지·exe 간격 상향·텔레그램 새 글 24h 내 답변.
 
-9. **첫 방문 화면·인스타 랜딩 (2026-09-28)** — `app/components/HelloScreen.tsx`(Canva AI 일러스트 `public/images/hello-hero.jpg` + "우리 동네 고양이 보기"→/map). `/hello`(인스타 링크 `?utm_source=instagram`, noindex)와 비로그인 첫 방문 홈 덮개로 같이 쓴다. 버튼을 누르면 `hello_seen` 쿠키(1년)로 재노출 안 함, 검색 로봇 UA엔 덮개 미적용(HomeLanding SSR 유지). 같은 날 Meta Pixel CSP 차단(/tr 전송 0건) 수정(ea68fc88).
+9. **첫 방문 화면·인스타 랜딩 (2026-09-28)** — `app/components/HelloScreen.tsx`(Canva AI 일러스트 `public/images/hello-hero.jpg` + "우리 동네 고양이 보기"→/map). `/hello`(인스타 링크 `?utm_source=instagram`, noindex)와 비로그인 첫 방문 홈 덮개로 같이 쓴다. 버튼을 누르면 `hello_seen` 쿠키(1년)로 재노출 안 함, 검색 로봇 UA엔 덮개 미적용(HomeLanding SSR 유지). 다른 페이지로 들어온 첫 방문도 `FirstVisitGate`(루트 레이아웃, 클라 판단)가 덮고 '둘러보기'로 닫아 보던 화면 유지(782a7cd4; 가입·로그인·결제·약관·관리·미니앱 제외). 같은 날 Meta Pixel CSP 차단(/tr 전송 0건) 수정(ea68fc88).
 
 ## 차단 요인
 
