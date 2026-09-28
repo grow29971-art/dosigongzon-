@@ -1,7 +1,7 @@
 // ══════════════════════════════════════════
 // 주문 취소 API
 // - pending 주문: 상태만 취소로 변경 (결제 전이라 PG 호출 없음)
-// - paid 주문: 토스 결제 취소(환불) API 호출 후 취소 처리 + 재고 복구
+// - 결제 후 주문: 409 — 환불은 /api/payment/refund 경로로만
 // 본인 주문 또는 관리자만 가능.
 // ══════════════════════════════════════════
 
@@ -9,7 +9,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
-import { safePgError, safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
+import { safePgError } from "@/lib/log-sanitize";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -82,86 +82,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, status: "cancelled" });
   }
 
-  // ── paid: 토스 환불 후 취소 ──
-  if (order.status !== "paid") {
-    return NextResponse.json(
-      { error: "배송이 시작된 주문은 고객센터를 통해 취소할 수 있어요." },
-      { status: 409 },
-    );
-  }
-  if (!order.payment_key) {
-    return NextResponse.json({ error: "결제 정보를 찾을 수 없어요." }, { status: 409 });
-  }
-
-  const secretKey = process.env.TOSS_SECRET_KEY;
-  if (!secretKey) {
-    console.error("[payment/cancel] TOSS_SECRET_KEY missing");
-    return NextResponse.json({ error: "결제 설정이 아직 완료되지 않았어요." }, { status: 503 });
-  }
-
-  const basicAuth = Buffer.from(`${secretKey}:`).toString("base64");
-  try {
-    const res = await fetch(
-      `https://api.tosspayments.com/v1/payments/${encodeURIComponent(order.payment_key)}/cancel`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ cancelReason: "구매자 주문 취소" }),
-      },
-    );
-    if (!res.ok) {
-      const toss = (await res.json().catch(() => ({}))) as { message?: string };
-      console.error("[payment/cancel] toss cancel failed:", safeTossError(toss));
-      return NextResponse.json(
-        { error: toss.message ?? "결제 취소에 실패했어요. 고객센터로 문의해주세요." },
-        { status: 400 },
-      );
-    }
-  } catch (e) {
-    // 예외 객체에 요청 URL(payment_key 포함)이 섞일 수 있어 메시지만 기록
-    console.error("[payment/cancel] toss request error:", safeErrorMessage(e, [order.payment_key]));
-    return NextResponse.json({ error: "결제 취소 중 오류가 발생했어요. 잠시 후 다시 시도해주세요." }, { status: 502 });
-  }
-
-  // 취소 확정 — 조건부 전환(paid→cancelled)으로 이중 처리 방지.
-  // 실제로 행을 바꾼(=이 요청이 이긴) 경우에만 재고 복구 → 동시 취소 시 재고 이중 복구 차단.
-  const { data: transitioned, error: updateError } = await svc
-    .from("orders")
-    .update({ status: "cancelled", updated_at: new Date().toISOString() })
-    .eq("id", order.id)
-    .eq("status", "paid")
-    .select("id");
-  if (updateError) {
-    console.error("[payment/cancel] status update failed after refund:", safePgError(updateError), order.id);
-  }
-
-  if (transitioned && transitioned.length > 0) {
-    type Item = { product_id: string | null; quantity: number };
-    for (const item of (order.items ?? []) as Item[]) {
-      if (!item.product_id) continue;
-      const { error: stockError } = await svc.rpc("increment_product_stock", {
-        p_product_id: item.product_id,
-        p_qty: item.quantity,
-      });
-      if (stockError) console.error("[payment/cancel] stock restore failed:", safePgError(stockError));
-    }
-
-    // 사용 포인트 반환 — 조건부 전환을 이긴 요청만 실행되므로 이중 반환 없음.
-    // reason 고정(order-cancel:{id}) + 유니크 제약이 추가 방어선.
-    const pointsUsed = (order as { points_used?: number }).points_used ?? 0;
-    if (pointsUsed > 0) {
-      const { error: pointError } = await svc.rpc("grant_points", {
-        p_user_id: order.user_id,
-        p_amount: pointsUsed,
-        p_reason: `order-cancel:${order.id}`,
-        p_note: `주문 ${order.order_number} 취소 포인트 반환`,
-      });
-      if (pointError) console.error("[payment/cancel] point refund failed (manual check):", safePgError(pointError), order.id);
-    }
-  }
-
-  return NextResponse.json({ ok: true, status: "cancelled" });
+  // 결제 후 주문(paid 이상)은 여기서 환불하지 않는다 — 환불 원장·멱등키·송장 심사가 있는
+  // /api/payment/refund(유저) · /api/admin/refunds(관리자)로만. 예전엔 paid면 송장 여부와 무관하게
+  // 즉시 전액 환불해 발송 후 자동환불 차단(H-2)을 우회할 수 있었다(2026-09-28 감사).
+  return NextResponse.json(
+    { error: "결제가 끝난 주문은 주문 상세의 환불 요청으로 진행해 주세요." },
+    { status: 409 },
+  );
 }
