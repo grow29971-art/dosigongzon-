@@ -41,10 +41,12 @@ const cspDirectives = [
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://dapi.kakao.com https://*.daumcdn.net https://cdn.jsdelivr.net https://challenges.cloudflare.com https://*.tosspayments.com https://connect.facebook.net https://www.facebook.com",
   // postcode.map.kakao.com(신규)/postcode.map.daum.net(구): 주문서의 우편번호 검색 iframe
   // *.tosspayments.com / pay.toss.im: 토스페이먼츠 결제위젯·결제창
-  "frame-src https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com https://postcode.map.kakao.com https://postcode.map.daum.net https://*.tosspayments.com https://pay.toss.im",
+  "frame-src https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com https://postcode.map.kakao.com https://postcode.map.daum.net https://*.tosspayments.com https://pay.toss.im https://www.facebook.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
-  "form-action 'self'",
+  // www.facebook.com(frame-src·form-action): Meta Pixel이 /tr 전송을 숨은 iframe + form POST로 한다 —
+  // 없으면 PageView를 포함한 전 이벤트가 CSP에 막혀 한 건도 안 나간다(9/28 실측: /tr 성공 0건).
+  "form-action 'self' https://www.facebook.com",
   "object-src 'none'",
   "upgrade-insecure-requests",
 ].join("; ");
