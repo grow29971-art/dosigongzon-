@@ -301,6 +301,7 @@ export default function TermsPage() {
           <h2 className="text-[15px] font-bold text-text-main mb-2">제16조 (분쟁해결)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>운영자는 회원이 제기하는 정당한 의견이나 불만을 반영하고, 피해 보상 처리를 위하여 피해 보상 처리 기구를 운영합니다.</li>
+            <li>쇼핑몰 거래에 관한 분쟁의 해결은 공정거래위원회 고시 「소비자분쟁해결기준」을 따르며, 회원은 한국소비자원 등 분쟁조정기관에 조정을 신청할 수 있습니다.</li>
             <li>운영자와 회원 간 발생한 분쟁에 관한 소송은 대한민국 법원을 관할 법원으로 합니다.</li>
             <li>운영자와 회원 간 제기된 소송에는 대한민국 법을 적용합니다.</li>
           </ol>

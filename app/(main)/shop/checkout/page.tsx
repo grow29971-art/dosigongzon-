@@ -588,6 +588,13 @@ export default function CheckoutPage() {
             )}
           </section>
 
+          {/* 결제 접점 고지 — 민법 제5조 미성년자 취소권(약관 제9조의3과 같은 내용, 2026-09-28) */}
+          <p className="text-[11px] text-text-light leading-relaxed">
+            주문 내용을 확인했으며 결제에 동의합니다. 만 19세 미만이 법정대리인의 동의 없이 결제한 경우 본인 또는
+            법정대리인이 계약을 취소할 수 있어요. 교환·반품·환불은{" "}
+            <Link href="/shop/policy" className="underline">쇼핑몰 이용안내</Link>를 따라요.
+          </p>
+
           {error && (
             <p className="text-[13px] font-semibold text-center" style={{ color: "var(--color-error)" }}>{error}</p>
           )}
