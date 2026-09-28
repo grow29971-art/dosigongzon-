@@ -63,6 +63,17 @@ export default function ShopPolicyPage() {
           <Row label="문의" value={CONTACT_EMAIL} />
         </section>
 
+        {/* 호스팅·결제 — 전자상거래법 제10조(호스팅 사업자 표시)·제13조(결제 방법). 판매자 정보 블록은
+            토스 카드사 심사 중 동결이라 별도 구획으로 둔다(2026-09-28). */}
+        <section className="py-4" style={sectionStyle}>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">호스팅·결제</h2>
+          <Row label="호스팅 제공자" value="Vercel Inc." />
+          <Row label="결제대행" value="토스페이먼츠(주)" />
+          <p className="mt-1.5 text-[13px] text-text-sub leading-relaxed">
+            결제는 신용·체크카드(간편결제 포함)로만 받으며, 결제대금예치(에스크로) 서비스는 이용하지 않아요.
+          </p>
+        </section>
+
         {/* 배송 안내 */}
         <section className="py-4" style={sectionStyle}>
           <h2 className="text-[15px] font-bold text-text-main mb-2.5">배송 안내</h2>
@@ -87,6 +98,10 @@ export default function ShopPolicyPage() {
             </Item>
             <Item>상품 하자·오배송의 경우 배송비 전액을 판매자가 부담해요.</Item>
             <Item>
+              받은 상품이 표시·광고 내용과 다르거나 계약과 다르게 배송된 경우에는 <b className="text-text-main">받은 날부터 3개월 이내</b>,
+              그 사실을 안 날(또는 알 수 있었던 날)부터 30일 이내에 교환·반품할 수 있어요. (전자상거래법 제17조 제3항)
+            </Item>
+            <Item>
               다음의 경우에는 교환·반품이 어려워요: 사용·훼손으로 상품 가치가 떨어진 경우,
               포장 개봉으로 재판매가 곤란한 경우, 시간이 지나 재판매가 어려울 정도로 상품
               가치가 하락한 경우.
@@ -108,7 +123,14 @@ export default function ShopPolicyPage() {
         <section className="py-4" style={sectionStyle}>
           <h2 className="text-[15px] font-bold text-text-main mb-2.5">환불 안내</h2>
           <ul className="space-y-1.5">
-            <Item>환불은 결제한 수단으로 진행되며, 카드 결제 취소는 카드사 사정에 따라 3~5영업일이 걸릴 수 있어요.</Item>
+            <Item>
+              반품 상품을 돌려받은 날(배송 전 취소는 취소 신청일)부터 <b className="text-text-main">3영업일 이내</b>에 환불해요.
+              카드 결제는 이 기간 안에 카드사에 결제 취소를 요청하며, 실제 카드 대금 반영은 카드사 사정에 따라 3~5영업일이 더 걸릴 수 있어요.
+            </Item>
+            <Item>
+              판매자 사정으로 환불이 늦어지면, 늦어진 기간만큼 연 15%의 지연배상금을 함께 지급해요. (전자상거래법 제18조 제2항, 시행령 제21조의3)
+            </Item>
+            <Item>환불할 때 그 주문으로 모인 후원 금액도 함께 조정되며, 쇼핑몰 홈의 후원 현황에 반영돼요.</Item>
             <Item>배송 시작 전 주문은 주문 상세에서 직접 취소할 수 있어요.</Item>
           </ul>
         </section>
