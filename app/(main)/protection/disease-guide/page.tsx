@@ -557,7 +557,7 @@ export default function DiseaseGuidePage() {
 
       {/* 헤더 */}
       <div className="flex items-center gap-2 mb-5">
-        <Link
+        <Link data-page-back
           href="/protection"
           className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
           aria-label="보호지침으로"

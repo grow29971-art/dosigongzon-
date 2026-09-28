@@ -28,7 +28,7 @@ export default function CollectionPage() {
     <div className="min-h-dvh bg-surface pb-28">
       {/* 헤더 */}
       <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-3" style={{ background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)" }}>
-        <Link href="/" className="w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform -ml-2" aria-label="홈으로">
+        <Link data-page-back href="/" className="w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform -ml-2" aria-label="홈으로">
           <ChevronLeft size={22} className="text-text-main" />
         </Link>
         <h1 className="text-[17px] font-bold text-text-main">우리 동네 고양이 도감</h1>

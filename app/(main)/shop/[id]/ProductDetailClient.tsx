@@ -111,7 +111,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     <div className="pb-32">
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-1">
-        <button
+        <button data-page-back
           onClick={() => router.back()}
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="뒤로 가기"

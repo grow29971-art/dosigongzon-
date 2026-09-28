@@ -45,7 +45,7 @@ export default async function CelebratePage() {
   return (
     <div className="min-h-dvh pb-16" style={{ background: "var(--color-surface)" }}>
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
-        <Link
+        <Link data-page-back
           href="/"
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
           style={{ background: "var(--color-gray-100)" }}

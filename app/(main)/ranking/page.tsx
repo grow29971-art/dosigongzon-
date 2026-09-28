@@ -38,7 +38,7 @@ export default async function RankingPage() {
     <div className="pb-24 min-h-screen" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 */}
       <div className="px-5 pt-12 pb-5">
-        <Link
+        <Link data-page-back
           href="/mypage"
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3"
         >

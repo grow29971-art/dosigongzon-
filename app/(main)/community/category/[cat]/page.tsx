@@ -172,7 +172,7 @@ export default function CategoryPage() {
     <div className="pb-24">
       {/* ── 헤더 ── */}
       <div className="px-4 pt-14 pb-3">
-        <button
+        <button data-page-back
           onClick={() => router.push("/community")}
           className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-4 press-strong transition-transform"
         >

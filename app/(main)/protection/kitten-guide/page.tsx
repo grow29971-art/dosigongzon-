@@ -151,7 +151,7 @@ export default function KittenGuidePage() {
       />
 
       <div className="flex items-center gap-3 mb-6">
-        <Link
+        <Link data-page-back
           href="/protection"
           className="p-2 -ml-2 press-strong transition-transform"
           aria-label="뒤로"

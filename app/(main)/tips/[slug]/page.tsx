@@ -184,7 +184,7 @@ export default async function TipDetailPage({ params }: Params) {
             sizes="(max-width: 720px) 100vw, 720px"
             style={{ objectFit: "cover" }}
           />
-          <Link
+          <Link data-page-back
             href="/tips"
             className="absolute top-12 left-4 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center press-strong transition-transform"
             aria-label="꿀팁 매거진"
@@ -194,7 +194,7 @@ export default async function TipDetailPage({ params }: Params) {
         </div>
       ) : (
         <div className="px-4 pt-12">
-          <Link
+          <Link data-page-back
             href="/tips"
             className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
             aria-label="꿀팁 매거진"

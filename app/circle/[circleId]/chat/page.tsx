@@ -317,7 +317,7 @@ export default function CircleChatPage() {
           paddingTop: "max(12px, env(safe-area-inset-top))",
         }}
       >
-        <Link
+        <Link data-page-back
           href="/mypage/circle"
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="뒤로"

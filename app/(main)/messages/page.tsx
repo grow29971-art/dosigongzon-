@@ -361,7 +361,7 @@ function MessagesPage() {
   return (
     <div className="pb-24">
       <div className="flex items-center gap-3 px-4 pt-14 pb-3">
-        <button onClick={() => router.back()} className="p-2 -ml-2 press-strong transition-transform">
+        <button data-page-back onClick={() => router.back()} className="p-2 -ml-2 press-strong transition-transform">
           <ArrowLeft size={24} className="text-text-main" />
         </button>
         <h1 className="text-[20px] font-bold text-text-main">쪽지함</h1>

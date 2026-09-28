@@ -79,7 +79,7 @@ export default function NewsDetailPage({
         )}
 
         {/* 뒤로가기 */}
-        <button
+        <button data-page-back
           type="button"
           onClick={() => router.back()}
           aria-label="뒤로가기"

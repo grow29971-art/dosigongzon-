@@ -12,7 +12,7 @@ export default function TermsPage() {
   return (
     <div className="px-5 pt-14 pb-12 max-w-lg mx-auto">
       <div className="flex items-center gap-3 mb-6">
-        <Link
+        <Link data-page-back
           href="/signup"
           className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center"
         >

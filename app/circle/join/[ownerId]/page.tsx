@@ -123,7 +123,7 @@ export default function CircleJoinPage() {
   return (
     <div className="min-h-dvh px-6 pt-14 pb-10" style={{ background: "var(--color-surface)" }}>
       <div className="flex items-center gap-2 mb-6">
-        <Link
+        <Link data-page-back
           href="/mypage/circle"
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="뒤로"

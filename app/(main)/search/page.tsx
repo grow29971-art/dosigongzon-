@@ -127,7 +127,7 @@ function SearchPageInner() {
         style={{ background: "var(--color-surface)", borderBottom: "1px solid var(--color-divider)" }}
       >
         <div className="flex items-center gap-2">
-          <button
+          <button data-page-back
             onClick={() => router.back()}
             className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
             aria-label="뒤로"

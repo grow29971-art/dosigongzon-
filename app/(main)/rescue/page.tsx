@@ -28,7 +28,7 @@ export default async function RescuePage() {
     <div className="pb-24 min-h-screen" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 — 긴급성 톤 */}
       <div className="px-5 pt-12 pb-4">
-        <Link
+        <Link data-page-back
           href="/"
           className="flex items-center gap-1 text-[13px] font-semibold mb-3 text-text-sub press-strong"
         >

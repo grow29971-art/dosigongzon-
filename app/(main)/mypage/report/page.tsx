@@ -60,7 +60,7 @@ export default async function MyCareReportPage() {
 
       {/* 화면용 헤더 */}
       <div className="report-no-print px-4 pt-12 pb-2 flex items-center gap-2">
-        <Link
+        <Link data-page-back
           href="/mypage"
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="마이페이지로 돌아가기"

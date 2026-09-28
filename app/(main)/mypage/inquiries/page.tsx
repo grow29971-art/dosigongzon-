@@ -90,7 +90,7 @@ export default function MyInquiriesPage() {
     <div className="px-4 pt-14 pb-24 max-w-[720px] mx-auto">
       {/* 헤더 */}
       <div className="mb-5">
-        <button
+        <button data-page-back
           onClick={() => router.push("/mypage")}
           className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
         >

@@ -495,7 +495,7 @@ export default function ActivityRegionsPage() {
     <div className="pb-24" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-5 pt-14 pb-3 flex items-center gap-3 bg-surface sticky top-0 z-40" style={{ borderBottom: "1px solid var(--color-border)" }}>
-        <button
+        <button data-page-back
           onClick={() => router.back()}
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="뒤로"

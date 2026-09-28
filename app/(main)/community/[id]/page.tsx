@@ -335,7 +335,7 @@ export default function PostDetailPage({
     <div className="pb-24 overflow-x-hidden">
       {/* ── 헤더 ── */}
       <div className="flex items-center px-4 pt-14 pb-3 gap-2">
-        <button
+        <button data-page-back
           onClick={() => router.back()}
           className="p-2 -ml-2 press-strong transition-transform"
           aria-label="뒤로"

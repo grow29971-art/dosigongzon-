@@ -212,7 +212,7 @@ export default function MemorialPage() {
       <div className="relative px-4 pb-28" style={{ paddingTop: "max(env(safe-area-inset-top), 16px)" }}>
         {/* 헤더 */}
         <div className="flex items-center gap-2 py-3">
-          <Link
+          <Link data-page-back
             href="/map"
             className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
             style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}

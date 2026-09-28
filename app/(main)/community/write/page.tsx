@@ -166,7 +166,7 @@ export default function WritePage() {
     <div className="pb-24">
       {/* ── 헤더 ── */}
       <div className="flex items-center justify-between px-4 pt-14 pb-3">
-        <button onClick={() => router.back()} className="p-2 -ml-2 press-strong transition-transform">
+        <button data-page-back onClick={() => router.back()} className="p-2 -ml-2 press-strong transition-transform">
           <ArrowLeft size={24} className="text-text-main" />
         </button>
         <h1 className="text-lg font-bold text-text-main">글쓰기</h1>

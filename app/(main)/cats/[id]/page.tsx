@@ -143,7 +143,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
 
       {/* 헤더 (뒤로 가기) — 비로그인 진입자는 외부 공유로 들어온 경우가 많아 홈으로 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
-        <Link
+        <Link data-page-back
           href={currentUserId ? "/map" : "/"}
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
           style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}

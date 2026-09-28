@@ -56,7 +56,7 @@ export default async function PopularPostsPage() {
     <div className="pb-24" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-3 flex items-center gap-3">
-        <Link
+        <Link data-page-back
           href="/community"
           className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
           aria-label="커뮤니티"

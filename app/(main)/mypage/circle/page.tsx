@@ -367,7 +367,7 @@ export default function CirclePage() {
     <div className="min-h-dvh pb-6" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-3 flex items-center gap-2 sticky top-0 z-10" style={{ background: "var(--color-surface)" }}>
-        <Link
+        <Link data-page-back
           href="/mypage"
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
           style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}

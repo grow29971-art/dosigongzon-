@@ -262,7 +262,7 @@ export default function GuidePage() {
       />
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
-        <Link
+        <Link data-page-back
           href="/"
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
           style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)" }}

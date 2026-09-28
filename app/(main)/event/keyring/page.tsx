@@ -135,7 +135,7 @@ export default function KeyringEventPage() {
     <div className="min-h-dvh pb-16" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-3 flex items-center gap-3">
-        <Link
+        <Link data-page-back
           href="/"
           className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
           aria-label="홈"

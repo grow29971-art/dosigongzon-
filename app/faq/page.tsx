@@ -634,7 +634,7 @@ export default function FaqPage() {
       <main className="mx-auto w-full max-w-2xl px-4 pb-24 pt-3 bg-surface">
         {/* 헤더 */}
         <div className="mb-6 flex items-center gap-2">
-          <Link
+          <Link data-page-back
             href="/"
             className="flex h-9 w-9 items-center justify-center rounded-full press-strong"
             style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)" }}

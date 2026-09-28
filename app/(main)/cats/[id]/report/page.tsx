@@ -68,7 +68,7 @@ export default async function CareReportPage({ params }: { params: Params }) {
 
       {/* 화면용 헤더 */}
       <div className="report-no-print px-4 pt-12 pb-2 flex items-center gap-2">
-        <Link
+        <Link data-page-back
           href={`/cats/${cat.id}`}
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
           style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}

@@ -66,7 +66,7 @@ export default function BlockedUsersPage() {
     <div className="pb-24" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
-        <Link
+        <Link data-page-back
           href="/mypage"
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="마이페이지로"

@@ -54,7 +54,7 @@ export function AdminHeader({
   const router = useRouter();
   return (
     <div className="mb-4">
-      <button
+      <button data-page-back
         type="button"
         onClick={() => router.push(back)}
         className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong"

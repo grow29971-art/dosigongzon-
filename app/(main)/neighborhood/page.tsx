@@ -84,7 +84,7 @@ export default function NeighborhoodPage() {
       {/* ── 헤더 ── */}
       <div className="px-5 pt-14 pb-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <button
+          <button data-page-back
             onClick={() => router.back()}
             className="p-2 -ml-2 press-strong transition-transform"
           >

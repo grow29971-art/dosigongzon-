@@ -40,7 +40,7 @@ export default function ShopPolicyPage() {
   return (
     <div className="pb-24">
       <div className="px-4 pt-12 pb-2 flex items-center gap-1">
-        <Link
+        <Link data-page-back
           href="/shop"
           className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="쇼핑몰로 돌아가기"
