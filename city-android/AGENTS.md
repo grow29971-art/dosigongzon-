@@ -14,7 +14,10 @@ Bubblewrap 기반 TWA(Trusted Web Activity) 빌드 유닛. dosigongzon.com을 �
 
 - 시작 도메인은 dosigongzon.com. 도메인·서명 연결은 웹 쪽 `public/.well-known/assetlinks.json`과
   쌍이다 — 한쪽만 바꾸면 앱이 브라우저 강등된다.
-- 서명 키스토어는 이 저장소에 없다(Desktop 컴퓨터에만 존재, 비밀번호 미기록 — 사장님 확인 필요).
+- 서명 키스토어는 이 저장소에 없다. 구 업로드 키는 비밀번호 분실로 2026-09-28 Play Console에 **업로드 키 재설정 요청**
+  (사유: 비밀번호 잊어버림). 새 업로드 키 = `C:\Users\grow2\Documents\city-upload-key-20260928\upload.keystore`
+  (alias `upload`, 비밀번호는 같은 폴더 PASSWORD.txt, SHA-256 55:97:AB:7C:…:AF:03). 승인 전까지는 새 키로 서명한 AAB 업로드 불가.
+  앱 서명 키(Play 보관)는 그대로라 assetlinks.json 변경 불필요.
   **키스토어 없이 재서명·키 교체를 시도하지 않는다** — 같은 앱으로의 업데이트가 영구 불가가 된다.
 - 빌드 산출물(aab/apk)이 저장소에 커밋돼 있는 것은 과거 출시본 보존 목적 — 덮어쓰지 말고 새
   파일명으로 추가한다.
