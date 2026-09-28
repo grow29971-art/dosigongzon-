@@ -2,6 +2,7 @@
 
 ## 쇼핑 결제·환불 감사 결함 — 결제 오픈 게이트 (2026-09-28)
 
+- **9/28 조치**: 옛 취소 API 결제 후 환불 제거(f3b48f49)·관리자 드롭다운 결제 후 취소 차단(87e271c2)·구매 적립 회수+등급 제외(c432705b)·결제키 없는 주문 대사(58dddc23) 배포. 치명 1건은 `box/supabase_shop_order_items_lock_migration.sql` **실행 대기**. 아래 나머지는 미해결.
 - 3관점(주문·결제 / 환불·반품 / 전자상거래법) 읽기 전용 감사. 결제 게이트가 꺼져 있어 현재 피해 0, **PAYMENT_ENABLED=true 전 필수**.
 - 치명: `order_items_insert_own`(box/supabase_shop_migration.sql:147)이 부모 주문 상태를 안 봄 → 결제 끝난 주문에 상품 끼워넣기 → 발주 크론이 무료 발송.
   수정 = 정책에 `o.status='pending' and o.payment_key is null` (SQL 실행 게이트).
