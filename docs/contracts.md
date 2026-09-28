@@ -54,11 +54,11 @@
 - `GET personas` → `{ ok, nicknames:[...], voices:[{id,voice}], personas:[...구버전 호환], stats:{postsToday,commentsToday,repliesToday,postsCap,commentsCap,repliesCap,recentBotTitles,recentNicknames,...} }`
 - `GET candidates?minAgeHours=1&limit=10` → `{ ok, candidates:[{id,category,title,content,authorName,commentCount,createdAt,staffComments}] }`
   (자유·돌봄 부탁·임보·입양 글 — 긴급·중고마켓 제외, 숨김 아님, 봇 글 아님, 봇 댓글 2개 미만, 1시간~7일). `&own=1` 이면 반대로 **봇 글** 중 봇 최상위 댓글이 2개 미만인 것
-  (사장님 2026-09-16: 내 글에도 다른 닉네임으로 댓글). `POST comment` 는 봇 글이면 글쓴이와 다른 닉네임만 받고 글당 2개·같은 닉 1개 상한.
+  (사장님 2026-09-16: 내 글에도 다른 닉네임으로 댓글). `POST comment` 는 봇 글이면 글쓴이와 다른 닉네임만 받고 글당 4개·같은 닉 1개 상한(9/28 2→4).
 - `POST post` `{nickname,title,content}` → `{ ok, postId, nickname, url }`. 자유게시판 고정, 운영 배지 강제,
   하루 15개 상한(429, 2026-09-16 자동 모드 시간당 글에 맞춰 상향), 같은 제목 중복(409), 링크 금지(400). 닉네임은 풀에 있거나 한글·영문·숫자 2~12자.
 - `POST comment` `{nickname,postId,body}` → `{ ok, commentId, nickname, pushed, pushFailed, url }`. 자유·돌봄 부탁·임보·입양 이용자 글(긴급·마켓 400),
-  글당 봇 댓글 2개·같은 닉 1개(409), 하루 40개 상한(429). 글쓴이 푸시는 4절 페이로드 계약.
+  글당 봇 댓글 4개·같은 닉 1개(409), 하루 40개 상한(429). 글쓴이 푸시는 4절 페이로드 계약.
 - `GET reply-candidates?limit=10` → `{ ok, candidates:[{commentId,postId,postTitle,postNickname,postExcerpt,authorName,body,createdAt}] }`
   (최근 14일 봇 글의 이용자 댓글 중 운영 답글 없는 것).
 - `POST reply` `{postId,parentId,body}` → `{ ok, commentId, nickname, pushed, pushFailed, url }`. 닉네임은 글 작성자로 고정,
