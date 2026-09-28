@@ -19,6 +19,7 @@ import {
   type OrderStatus,
 } from "@/lib/refund-policy";
 import { safePgError, safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
+import { revokePurchaseReward } from "@/lib/purchase-reward";
 
 // orders 행 중 환불 판정·실행에 필요한 부분.
 // refund_* 컬럼은 마이그레이션 전 배포 호환을 위해 optional로 읽는다(없으면 none/0 취급).
@@ -292,6 +293,9 @@ export async function executeFullRefund(
       console.error("[refund-executor] point refund failed (manual check):", safePgError(pointError), order.id);
     }
   }
+
+  // 구매 적립 회수 — 전액환불이므로 적립분 전부(잔액 한도)
+  await revokePurchaseReward(svc, order, order.user_id);
 
   return { ok: true, balanceAfter: tossBalanceAfter };
 }

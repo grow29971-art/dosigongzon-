@@ -15,7 +15,7 @@ interface RewardOrder {
 
 /**
  * 결제 완료된 주문에 구매 적립 포인트 지급.
- * 등급 = 이 유저의 과거 결제완료(paid_at not null) 주문 수(이 주문 제외).
+ * 등급 = 이 유저의 과거 결제완료(paid_at not null) 주문 수(이 주문·취소·환불 주문 제외).
  * 반환: 적립된 포인트(멱등 재호출·미적립 시 0).
  */
 export async function grantPurchaseReward(
@@ -34,6 +34,7 @@ export async function grantPurchaseReward(
     .select("id", { count: "exact", head: true })
     .eq("user_id", memberId)
     .not("paid_at", "is", null)
+    .not("status", "in", "(cancelled,refunded)") // 결제→환불 반복으로 등급 올리기 차단(2026-09-28)
     .neq("id", order.id);
 
   const { rate } = purchaseRewardTier(count ?? 0);
@@ -54,4 +55,39 @@ export async function grantPurchaseReward(
     return 0;
   }
   return ok === true ? pts : 0;
+}
+
+/**
+ * 전액 취소·환불된 주문의 구매 적립 회수. 적립 원장(purchase-reward:{id})의 금액만큼 차감하되,
+ * 이미 써 버려 잔액이 모자라면 남은 만큼만 회수하고 부족분은 로그로 남긴다.
+ * reason 고정(purchase-reward-revoke:{id}) + point_ledger unique(user_id, reason)로 이중 회수 없음.
+ */
+export async function revokePurchaseReward(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  svc: SupabaseClient<any, any, any>,
+  order: { id: string; order_number: string },
+  memberId: string | null,
+): Promise<void> {
+  if (!memberId) return;
+  const { data: granted } = await svc
+    .from("point_ledger").select("amount")
+    .eq("user_id", memberId).eq("reason", `purchase-reward:${order.id}`).maybeSingle();
+  const earned = (granted as { amount?: number } | null)?.amount ?? 0;
+  if (earned <= 0) return;
+
+  const { data: wallet } = await svc.from("user_points").select("balance").eq("user_id", memberId).maybeSingle();
+  const take = Math.min(earned, (wallet as { balance?: number } | null)?.balance ?? 0);
+  if (take < earned) {
+    console.error(`[purchase-reward] revoke shortfall ${earned - take}P (already spent) order=${order.id}`);
+  }
+  if (take <= 0) return;
+  const { error } = await svc.rpc("spend_points", {
+    p_user_id: memberId,
+    p_amount: take,
+    p_reason: `purchase-reward-revoke:${order.id}`,
+    p_note: `주문 ${order.order_number} 취소·환불로 구매 적립 회수`,
+  });
+  if (error && !String(error.message || "").toLowerCase().includes("duplicate")) {
+    console.error("[purchase-reward] revoke failed:", error.code ?? error.message, order.id);
+  }
 }

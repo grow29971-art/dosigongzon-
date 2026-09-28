@@ -18,7 +18,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { safePgError, maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { maxPointsUsable } from "@/lib/points-config";
-import { grantPurchaseReward } from "@/lib/purchase-reward";
+import { grantPurchaseReward, revokePurchaseReward } from "@/lib/purchase-reward";
 import { donationForItem, embeddedCostPrice, type EmbeddedCost } from "@/lib/donation-calc";
 
 export const maxDuration = 60;
@@ -384,6 +384,7 @@ export async function POST(req: Request) {
       });
       if (pointError) console.error("[payment/webhook] point refund failed:", safePgError(pointError), order.id);
     }
+    await revokePurchaseReward(svc, order, order.user_id);
     return NextResponse.json({ ok: true, action: "cancelled_sync" });
   }
 
