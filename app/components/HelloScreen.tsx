@@ -9,7 +9,9 @@ function markSeen() {
   document.cookie = `hello_seen=1; max-age=31536000; path=/; samesite=lax`;
 }
 
-export default function HelloScreen({ overlay = false }: { overlay?: boolean }) {
+// onDismiss가 있으면(홈이 아닌 페이지로 들어온 첫 방문) 첫 버튼은 지도로 보내지 않고 덮개만 닫는다 —
+// 공유받은 고양이 상세 등 보려던 화면을 빼앗지 않기 위해.
+export default function HelloScreen({ overlay = false, onDismiss }: { overlay?: boolean; onDismiss?: () => void }) {
   return (
     <main
       className={`${overlay ? "fixed inset-0 z-[100]" : "relative min-h-dvh"} overflow-hidden bg-black text-white`}
@@ -35,14 +37,25 @@ export default function HelloScreen({ overlay = false }: { overlay?: boolean }) 
             동네 길집사들이 함께 기록해요
           </p>
 
-          <Link
-            href="/map"
-            onClick={markSeen}
-            className="mt-8 flex h-14 w-full items-center justify-center rounded-lg text-[17px] font-bold text-white press-strong transition-transform"
-            style={{ background: "var(--color-primary)" }}
-          >
-            우리 동네 고양이 보기
-          </Link>
+          {onDismiss ? (
+            <button
+              type="button"
+              onClick={() => { markSeen(); onDismiss(); }}
+              className="mt-8 flex h-14 w-full items-center justify-center rounded-lg text-[17px] font-bold text-white press-strong transition-transform"
+              style={{ background: "var(--color-primary)" }}
+            >
+              둘러보기
+            </button>
+          ) : (
+            <Link
+              href="/map"
+              onClick={markSeen}
+              className="mt-8 flex h-14 w-full items-center justify-center rounded-lg text-[17px] font-bold text-white press-strong transition-transform"
+              style={{ background: "var(--color-primary)" }}
+            >
+              우리 동네 고양이 보기
+            </Link>
+          )}
           <Link href="/login" onClick={markSeen} className="mt-4 inline-block text-[14px] underline opacity-70">
             이미 계정이 있어요
           </Link>
