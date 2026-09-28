@@ -2,9 +2,11 @@
 // 비로그인 방문자와 크롤러는 서버 렌더된 HomeLanding 을 받음 → SEO ↑
 
 import { Suspense } from "react";
+import { cookies, headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import HomeAuthed from "@/app/components/HomeAuthed";
 import HomeLanding from "@/app/components/HomeLanding";
+import HelloScreen, { HELLO_SEEN_COOKIE } from "@/app/components/HelloScreen";
 import WeeklyHotPosts from "@/app/components/WeeklyHotPosts";
 import AdoptionSeekingSection from "@/app/components/AdoptionSeekingSection";
 import Event1000Banner from "@/app/components/Event1000Banner";
@@ -26,5 +28,14 @@ export default async function HomePage() {
   if (user) {
     return <HomeAuthed hotSlot={hotSlot} adoptionSlot={adoptionSlot} eventSlot={eventSlot} />;
   }
-  return <HomeLanding hotSlot={hotSlot} adoptionSlot={adoptionSlot} eventSlot={eventSlot} />;
+  // 비로그인 첫 방문엔 첫 방문 화면(HelloScreen)을 홈 위에 덮는다 — 버튼을 누르면 쿠키로 다시 안 뜬다.
+  // HomeLanding은 그대로 SSR되고, 검색 로봇에겐 덮개를 안 씌운다(전면 가림막은 모바일 검색 순위 감점 대상).
+  const seen = (await cookies()).has(HELLO_SEEN_COOKIE);
+  const isCrawler = /bot|crawl|spider|slurp|yeti|daum|facebookexternalhit|kakaotalk-scrap/i.test((await headers()).get("user-agent") ?? "");
+  return (
+    <>
+      {!seen && !isCrawler && <HelloScreen overlay />}
+      <HomeLanding hotSlot={hotSlot} adoptionSlot={adoptionSlot} eventSlot={eventSlot} />
+    </>
+  );
 }
