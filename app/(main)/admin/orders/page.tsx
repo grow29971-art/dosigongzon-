@@ -315,7 +315,13 @@ export default function AdminOrdersPage() {
                         style={inputStyle}
                       >
                         {ALL_STATUSES.map((s) => (
-                          <option key={s} value={s}>{ORDER_STATUS_MAP[s].label}</option>
+                          <option
+                            key={s}
+                            value={s}
+                            disabled={(s === "cancelled" || s === "refunded") && s !== order.status && order.status !== "pending"}
+                          >
+                            {ORDER_STATUS_MAP[s].label}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -355,7 +361,7 @@ export default function AdminOrdersPage() {
 
                     {(draftStatus === "cancelled" || draftStatus === "refunded") && order.status !== "cancelled" && order.status !== "refunded" && (
                       <p className="mt-2 text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>
-                        취소/환불로 변경하면 재고가 복구돼요. 실제 결제금 환불은 토스페이먼츠 연동 후 자동 처리되며, 그 전에는 토스 상점관리자에서 직접 환불해야 해요.
+                        결제 전 주문만 여기서 취소할 수 있어요. 결제된 주문은 환불 요청 승인으로, 비회원 주문은 토스 상점관리자에서 취소하면 자동 반영돼요.
                       </p>
                     )}
                     {error && <p className="mt-2 text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>{error}</p>}

@@ -248,18 +248,20 @@ export async function listOpenRefunds(): Promise<AdminRefundRequest[]> {
   return (data ?? []) as unknown as AdminRefundRequest[];
 }
 
-// 재고 복구가 필요한 전환: 결제 후 상태 → 취소/환불
-const STOCK_RESTORE_FROM: OrderStatus[] = ["paid", "preparing", "shipping"];
-
 // ── 주문 상태/운송장 변경 ──
-// paid 이후 상태에서 취소/환불로 바꾸면 재고를 복구.
-// (실 결제 환불은 STEP 5 토스 연동 후 /api/payment/cancel에서 처리 —
-//  그 전까지는 상태 관리 + 재고 복구만 담당)
+// 취소/환불로의 전환은 결제 전(pending) 주문만 허용한다. 결제 후 주문을 여기서 취소로 바꾸면
+// 토스 환불 없이 DB만 바뀌고 사용 포인트도 안 돌아갔다(2026-09-28 감사) — 결제 후 환불은
+// 환불 요청 승인(/api/admin/refunds → refund-executor)으로만, 비회원 주문은 토스 상점관리자
+// 취소 → 웹훅 동기화로 처리한다.
 export async function updateOrderAdmin(
   order: OrderWithItems,
   changes: { status?: OrderStatus; tracking_number?: string | null; courier?: string | null },
 ): Promise<void> {
   await requireAdmin();
+  const toAborted = changes.status === "cancelled" || changes.status === "refunded";
+  if (toAborted && changes.status !== order.status && order.status !== "pending") {
+    throw new Error("결제가 끝난 주문은 여기서 취소·환불할 수 없어요. 환불 요청 승인으로 처리해 주세요.");
+  }
   const supabase = createClient();
 
   // 배송 시각 기록 — 청약철회 "받은 날부터 7일"의 기산점. 이미 기록돼 있으면 보존.
@@ -291,26 +293,5 @@ export async function updateOrderAdmin(
   if (error) {
     console.error("[shop-admin-repo] updateOrderAdmin failed:", error);
     throw new Error(`주문 변경에 실패했어요: ${error.message}`);
-  }
-
-  // 취소/환불 전환 시 재고 복구
-  const toAborted = changes.status === "cancelled" || changes.status === "refunded";
-  if (toAborted && STOCK_RESTORE_FROM.includes(order.status)) {
-    for (const item of order.items) {
-      if (!item.product_id) continue;
-      const { data: p } = await supabase
-        .from("products")
-        .select("stock")
-        .eq("id", item.product_id)
-        .maybeSingle();
-      if (!p) continue;
-      const { error: stockError } = await supabase
-        .from("products")
-        .update({ stock: (p.stock as number) + item.quantity })
-        .eq("id", item.product_id);
-      if (stockError) {
-        console.error("[shop-admin-repo] stock restore failed:", stockError);
-      }
-    }
   }
 }
