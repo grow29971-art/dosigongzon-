@@ -348,7 +348,9 @@ export async function POST(req: Request) {
       );
     }
   } catch (e) {
-    // 네트워크 오류 — 승인 여부 불명이므로 주문은 pending 유지(재시도 가능), 재고·포인트만 원복
+    // 네트워크 오류 — 승인 여부 불명이므로 주문은 pending 유지(재시도 가능), 재고·포인트만 원복.
+    // payment_key를 비우는 건 같은 키 재시도·웹훅이 다시 선점할 수 있게 하려는 것. 실제로 승인됐는데
+    // 재시도가 안 오면 payment-reconcile 크론이 orderId로 원장을 조회해 "청구됐는데 주문 미확정"을 신고한다.
     console.error("[payment/confirm] toss request error:", safeErrorMessage(e, [paymentKey]));
     await restoreStock(svc, reserved);
     await refundPoints();

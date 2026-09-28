@@ -133,6 +133,37 @@ export async function POST(request: Request) {
     }
   }
 
+  // 사각지대: payment_key 없는 pending/cancelled 주문 — confirm이 토스 호출 중 네트워크 예외를 맞으면
+  // 재시도·웹훅 복구를 위해 payment_key를 비우는데(confirm/route.ts), 실제로는 토스 승인이 됐을 수 있다.
+  // 그 뒤 유저·정리 크론이 취소하면 "청구됐는데 주문 없음"이 된다. orderId(=order_number)로 원장 조회해 잡는다.
+  // (2026-09-28 감사) 30분 미만 pending은 결제창 진행 중일 수 있어 제외.
+  const pendingCutoff = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+  const { data: keyless } = await supabase
+    .from("orders")
+    .select("order_number, status, updated_at")
+    .is("payment_key", null)
+    .in("status", ["pending", "cancelled"])
+    .gte("updated_at", cutoff)
+    .lte("updated_at", pendingCutoff)
+    .order("updated_at", { ascending: false })
+    .limit(MAX_ORDERS_PER_RUN);
+  for (const o of (keyless ?? []) as { order_number: string; status: string }[]) {
+    try {
+      const res = await fetch(
+        `https://api.tosspayments.com/v1/payments/orders/${encodeURIComponent(o.order_number)}`,
+        { headers: { Authorization: `Basic ${basicAuth}` } },
+      );
+      if (!res.ok) continue; // 404 = 결제 안 된 주문(정상)
+      const t = (await res.json()) as TossPayment;
+      checked++;
+      if ((t.status === "DONE" || t.status === "PARTIAL_CANCELED") && (t.balanceAmount ?? 0) > 0) {
+        mismatches.push(`${o.order_number}: DB=${o.status}(결제키 없음)인데 토스는 결제 완료 ${t.balanceAmount}원 — 청구됐는데 주문 미확정, 확정 또는 환불 필요`);
+      }
+    } catch (e) {
+      console.error("[payment-reconcile] keyless toss fetch error:", safeErrorMessage(e, []), o.order_number);
+    }
+  }
+
   // 불일치 → 관리자 DM 자가발송 (admin-daily-digest 패턴)
   if (mismatches.length > 0) {
     console.error("[payment-reconcile] mismatches:", mismatches);
