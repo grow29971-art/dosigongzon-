@@ -7,7 +7,7 @@ import Link from "next/link";
 // 버튼은 가입 없이 바로 지도로 — "지도가 곧 온보딩".
 
 export const metadata: Metadata = {
-  title: "우리 동네 길고양이 | 도시공존",
+  title: "우리 동네 길고양이",
   description: "오늘 우리 골목 고양이는 밥을 먹었을까? 동네 길집사들이 함께 기록하는 길고양이 지도.",
   robots: { index: false },
   openGraph: { images: ["/images/hello-hero.jpg"] },
