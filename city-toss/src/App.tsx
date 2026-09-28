@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState, type ComponentType } from "react";
-import { HashRouter, Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router";
+import { HashRouter, Navigate, Route, Routes, useLocation, useParams } from "react-router";
 import { AuthProvider } from "@/lib/auth-context";
 import { ToastProvider } from "@/app/components/Toast";
 import BottomNav from "@/app/components/BottomNav";
@@ -28,13 +28,6 @@ const P = (load: () => Promise<{ default: ParamsPage }>) => {
   const L = lazy(load);
   return <Suspense fallback={<Loading />}><WithParams Page={L} /></Suspense>;
 };
-
-function BackToLogin() {
-  const nav = useNavigate();
-  return (
-    <button type="button" className="m-4 text-[14px] underline" style={{ color: "var(--color-text-sub)" }} onClick={() => nav("/")}>← 돌아가기</button>
-  );
-}
 
 function Loading() {
   return <div className="flex items-center justify-center min-h-[50vh] text-sm" style={{ color: "var(--color-text-light)" }}>불러오는 중…</div>;
@@ -148,8 +141,8 @@ export default function App() {
       ) : (
         // 비로그인: 로그인 화면 + 약관·처리방침(앱 안에서 읽을 수 있어야 한다 — 외부 브라우저 의존 금지)
         <Routes>
-          <Route path="/terms" element={<div className="mx-auto w-full max-w-lg"><BackToLogin />{S(() => import("@/app/terms/page"))}</div>} />
-          <Route path="/privacy" element={<div className="mx-auto w-full max-w-lg"><BackToLogin />{S(() => import("@/app/privacy/page"))}</div>} />
+          <Route path="/terms" element={<div className="mx-auto w-full max-w-lg">{S(() => import("@/app/terms/page"))}</div>} />
+          <Route path="/privacy" element={<div className="mx-auto w-full max-w-lg">{S(() => import("@/app/privacy/page"))}</div>} />
           <Route path="*" element={<Login onLoggedIn={() => setAuthed(true)} />} />
         </Routes>
       )}

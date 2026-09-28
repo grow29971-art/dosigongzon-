@@ -1,0 +1,2 @@
+/* 토스 상단 내비게이션 바에 뒤로가기가 있으므로 본 앱의 화면 내 뒤로가기(data-page-back)는 숨긴다 — 비게임 출시 가이드 "뒤로가기 중복 노출" 금지. */
+[data-page-back] { display: none !important; }
