@@ -47,7 +47,7 @@
   "fallbackType": "customtabs",
   "features": {
     "playBilling": {
-      "enabled": true
+      "enabled": false
     },
     "locationDelegation": {
       "enabled": true
