@@ -47,10 +47,19 @@ export async function POST(request: Request) {
     vapidPrivate,
   );
 
-  // 전체 구독자 조회
+  // 마케팅 푸시 동의한 유저의 구독만 (정보통신망법 옵트인 — 다른 푸시 크론과 같은 기준)
+  const { data: optedIn } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("marketing_push_enabled", true);
+  const optedInIds = ((optedIn ?? []) as { id: string }[]).map((p) => p.id);
+  if (optedInIds.length === 0) {
+    return Response.json({ sent: 0, total: 0, reason: "no opt-in users" });
+  }
   const { data: subs } = await supabase
     .from("push_subscriptions")
-    .select("*");
+    .select("*")
+    .in("user_id", optedInIds);
 
   if (!subs || subs.length === 0) {
     return Response.json({ sent: 0, total: 0 });

@@ -199,7 +199,7 @@ export default function AdminPushPage() {
 
   return (
     <AdminPage>
-      <AdminHeader title="푸시 알림 발송" description="전체 구독자에게 알림을 보냅니다" />
+      <AdminHeader title="푸시 알림 발송" description="마케팅 푸시에 동의한 구독자에게 알림을 보냅니다" />
 
       {/* 미리보기 */}
       <AdminSection title="미리보기">
