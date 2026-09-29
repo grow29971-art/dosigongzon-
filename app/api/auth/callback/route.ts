@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { sendMetaCAPIEvent } from "@/lib/meta-capi";
+import { createServiceClient } from "@/lib/supabase/service";
 
 // callback 시점 진단 — exchange 실패 원인 추적용.
 // PKCE code verifier 쿠키 존재 여부가 핵심: 없으면 "쿠키 손실"(시크릿 모드, 컨텍스트 전환,
@@ -140,6 +141,23 @@ export async function GET(request: Request) {
       // 소셜 첫 가입자는 /welcome 환영 화면을 거쳐가도록 표시
       firstSocialSignup = isFirstLogin && !!userProvider && userProvider !== "email";
       firstSignup = isFirstLogin && !!userProvider;
+
+      // 가입 출처를 서버가 가입 순간 기록 (2026-09-29) — 클라 동기화(localStorage)는 외부 브라우저에서
+      // 가입을 마치거나 가입 후 재방문이 없으면 빠진다. 쿠키는 lib/funnel-repo.ts captureSource 가 심는다.
+      // 만든 지 하루 안 된 계정만: 옛 사용자가 재로그인할 때 나중 방문 출처로 잘못 귀속되지 않게.
+      if (Date.now() - new Date(user.created_at).getTime() < 86400_000) {
+        try {
+          const raw = (await cookies()).get("dsg_src")?.value ?? "";
+          const src = decodeURIComponent(raw).toLowerCase().replace(/[^a-z0-9_.-]/g, "").slice(0, 32);
+          if (src) {
+            await createServiceClient()
+              .from("profiles")
+              .update({ signup_source: src })
+              .eq("id", user.id)
+              .is("signup_source", null);
+          }
+        } catch { /* 계측 부가 기능 — 로그인 흐름에 영향 주지 않는다 */ }
+      }
 
       if (isFirstLogin && userProvider && userProvider !== "email") {
         const nickname = generateNickname();

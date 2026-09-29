@@ -63,29 +63,39 @@ function normalizeSource(raw: string): string {
  */
 export function captureSource(): void {
   try {
-    if (localStorage.getItem(SOURCE_KEY)) return; // first-touch 유지
-
-    const params = new URLSearchParams(window.location.search);
-    const explicit = params.get("utm_source") ?? params.get("ref");
-    if (explicit) {
-      const v = normalizeSource(explicit);
-      if (v) { localStorage.setItem(SOURCE_KEY, v); return; }
+    const existing = localStorage.getItem(SOURCE_KEY); // first-touch 유지
+    const v = existing ?? detectSource();
+    if (!v) return;
+    if (!existing) localStorage.setItem(SOURCE_KEY, v);
+    // 가입 콜백(서버)이 가입 순간 signup_source 를 기록하도록 쿠키에도 — 이름은 api/auth/callback 과 같게 (2026-09-29)
+    if (!document.cookie.split("; ").some((c) => c.startsWith(`${SOURCE_COOKIE}=`))) {
+      document.cookie = `${SOURCE_COOKIE}=${v}; Path=/; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax; Secure`;
     }
-
-    const ref = document.referrer;
-    if (!ref) { localStorage.setItem(SOURCE_KEY, "direct"); return; }
-
-    const host = new URL(ref).hostname;
-    if (host === window.location.hostname) return; // 내부 이동 — 판단 보류
-
-    for (const [re, token] of REFERRER_MAP) {
-      if (re.test(host)) { localStorage.setItem(SOURCE_KEY, token); return; }
-    }
-    const v = normalizeSource(host.replace(/^www\./, ""));
-    if (v) localStorage.setItem(SOURCE_KEY, v);
   } catch {
     /* localStorage·URL 파싱 차단 환경 — 출처 없이 계측만 계속한다 */
   }
+}
+const SOURCE_COOKIE = "dsg_src";
+
+// utm_source(ref) → referrer 호스트 순. 내부 이동이면 null(판단 보류)
+function detectSource(): string | null {
+  const params = new URLSearchParams(window.location.search);
+  const explicit = params.get("utm_source") ?? params.get("ref");
+  if (explicit) {
+    const v = normalizeSource(explicit);
+    if (v) return v;
+  }
+
+  const ref = document.referrer;
+  if (!ref) return "direct";
+
+  const host = new URL(ref).hostname;
+  if (host === window.location.hostname) return null;
+
+  for (const [re, token] of REFERRER_MAP) {
+    if (re.test(host)) return token;
+  }
+  return normalizeSource(host.replace(/^www\./, "")) || null;
 }
 
 // 찜 계측(lib/wishlist.ts)도 같은 first-touch 출처를 공유한다
