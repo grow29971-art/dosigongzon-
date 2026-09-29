@@ -8,11 +8,13 @@
 //
 // 보안: 웹훅 본문은 신뢰하지 않음 — paymentKey만 뽑아서
 // 토스 결제 조회 API(시크릿 키 인증)로 실제 상태·금액을 다시 확인한 뒤 처리.
-// 여기에 더해 TOSS_WEBHOOK_SECRET이 설정돼 있으면 서명을 먼저 검증한다(2026-08-04 보안).
+// 서명 검증은 하지 않는다 — 토스는 tosspayments-webhook-signature 헤더를 지급대행 이벤트
+// (payout.changed·seller.changed)에만 붙이고 PAYMENT_STATUS_CHANGED엔 붙이지 않는다
+// (docs.tosspayments.com/reference/using-api/webhook-events, 2026-09-28 대조). 예전 코드는 시크릿을
+// 넣는 순간 결제 웹훅 전건을 401로 거부했을 것. 위조 방어는 위 재조회, 증폭 방어는 IP 레이트리밋.
 // ══════════════════════════════════════════
 
 import { NextResponse } from "next/server";
-import { createHmac, timingSafeEqual } from "node:crypto";
 import { type SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/service";
 import { safePgError, maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
@@ -22,41 +24,6 @@ import { grantPurchaseReward, revokePurchaseReward } from "@/lib/purchase-reward
 import { donationForItem, embeddedCostPrice, type EmbeddedCost } from "@/lib/donation-calc";
 
 export const maxDuration = 60;
-
-// ── 토스 웹훅 서명 검증 ──
-// 헤더: tosspayments-webhook-signature: v1:<base64>,v1:<base64>  (키 회전 대비 복수 서명)
-//       tosspayments-webhook-transmission-time: <ISO8601>
-// 서명 대상은 "전송시각 + 원문 본문"의 결합이며, 문서상 결합 표기가 한 가지로 못박혀 있지
-// 않아 실무에서 쓰이는 세 형태를 모두 대조한다(하나라도 맞으면 정품으로 인정).
-// 비교는 timingSafeEqual — 길이가 다르면 비교 자체가 예외이므로 먼저 길이를 본다.
-function verifyTossSignature(
-  rawBody: string,
-  signatureHeader: string | null,
-  transmissionTime: string | null,
-  secret: string,
-): boolean {
-  if (!signatureHeader || !transmissionTime) return false;
-  const provided = signatureHeader
-    .split(",")
-    .map((s) => s.trim().replace(/^v1:/, ""))
-    .filter(Boolean);
-  if (provided.length === 0) return false;
-
-  const expected = [
-    `${transmissionTime}.${rawBody}`,
-    `${transmissionTime}${rawBody}`,
-    `${rawBody}${transmissionTime}`,
-  ].map((payload) => createHmac("sha256", secret).update(payload, "utf8").digest("base64"));
-
-  for (const p of provided) {
-    const a = Buffer.from(p, "utf8");
-    for (const e of expected) {
-      const b = Buffer.from(e, "utf8");
-      if (a.length === b.length && timingSafeEqual(a, b)) return true;
-    }
-  }
-  return false;
-}
 
 interface TossPayment {
   paymentKey: string;
@@ -152,23 +119,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid body" }, { status: 400 });
   }
 
-  // 0-1. 서명 검증 (시크릿이 설정된 경우에만 강제)
-  //   설정됨  → 서명 불일치는 즉시 401. 토스 조회 API를 태우지 않는다.
-  //   미설정  → 본문 위조는 아래 토스 재조회로 막히지만, 무인증 호출이 외부 API·DB를
-  //             태우는 증폭 경로가 되므로 IP 레이트리밋으로 제한한다.
-  const webhookSecret = process.env.TOSS_WEBHOOK_SECRET;
-  if (webhookSecret) {
-    const valid = verifyTossSignature(
-      rawBody,
-      req.headers.get("tosspayments-webhook-signature"),
-      req.headers.get("tosspayments-webhook-transmission-time"),
-      webhookSecret,
-    );
-    if (!valid) {
-      console.error("[payment/webhook] 서명 검증 실패 — 요청 거부");
-      return NextResponse.json({ error: "invalid signature" }, { status: 401 });
-    }
-  } else if (!rateLimit(`payment-webhook:${getClientIp(req)}`, { max: 60, windowMs: 60_000 })) {
+  // 0-1. 무인증 호출이 외부 API·DB를 태우는 증폭 경로가 되지 않게 IP 레이트리밋
+  if (!rateLimit(`payment-webhook:${getClientIp(req)}`, { max: 60, windowMs: 60_000 })) {
     return NextResponse.json({ error: "too many requests" }, { status: 429 });
   }
 
