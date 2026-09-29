@@ -115,6 +115,11 @@ export async function shareToKakao(input: ShareInput): Promise<boolean> {
   const ready = await ensureKakaoReady();
   if (!ready || !window.Kakao?.Share) return false;
 
+  // 카톡 인앱 브라우저는 referrer 가 비어 "direct" 로 잡힌다 → 공유 링크에 출처를 박아 입소문 가입을 센다
+  const u = new URL(input.url, window.location.origin);
+  if (!u.searchParams.has("utm_source")) u.searchParams.set("utm_source", "kakao_share");
+  input = { ...input, url: u.toString() };
+
   try {
     window.Kakao.Share.sendDefault({
       objectType: "feed",
