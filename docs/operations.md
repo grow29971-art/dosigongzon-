@@ -49,7 +49,7 @@ git add <파일> ; git commit -m "fix: ..." ; git push
 | `GOOGLE_GENERATIVE_AI_API_KEY` | Gemini(AI 집사·이미지 변환) — 무료 쿼터 일 20회 |
 | `CRON_SECRET` / `CRON_DISPATCH_ORIGIN` | `/api/cron/*` 호출 인증 / 크론 팬아웃 자기호출 origin |
 | `TELEGRAM_BOT_TOKEN` / `TELEGRAM_ADMIN_CHAT_ID` | 운영자 텔레그램 알림(미설정 시 silent skip) |
-| `NEXT_PUBLIC_TOSS_CLIENT_KEY` / `TOSS_SECRET_KEY` / `TOSS_WEBHOOK_SECRET` | 토스 결제. 현재 테스트 키 — **테스트 키로 결제를 켜지 않는다**, 라이브 키·웹훅 시크릿은 심사 승인 후 |
+| `NEXT_PUBLIC_TOSS_CLIENT_KEY` / `TOSS_SECRET_KEY` | 토스 결제. 현재 테스트 키 — **테스트 키로 결제를 켜지 않는다**, 라이브 키는 심사 승인 후. 웹훅 시크릿은 없다(결제 웹훅엔 서명이 없음, contracts.md) |
 | `RESEND_API_KEY` / `RESEND_FROM_EMAIL` | 이메일 다이제스트 발송 |
 | `OPENWEATHERMAP_API_KEY` | 날씨(홈 카드·한파 경보 크론) |
 | `PII_ENC_KEY_CURRENT` / `PII_ENC_KEY_PREVIOUS` / `PII_INDEX_KEY` | 개인정보 암호화·키 회전(환불 계좌 등) |

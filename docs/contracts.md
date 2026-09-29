@@ -21,8 +21,9 @@
 
 - 결제 승인 플로우: 클라이언트 SDK 결제창 → success URL로 복귀 → 서버가 승인 API 호출 →
   주문 확정. 실패는 fail URL로 복귀.
-- 웹훅: 결제 상태 변경 통지를 서버 라우트가 수신한다. **웹훅 시크릿 검증은 결제 오픈 D-day
-  게이트 3종 중 하나** — 시크릿 없이 열지 않는다.
+- 웹훅: 결제 상태 변경(PAYMENT_STATUS_CHANGED) 통지를 서버 라우트가 수신한다. 토스는 이 이벤트에
+  서명 헤더를 붙이지 않는다(서명은 payout.changed·seller.changed 전용) — 본문을 믿지 않고 paymentKey로
+  토스 조회 API를 다시 불러 확인하는 것이 인증이다. `TOSS_WEBHOOK_SECRET`은 쓰지 않는다(2026-09-28 문서 대조).
 - 환불: 서버에서 토스 환불 API 호출 → 결과를 주문·환불 기록에 반영. 정책 판정은
   `lib/refund-policy.ts` 로직이 단일 소스.
 - 현재는 테스트 키 상태이며 `PAYMENT_ENABLED` 게이트가 꺼져 있다 — 라이브 키 전환 전에 실결제
