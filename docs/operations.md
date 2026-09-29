@@ -63,6 +63,7 @@ git add <파일> ; git commit -m "fix: ..." ; git push
 - Vercel cron이 `/api/cron/*`을 `CRON_SECRET`으로 호출. **전체 목록(17개)은 `vercel.json`이
   단일 소스**다 — 대표 예: 꿀팁 자동 발행(tips-generate, 월 1편·주제 은행은 라우트 안 TOPICS), 건강 경보 푸시, 주간 다이제스트, 발주 다이제스트(텔레그램), 결제 대사,
   약국·병원 동기화, 스토리지 다이어트(오래된 로그 정리 — auth_error_logs 90일 등), 예약 푸시.
+  **journey**(신규 7일 여정 A, 2026-09-30): daily-dispatch 서브잡, 가입 8일 안 유저에게 쪽지(+푸시 동의자 푸시) 단계 안내, 10% 대조군은 `journey_sends`에 기록만. 첫 돌봄 기록 시 종료·하루 1통·단계당 1회. 테이블(`box/supabase_journey_sends_20260930.sql`) 미실행이면 ok 로 무동작.
   크론 결함은 과거 두 번(팬아웃 origin, 실패 200 삼킴) 수리 이력이 있으니 새 크론은 실패를
   200으로 삼키지 말 것.
 

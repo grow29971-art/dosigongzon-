@@ -75,5 +75,6 @@
 - `GET signups?since=<ISO>` (기본 7일 전) → `{ ok, since, total, bySource:{ naverblog:n, threads:n, instagram:n, naver:n, direct:n, unknown:n, ... } }`
   `profiles.created_at >= since` 인 가입을 `signup_source` 별로 센다(없으면 `unknown`). 개인정보 없음.
   출처 기록 경로(2026-09-29~): ① 가입 콜백(`api/auth/callback`)이 쿠키 `dsg_src`(`captureSource` 가 심음)를 읽어 만든 지 24시간 안 된 계정에 서버에서 기록 ② 못 잡으면 기존 클라 동기화(`syncSignupSourceOnce`)가 다음 방문 때 기록.
-- `GET metrics?since=<ISO>` (기본 7일 전) → `{ ok, since, wac, wacPrev, retention, cohort:{ signups, activated, activationRate, bySource:{ <출처>:{ signups, activated } } }, push:{ optedIn, subscribedUsers } }`
+- `GET metrics?since=<ISO>` (기본 7일 전) → `{ ok, since, wac, wacPrev, retention, cohort:{ signups, activated, activationRate, bySource:{ <출처>:{ signups, activated } } }, journeyA:{ treated:{ users, activated }, holdout:{ users, activated } }, push:{ optedIn, subscribedUsers } }`
   북극성 `wac` = 지난 7일 돌봄 기록자 수, `retention` = 지난주 기록자 중 이번 주 기록 비율, 활성화 = 가입 7일 안 첫 돌봄 기록. 설계: `city-marketing/reports/2026-09-29_growth-design.md`. 개인정보 없음.
+  `journeyA` = 신규 7일 여정(`journey_sends`, journey='A')의 발송군 대 대조군(10%): users = since 이후 여정 행이 있는 사람, activated = 첫 여정 행 이후 7일 안 돌봄 기록을 남긴 사람. 테이블이 아직 없으면 전부 0.

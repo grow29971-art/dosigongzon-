@@ -4,6 +4,7 @@
 //  · retention  지난주 기록한 사람 중 이번 주에도 기록한 비율
 //  · cohort     since 이후 가입자 수, 그중 가입 7일 안 첫 기록(활성화) 수 — 출처(signup_source)별로도
 //  · push       마케팅 푸시 동의 수, 푸시 구독 기기를 가진 사람 수
+//  · journeyA   신규 7일 여정 대조 — treated/holdout 별 users(since 이후 여정 행이 있는 사람)와 activated(첫 여정 행 이후 7일 안 돌봄 기록). 테이블 없으면 0
 import { checkBotSecret, serverReady } from "@/lib/community-bot";
 import { createServiceClient } from "@/lib/supabase/service";
 
@@ -21,11 +22,12 @@ export async function GET(request: Request) {
   const iso = (t: number) => new Date(t).toISOString();
 
   // ponytail: 규모가 작아 행을 받아 JS로 센다(상한 10000행). 커지면 group by RPC로.
-  const [logs, cohort, optIn, subs] = await Promise.all([
+  const [logs, cohort, optIn, subs, journey] = await Promise.all([
     db.from("care_logs").select("author_id, logged_at").gte("logged_at", iso(Math.min(now - 14 * DAY, since.getTime()))).limit(10000),
     db.from("profiles").select("id, created_at, signup_source").gte("created_at", since.toISOString()).limit(10000),
     db.from("profiles").select("id", { count: "exact", head: true }).eq("marketing_push_enabled", true),
     db.from("push_subscriptions").select("user_id").limit(10000),
+    db.from("journey_sends").select("user_id, holdout, sent_at").eq("journey", "A").gte("sent_at", since.toISOString()).limit(10000),
   ]);
   if (logs.error || cohort.error || optIn.error || subs.error) return Response.json({ ok: false, error: "조회 실패" }, { status: 500 });
 
@@ -53,6 +55,23 @@ export async function GET(request: Request) {
     if (f !== undefined && f - +new Date(p.created_at) <= 7 * DAY) (b.activated++, activated++);
   }
 
+  // 여정 A 대조: 실패(테이블 미생성 포함)여도 다른 지표는 그대로 — 0으로 돌려준다
+  const jf = new Map<string, { holdout: boolean; first: number }>();
+  for (const r of (journey.error ? [] : (journey.data ?? [])) as { user_id: string; holdout: boolean; sent_at: string }[]) {
+    const t = +new Date(r.sent_at);
+    const c = jf.get(r.user_id);
+    if (!c) jf.set(r.user_id, { holdout: r.holdout, first: t });
+    else { c.first = Math.min(c.first, t); c.holdout = c.holdout && r.holdout; }
+  }
+  const logTimes = new Map<string, number[]>();
+  for (const r of rows) if (r.author_id) (logTimes.get(r.author_id) ?? logTimes.set(r.author_id, []).get(r.author_id)!).push(+new Date(r.logged_at));
+  const journeyA = { treated: { users: 0, activated: 0 }, holdout: { users: 0, activated: 0 } };
+  for (const [uid, j] of jf) {
+    const g = j.holdout ? journeyA.holdout : journeyA.treated;
+    g.users++;
+    if ((logTimes.get(uid) ?? []).some((t) => t >= j.first && t - j.first <= 7 * DAY)) g.activated++;
+  }
+
   const signups = cohort.data?.length ?? 0;
   return Response.json({
     ok: true,
@@ -61,6 +80,7 @@ export async function GET(request: Request) {
     wacPrev: lastWeek.size,
     retention: lastWeek.size ? Math.round((retained / lastWeek.size) * 1000) / 1000 : null,
     cohort: { signups, activated, activationRate: signups ? Math.round((activated / signups) * 1000) / 1000 : null, bySource },
+    journeyA,
     push: { optedIn: optIn.count ?? 0, subscribedUsers: new Set(((subs.data ?? []) as { user_id: string | null }[]).map((s) => s.user_id).filter(Boolean)).size },
   });
 }

@@ -109,7 +109,7 @@ async function securityProbes() {
 }
 
 // ── 2. 크론 하트비트 (service, cron_runs) ──
-// 기대 주기: vercel.json 16개 + 디스패처 서브잡(daily-dispatch 5·요일별 2·weekly-dispatch 2)
+// 기대 주기: vercel.json 16개 + 디스패처 서브잡(daily-dispatch 6·요일별 2·weekly-dispatch 2)
 function loadCronExpectations() {
   const vercel = JSON.parse(readFileSync(resolve(ROOT, "vercel.json"), "utf8"));
   const list = [];
@@ -119,7 +119,7 @@ function loadCronExpectations() {
     list.push({ name, min: Number(min), hour: Number(hour), dow: dow === "*" ? null : dow.split(",").map(Number) });
   }
   // daily-dispatch 서브잡 (00:00 UTC)
-  for (const n of ["news-crawl", "admin-daily-digest", "payment-reconcile", "weather-alert", "fund-snapshot"])
+  for (const n of ["news-crawl", "admin-daily-digest", "payment-reconcile", "weather-alert", "fund-snapshot", "journey"])
     list.push({ name: n, min: 0, hour: 0, dow: null, via: "daily-dispatch" });
   // KST 요일별: 수요일 engagement-push, 토요일 onboarding-nudge → UTC 00:00 기준 같은 날
   list.push({ name: "engagement-push", min: 0, hour: 0, dow: [3], via: "daily-dispatch" });
