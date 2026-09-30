@@ -696,7 +696,7 @@ export default function MapPage() {
       if (!confirm(`${selectedCat.name}의 학대경보를 해제할까요?`)) return;
     } else if (
       !confirm(
-        `${selectedCat.name} 주변에 학대·위험 의심 상황이 있나요?\n\n경보를 켜면 48시간 동안 지도 마커에 ⚠️ 학대경보가 표시되고, 112·상담센터 연락 버튼이 활성화돼요.\n\n긴급한 현장은 112에 먼저 신고해주세요.`,
+        `${selectedCat.name} 주변에 학대·위험 의심 상황이 있나요?\n\n경보를 켜면 48시간 동안 지도 마커에 ⚠️ 학대경보가 표시되고, 112·상담센터 연락 버튼이 활성화돼요.\n경보는 이웃에게 주의를 알리는 미검증 신고예요. 허위 신고는 법적 책임이 따를 수 있어요.\n\n긴급한 현장은 112에 먼저 신고해주세요.`,
       )
     ) {
       return;
@@ -3686,6 +3686,9 @@ export default function MapPage() {
                       위험 상황 {alertCount}건 신고됨 — 빠른 대응
                     </span>
                   </div>
+                  <p className="text-[11px] leading-relaxed mb-2" style={{ color: "var(--color-error)" }}>
+                    이웃의 미검증 신고이며, 도시공존이 사실관계를 확인한 것이 아니에요.
+                  </p>
                   <div className="grid grid-cols-3 gap-1.5">
                     <a
                       href="tel:112"
@@ -4021,7 +4024,8 @@ export default function MapPage() {
                     <p className="text-[11px] leading-relaxed mt-0.5" style={{ color: "var(--color-error)" }}>
                       지금 남기는 기록은 <b>학대/위험 신고</b>로 표시돼요. 2건 이상 쌓이면 마커에 경보 라벨이 뜨고,
                       112·동물보호상담센터 연락·신고 기록 복사 버튼이 자동 활성화돼요. 일반 돌봄 기록은 왼쪽 경보
-                      버튼을 다시 눌러 해제.
+                      버튼을 다시 눌러 해제. <b>상황만 적어주세요</b> — 호수·직업 등으로 특정 사람을 적거나 장소를 적으면
+                      등록되지 않아요. 의심되는 사람의 정보는 112에 알려주세요.
                     </p>
                   </div>
                 ) : (

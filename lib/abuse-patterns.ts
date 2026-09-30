@@ -8,7 +8,7 @@ export interface AbuseViolation {
   /** 실제 매치된 부분 문자열 (사용자에게 노출) */
   match: string;
   /** 카테고리 — 분석·로깅용 */
-  category: "pii" | "profanity" | "threat";
+  category: "pii" | "profanity" | "threat" | "person";
 }
 
 // ── 개인정보 (PII) ──
@@ -107,4 +107,27 @@ export function formatAbuseMessage(violations: AbuseViolation[]): string {
     : "부적절한 표현이 감지됐어요";
 
   return `${reason}: ${parts.join(", ")}`;
+}
+
+// ── 학대경보용: 특정인 지목 ──
+// 학대경보는 검토 없이 공개되고 누적되면 마커 배지가 붙는다. "302호 아저씨가", "경비원이"처럼
+// 사람을 특정하면 사실이 아니어도 지목된 사람이 명예훼손을 문제 삼을 수 있다(2026-09-30 법적 감사).
+// 가해자 정보는 112에 알리고, 경보에는 상황만 적게 한다.
+const PERSON_WORD = "(?:아저씨|아줌마|아주머니|할머니|할아버지|남자|여자|남성|여성|사람|주민|학생|놈|년|새끼)";
+const PERSON_PATTERNS: Array<{ regex: RegExp; label: string }> = [
+  { regex: new RegExp(String.raw`\d+\s*호\s*(?:에\s*)?(?:사는\s*)?` + PERSON_WORD + "?", "g"), label: "호수로 사람 지목" },
+  { regex: new RegExp(String.raw`(?:옆|윗|아랫|앞|뒷)집\s*` + PERSON_WORD + "?", "g"), label: "이웃집 지목" },
+  { regex: /경비\s*(?:원|아저씨|실|반장)|관리\s*(?:소장|실장|사무소|인|아저씨)|미화원/g, label: "직업·직책으로 사람 지목" },
+  { regex: /[가-힣]{2,}\s*(?:사장|사장님|원장|주인)(?=\s|$|[이가은는을를의도,.!?])/g, label: "가게·업주 지목" },
+];
+
+export function findPersonTargeting(text: string): AbuseViolation[] {
+  if (!text || typeof text !== "string") return [];
+  const out: AbuseViolation[] = [];
+  for (const { regex, label } of PERSON_PATTERNS) {
+    regex.lastIndex = 0;
+    const m = regex.exec(text);
+    if (m && m[0].trim()) out.push({ label, match: m[0].trim(), category: "person" });
+  }
+  return out;
 }

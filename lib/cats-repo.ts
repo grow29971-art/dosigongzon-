@@ -6,7 +6,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { isSafeImageUrl } from "@/lib/url-validate";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
-import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
+import { findAbuseViolations, findPersonTargeting, formatAbuseMessage } from "@/lib/abuse-patterns";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
 import { kstToday, thisMondayKstDate } from "@/lib/kst";
 import { SAFETY_ABUSE_ALERT_ENABLED } from "@/lib/safety-flags";
@@ -948,6 +948,17 @@ export async function createComment(
   if (trimmed) {
     const abuse = findAbuseViolations(trimmed);
     if (abuse.length > 0) throw new Error(formatAbuseMessage(abuse));
+    // 학대경보는 검토 없이 공개·누적 배지 → 위치 특정과 사람 지목을 막는다(명예훼손·위치 계약, 2026-09-30)
+    if (kind === "alert") {
+      const loc = findLocationViolations(trimmed);
+      if (loc.length > 0) throw new Error(formatViolationMessage(loc));
+      const person = findPersonTargeting(trimmed);
+      if (person.length > 0) {
+        throw new Error(
+          `학대경보에는 특정 사람을 적을 수 없어요(${person.map((p) => p.match).join(", ")}). 상황만 적고, 의심되는 사람의 정보는 112에 알려주세요.`,
+        );
+      }
+    }
   }
 
   // Rate limit — 분당 30건, 일당 200건
