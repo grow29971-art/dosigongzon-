@@ -143,6 +143,8 @@ export default function ShopPolicyPage() {
           <h2 className="text-[15px] font-bold text-text-main mb-2.5">수익의 사용</h2>
           <p className="text-[13px] text-text-sub leading-relaxed">
             일반 상품은 <b>수익(이익)의 10%</b>가 중성화(TNR)·쉼터 입소 등 길고양이 케어에 사용돼요.
+            도시공존은 <b>길냥이쉼터 묘연</b>과 협약해, 이용자가 구조한 고양이가 쉼터에 입소할 수 있도록 지원해요.
+            입소 문의는 마이페이지 1:1 문의나 이메일({CONTACT_EMAIL})로 받아요.
             (전액 후원 상품은 결제 금액 전액) 상품별 비율은 상품 상세에서 확인할 수 있고,
             모인 금액·쓰인 금액·잔액은 쇼핑몰 홈에서 그대로 공개하고 있어요.
           </p>
