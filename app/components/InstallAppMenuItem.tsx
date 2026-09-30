@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Download, ChevronRight, Check, Share, PlusSquare, X } from "lucide-react";
-import { track } from "@vercel/analytics";
+import { track } from "@/lib/analytics";
 import { hideInMiniApp } from "@/lib/miniapp";
 
 interface BeforeInstallPromptEvent extends Event {

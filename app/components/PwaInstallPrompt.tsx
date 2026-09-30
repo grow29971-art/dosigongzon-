@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { X, Download, Share, PlusSquare } from "lucide-react";
-import { track } from "@vercel/analytics";
+import { track } from "@/lib/analytics";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;

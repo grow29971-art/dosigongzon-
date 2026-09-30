@@ -5,7 +5,7 @@ import { PawPrint, Heart, Share2, Check } from "lucide-react";
 import Link from "next/link";
 import { getMyInviteInfo } from "@/lib/invites-repo";
 import { shareToKakao } from "@/lib/kakao-share";
-import { track } from "@vercel/analytics";
+import { track } from "@/lib/analytics";
 // 카드 시스템 폐지(2026-08-27) — 카드 연출 제거, 축하+첫 밥 유도만 남김
 import { createCareLog } from "@/lib/care-logs-repo";
 import type { Cat } from "@/lib/cats-repo";

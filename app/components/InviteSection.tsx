@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Copy, Check, Share2, Users, Loader2 } from "lucide-react";
 import { getMyInviteInfo, type MyInviteInfo } from "@/lib/invites-repo";
 import { shareToKakao } from "@/lib/kakao-share";
-import { track } from "@vercel/analytics";
+import { track } from "@/lib/analytics";
 import { hideInMiniApp } from "@/lib/miniapp";
 
 function InviteSection() {

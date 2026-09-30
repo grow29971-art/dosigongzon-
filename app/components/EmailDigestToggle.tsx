@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Mail, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { track } from "@vercel/analytics";
+import { track } from "@/lib/analytics";
 import SquareToggle from "@/app/components/ui/SquareToggle";
 
 export default function EmailDigestToggle() {
