@@ -91,6 +91,7 @@ export default function PrivacyPage() {
           <li><b>Google LLC</b> (미국) — AI 챗봇(Gemini) 응답 생성 / 이용자가 챗봇에 입력한 대화 내용 / 응답 생성 시점</li>
           <li><b>Functional Software, Inc. (Sentry)</b> (미국) — 오류 모니터링 / 오류 발생 시점의 접속 정보 / 90일</li>
           <li><b>Meta Platforms, Inc.</b> (미국) — 광고 성과 측정(픽셀, 쿠키 동의 시에만) / 행태정보 / Meta 정책에 따름</li>
+          <li><b>Resend, Inc.</b> (미국) — 이메일 발송(주간 소식 등, 수신 동의한 회원) / 이메일 주소·발송 내용 / 발송 시점</li>
         </ul>
       </section>
 
