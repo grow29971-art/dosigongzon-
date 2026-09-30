@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Check, MapPin, CreditCard, Truck } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 import UIButton from "@/app/components/ui/Button";
 import {
-  getMyOrder, ORDER_STATUS_MAP,
+  getMyOrder, getGuestOrder, listRememberedGuestOrders, ORDER_STATUS_MAP,
   type OrderWithItems, type OrderStatus,
 } from "@/lib/order-repo";
 import {
@@ -61,6 +61,10 @@ const inputStyle = {
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
+  // 비회원: /shop/orders/<주문번호>?guest=1 — id 자리에 주문번호가 오고, 토큰은 주문한 기기의
+  // 저장소에서 읽는다. 토큰을 URL에 싣지 않는 이유는 결제 완료 화면과 같다(히스토리·픽셀 유출). (2026-09-30)
+  const isGuest = useSearchParams().get("guest") === "1";
+  const [guestToken, setGuestToken] = useState<string | null>(null);
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
 
@@ -74,14 +78,20 @@ export default function OrderDetailPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!user || !id) return;
-    getMyOrder(id)
+    if (!id) return;
+    let token: string | null = null;
+    if (isGuest) {
+      token = listRememberedGuestOrders().find((o) => o.order_number === id)?.guest_token ?? null;
+      setGuestToken(token);
+      if (!token) { setOrder(null); setLoading(false); return; }
+    } else if (!user) return;
+    (token ? getGuestOrder(id, token) : getMyOrder(id))
       .then(setOrder)
       .catch(() => setOrder(null))
       .finally(() => setLoading(false));
-  }, [user, id]);
+  }, [user, id, isGuest]);
 
-  if (!authLoading && !user) {
+  if (!isGuest && !authLoading && !user) {
     return <LoginRequired from={`/shop/orders/${id}`} title="주문 상세는 로그인 후 확인할 수 있어요" />;
   }
 
@@ -90,11 +100,13 @@ export default function OrderDetailPage() {
     setSubmitting(true);
     setError("");
     try {
-      const res = await fetch("/api/payment/refund", {
+      const res = await fetch(guestToken ? "/api/payment/guest-refund" : "/api/payment/refund", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          orderId: order.id,
+          ...(guestToken
+            ? { orderNumber: order.order_number, guestToken }
+            : { orderId: order.id }),
           reasonCode: reason,
           reasonNote: note.trim() || undefined,
         }),
@@ -110,7 +122,9 @@ export default function OrderDetailPage() {
         setNotice("환불이 완료됐어요. 결제수단으로 며칠 내에 입금돼요.");
       } else {
         setOrder((prev) => (prev ? { ...prev, refund_status: "requested" } : prev));
-        setNotice("환불 요청이 접수됐어요. 관리자 확인 후 처리 결과를 알려드려요.");
+        setNotice(guestToken
+          ? "환불 요청이 접수됐어요. 관리자 확인 후 처리되며, 이 화면에서 진행 상태를 확인할 수 있어요."
+          : "환불 요청이 접수됐어요. 관리자 확인 후 처리 결과를 알려드려요.");
       }
       setRefundOpen(false);
     } catch (e) {
@@ -178,6 +192,11 @@ export default function OrderDetailPage() {
       ) : !order || !status ? (
         <div className="flex flex-col items-center text-center pt-16 px-6">
           <p className="text-[15px] font-semibold text-text-main mb-4">주문을 찾을 수 없어요</p>
+          {isGuest && (
+            <p className="text-[13px] text-text-sub leading-relaxed mb-4">
+              비회원 주문은 주문한 기기에서만 볼 수 있어요. 다른 기기라면 주문번호와 함께 grow29971@gmail.com으로 문의해 주세요.
+            </p>
+          )}
           <UIButton onClick={() => router.push("/shop/orders")}>주문 내역으로</UIButton>
         </div>
       ) : (

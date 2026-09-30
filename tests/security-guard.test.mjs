@@ -38,6 +38,16 @@ const AUTH_EXEMPT = {
       "토스 웹훅 — 세션 없음. 본문을 신뢰하지 않고 토스 결제 조회 API(시크릿 키 인증)로 재검증하는 것이 방어선",
     mustInclude: ["TOSS_SECRET_KEY", "api.tosspayments.com/v1/payments/"],
   },
+  "app/api/payment/guest-refund/route.ts": {
+    reason:
+      "비회원 환불 — 세션 없음. 주문번호 + 게스트 토큰(uuid, 주문한 기기에만 저장) timingSafeEqual 대조, 회원 주문(user_id 있음)은 조회 자체 제외, IP 레이트리밋. 처리 본체는 회원과 같은 requestFullRefund(원장·멱등키·송장 심사)",
+    mustInclude: [
+      "rateLimit(`payment-guest-refund:${getClientIp(req)}`",
+      "timingSafeEqual",
+      '.is("user_id", null)',
+      "requestFullRefund(",
+    ],
+  },
   "app/api/shop/donation-progress/route.ts": {
     reason: "공개 읽기 전용 후원 집계 (쇼핑 홈 진행바)",
     readOnly: true,

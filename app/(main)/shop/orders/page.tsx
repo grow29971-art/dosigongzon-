@@ -7,7 +7,7 @@ import { ArrowLeft, ChevronRight, PackageOpen, Truck } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 import {
-  listMyOrders, orderDisplayName, ORDER_STATUS_MAP,
+  listMyOrders, listRememberedGuestOrders, orderDisplayName, ORDER_STATUS_MAP,
   type OrderWithItems, type OrderStatus,
 } from "@/lib/order-repo";
 
@@ -34,6 +34,11 @@ export default function OrdersPage() {
   const { user, loading: authLoading } = useAuth();
   const [orders, setOrders] = useState<OrderWithItems[]>([]);
   const [loading, setLoading] = useState(true);
+  // 비회원 주문 — 이 기기에서 주문한 것만 기억돼 있다(토큰은 저장소에만, URL엔 안 싣는다)
+  const [guestOrders, setGuestOrders] = useState<string[]>([]);
+  useEffect(() => {
+    setGuestOrders(listRememberedGuestOrders().map((o) => o.order_number));
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -42,6 +47,28 @@ export default function OrdersPage() {
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));
   }, [user]);
+
+  if (!authLoading && !user && guestOrders.length > 0) {
+    return (
+      <div className="pb-24 px-4 pt-12">
+        <h1 className="text-[17px] font-bold text-text-main mb-1">비회원 주문 내역</h1>
+        <p className="text-[13px] text-text-sub mb-3">이 기기에서 한 비회원 주문이에요. 취소·환불도 주문 상세에서 할 수 있어요.</p>
+        <ul>
+          {guestOrders.map((no) => (
+            <li key={no} style={{ borderBottom: "1px solid var(--color-divider)" }}>
+              <Link href={`/shop/orders/${encodeURIComponent(no)}?guest=1`} className="flex items-center justify-between py-3.5">
+                <span className="text-[15px] font-medium text-text-main">{no}</span>
+                <ChevronRight size={18} className="text-text-light" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <Link href="/login?next=%2Fshop%2Forders" className="mt-5 inline-block text-[13px] text-text-sub underline">
+          회원 주문은 로그인 후 확인할 수 있어요
+        </Link>
+      </div>
+    );
+  }
 
   if (!authLoading && !user) {
     return <LoginRequired from="/shop/orders" title="주문 내역은 로그인 후 확인할 수 있어요" description="내 주문과 배송 상태를 확인하려면 로그인이 필요해요." />;

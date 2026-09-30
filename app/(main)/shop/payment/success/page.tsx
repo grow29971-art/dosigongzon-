@@ -18,6 +18,7 @@ function SuccessContent() {
   const [orderId, setOrderId] = useState("");
   const [donation, setDonation] = useState(0);
   const [rewardPoints, setRewardPoints] = useState(0); // 구매 적립 (2026-08-30)
+  const [isGuest, setIsGuest] = useState(false); // 비회원 — 주문 상세는 주문번호 + 이 기기 토큰으로 연다
   const requested = useRef(false);
 
   useEffect(() => {
@@ -64,6 +65,7 @@ function SuccessContent() {
         setOrderId(json.orderId ?? "");
         setDonation(typeof json.donation === "number" ? json.donation : 0);
         setRewardPoints(typeof json.rewardPoints === "number" ? json.rewardPoints : 0);
+        setIsGuest(!!guestToken);
         setState("done");
       })
       .catch((e) => {
@@ -124,9 +126,18 @@ function SuccessContent() {
         소중한 주문 감사해요. 우리 동네 고양이들에게 따뜻함이 전해질 거예요
       </p>
       <div className="flex flex-col gap-2 w-full max-w-[280px]">
-        <Link href={orderId ? `/shop/orders/${orderId}` : "/shop/orders"} className={primaryLinkCls} style={primaryLinkStyle}>
+        <Link
+          href={isGuest ? `/shop/orders/${encodeURIComponent(orderNumber)}?guest=1` : orderId ? `/shop/orders/${orderId}` : "/shop/orders"}
+          className={primaryLinkCls}
+          style={primaryLinkStyle}
+        >
           주문 내역 보기
         </Link>
+        {isGuest && (
+          <p className="text-[11px] text-text-light leading-relaxed">
+            비회원 주문은 이 기기에서 조회·취소·환불할 수 있어요. 주문번호를 따로 적어 두세요.
+          </p>
+        )}
         <Link href="/shop" className="py-3 text-[13px] font-semibold text-text-sub">
           쇼핑 계속하기
         </Link>
