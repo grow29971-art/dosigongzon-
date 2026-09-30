@@ -262,10 +262,10 @@ export default function LegalGuidePage() {
           </div>
 
           <div className="rounded-xl bg-white p-4" style={{ border: "1px solid var(--color-border)" }}>
-            <p className="text-[15px] font-bold text-text-main">제14조 — 동물의 구조 및 보호</p>
+            <p className="text-[15px] font-bold text-text-main">제34조 — 동물의 구조·보호</p>
             <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
               피학대·유기 동물 발견 시 <strong>누구나 시장·군수·구청장에게 구조 요청 가능</strong>.
-              신고자는 법적으로 보호되며 가해자에게 신분이 공개되지 않습니다.
+              신고자의 신분은 법적으로 보호되며 가해자에게 공개되지 않습니다(제39조 제3항).
             </p>
           </div>
 
