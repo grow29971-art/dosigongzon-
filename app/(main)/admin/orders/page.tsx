@@ -64,6 +64,10 @@ export default function AdminOrdersPage() {
   const [rejectId, setRejectId] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
   const [refundError, setRefundError] = useState("");
+  // 직권 전액 환불 — 기기를 잃은 비회원·전화/이메일 접수 건 (2026-09-30)
+  const [discretionId, setDiscretionId] = useState<string | null>(null);
+  const [discretionNote, setDiscretionNote] = useState("");
+  const [discretionBusy, setDiscretionBusy] = useState(false);
 
   const refresh = useCallback(async (f: OrderStatus | "all") => {
     setLoading(true);
@@ -76,6 +80,29 @@ export default function AdminOrdersPage() {
       setLoading(false);
     }
   }, []);
+
+  const handleDiscretionRefund = async (order: OrderWithItems) => {
+    setDiscretionBusy(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/refunds", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "create", orderId: order.id, note: discretionNote.trim() || undefined }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? "환불에 실패했어요.");
+      setDiscretionId(null);
+      setDiscretionNote("");
+      setNotice(`직권 환불 완료 · ${formatWon(json.amount ?? 0)}`);
+      await refresh(filter);
+      setOpenId(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "환불에 실패했어요.");
+    } finally {
+      setDiscretionBusy(false);
+    }
+  };
 
   const handleRefundAction = async (refund: AdminRefundRequest, action: "approve" | "reject") => {
     setRefundBusyId(refund.id);
@@ -363,6 +390,36 @@ export default function AdminOrdersPage() {
                       <p className="mt-2 text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>
                         결제 전 주문만 여기서 취소할 수 있어요. 결제된 주문은 환불 요청 승인으로, 비회원 주문은 토스 상점관리자에서 취소하면 자동 반영돼요.
                       </p>
+                    )}
+                    {["paid", "preparing", "shipping", "delivered"].includes(order.status) && order.refund_status !== "requested" && (
+                      discretionId === order.id ? (
+                        <div className="mt-3">
+                          <input
+                            type="text"
+                            value={discretionNote}
+                            onChange={(e) => setDiscretionNote(e.target.value)}
+                            placeholder="환불 사유 메모 (예: 비회원 이메일 요청, 기기 분실)"
+                            maxLength={500}
+                            className={inputCls}
+                            style={inputStyle}
+                          />
+                          <p className="mt-1.5 text-[13px] text-text-sub">
+                            남은 결제액 {formatWon(order.payment_amount - (order.refund_amount ?? 0))}을 반품비 차감 없이 바로 토스로 환불해요. 되돌릴 수 없어요.
+                          </p>
+                          <div className="mt-1.5 flex gap-1.5">
+                            <UIButton variant="secondary" className="flex-1" onClick={() => setDiscretionId(null)} disabled={discretionBusy}>
+                              돌아가기
+                            </UIButton>
+                            <UIButton variant="danger" className="flex-1" onClick={() => handleDiscretionRefund(order)} disabled={discretionBusy}>
+                              {discretionBusy ? "처리 중…" : "환불 실행"}
+                            </UIButton>
+                          </div>
+                        </div>
+                      ) : (
+                        <HairlineButton tone="error" size="md" className="mt-3 w-full" onClick={() => { setDiscretionId(order.id); setDiscretionNote(""); }}>
+                          직권 전액 환불 {order.user_id ? "" : "(비회원)"}
+                        </HairlineButton>
+                      )
                     )}
                     {error && <p className="mt-2 text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>{error}</p>}
                   </div>
