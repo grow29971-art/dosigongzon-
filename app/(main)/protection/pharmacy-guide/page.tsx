@@ -443,9 +443,7 @@ export default async function PharmacyGuidePage() {
                   </div>
                 )}
 
-                {p.price && (
-                  <span className="text-[13px] font-bold text-text-main">{p.price}</span>
-                )}
+                {/* 가격은 표시하지 않는다 — 제품명+사용법+가격은 정보가 아닌 판매 유도(약사법 광고)로 읽힐 여지(2026-09-30 감사) */}
               </div>
             </article>
           ))}
