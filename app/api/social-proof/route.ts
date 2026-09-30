@@ -55,11 +55,13 @@ export async function GET(request: Request) {
       .select("*", { count: "exact", head: true })
       .eq("hidden", false)
       .gte("created_at", mondayUtc),
-    // 전체 고양이 수
+    // 전체 고양이 수 — 더미(photo_url에 dummy-real/) 제외. "지금까지 N마리와 함께"는 실제 활동성으로 읽혀
+    // 더미를 세면 과장 표시 소지(표시광고법, 2026-09-30 감사·사장님 승인). 더미 자체는 지도에 유지한다.
     supabase
       .from("cats")
       .select("*", { count: "exact", head: true })
-      .eq("hidden", false),
+      .eq("hidden", false)
+      .or("photo_url.is.null,photo_url.not.like.*dummy-real/*"),
     // 위험(긴급 구조) 상태 고양이 수
     supabase
       .from("cats")
