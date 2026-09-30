@@ -200,7 +200,7 @@ export default function ShopPage() {
         headerEmoji=""
         title="사면, 아이들에게 돌아가요"
         items={[
-          { emoji: "", text: <>수익(이익)의 <b className="text-text-main">10%</b>는 길고양이 <b className="text-text-main">중성화(TNR)</b>에 써요. 모인 금액과 쓴 금액은 그대로 공개돼요.</> },
+          { emoji: "", text: <>수익(이익)의 <b className="text-text-main">10%</b>는 <b className="text-text-main">길고양이 케어</b>(중성화·쉼터 입소 등)에 써요. 모인 금액과 쓴 금액은 그대로 공개돼요.</> },
           { emoji: "", text: <>매일 돌봄 기록으로 모은 포인트를 <b className="text-text-main">1P = 1원</b> 할인으로 쓸 수 있어요.</> },
           { emoji: "", text: <>모인 금액·쓰인 금액을 <b className="text-text-main">투명하게 공개</b>해요.</> },
         ]}
@@ -263,10 +263,10 @@ export default function ShopPage() {
         style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
       >
         <p className="text-[15px] font-semibold text-text-main leading-snug">
-          여기서 사면 수익(이익)의 10%가 길고양이 중성화(TNR)에 쓰여요
+          여기서 사면 수익(이익)의 10%가 길고양이 케어에 쓰여요
         </p>
         <p className="text-[13px] text-text-sub leading-relaxed mt-1.5">
-          어차피 사는 사료·용품이잖아요. 얼마가 모였고 얼마를 썼는지는 아래에 그대로 공개돼요.
+          중성화(TNR)와 구조된 아이의 쉼터 입소 등에 쓰여요. 어차피 사는 사료·용품이잖아요. 얼마가 모였고 얼마를 썼는지는 아래에 그대로 공개돼요.
         </p>
         <p className="text-[13px] text-text-sub leading-relaxed mt-1">
           도시공존은 특정 단체·정당과 무관하게, 오직 길집사님들과 함께 만들어가요.
@@ -291,7 +291,7 @@ export default function ShopPage() {
             </div>
             <p className="text-[11px] text-text-light mt-1.5">
               {donation.total >= donation.goal
-                ? "목표 달성! 중성화 지원에 쓰여요"
+                ? "목표 달성! 길고양이 케어에 쓰여요"
                 : "구매 하나하나가 여기 쌓여요"}
             </p>
           </div>

@@ -102,7 +102,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           Icon: Heart,
           text: product.donation_percent === 100
             ? "이 후원금은 전액 길고양이를 위해 사용됩니다"
-            : `이 상품은 수익(이익)의 ${product.donation_percent}%가 길고양이 중성화(TNR)에 쓰여요`,
+            : `이 상품은 수익(이익)의 ${product.donation_percent}%가 길고양이 케어(중성화·쉼터 입소 등)에 쓰여요`,
         }]
       : []),
   ];
