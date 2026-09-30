@@ -24,13 +24,14 @@ const DEVICES = [
   },
 ];
 
+// 휴대전화용(capture-screenshots.mjs)과 같은 현행 화면 — 2026-09-30 교체. 고양이 상세는 실물 고양이만.
 const PAGES = [
-  { path: "/shorts",                      file: "01-shorts",         waitFor: 2500 },
-  { path: "/",                            file: "02-home",           waitFor: 2000 },
-  { path: "/protection",                  file: "03-protection",     waitFor: 1500 },
-  { path: "/protection/emergency-guide",  file: "04-emergency",      waitFor: 1500 },
-  { path: "/tips",                        file: "05-tips",           waitFor: 1500 },
-  { path: "/news",                        file: "06-news",           waitFor: 1500 },
+  { path: "/hello",                                     file: "01-hello",      waitFor: 2000, firstVisit: true },
+  { path: "/map",                                       file: "02-map",        waitFor: 4000 },
+  { path: "/cats/56ad219e-745e-4af7-836a-4717cc666fd6", file: "03-cat-detail", waitFor: 2500 },
+  { path: "/protection",                                file: "04-protection", waitFor: 1500 },
+  { path: "/protection/emergency-guide",                file: "05-emergency",  waitFor: 1500 },
+  { path: "/tips",                                      file: "06-tips",       waitFor: 2000 },
 ];
 
 async function capture() {
@@ -46,6 +47,18 @@ async function capture() {
         "Mozilla/5.0 (Linux; Android 13; Pixel Tablet) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       );
 
+      // 첫 방문 팝업·쿠키 배너가 화면을 가리지 않게(휴대전화용과 같은 키)
+      await page.evaluateOnNewDocument(() => {
+        localStorage.setItem("dosigongzon_cookie_consent", "rejected");
+        localStorage.setItem("dosigongzon_onboarded", "true");
+        localStorage.setItem("dosigongzon_intro_map_anon_ts", String(Date.now()));
+        localStorage.setItem("dosigongzon_signup_nudge_dismissed", String(Date.now()));
+        localStorage.setItem("dosigongzon_points_guide_seen_v1", "1");
+        localStorage.setItem("dosigongzon_intro_map_chat_guide_v1", String(Date.now()));
+      });
+      if (!p.firstVisit) {
+        await page.setCookie({ name: "hello_seen", value: "1", domain: "dosigongzon.com", path: "/" });
+      }
       const url = `${SITE}${p.path}`;
       const filename = `tablet-${device.name}-${p.file}.png`;
       console.log(`  📸 ${p.path} → ${filename}`);
