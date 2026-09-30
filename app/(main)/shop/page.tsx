@@ -266,7 +266,7 @@ export default function ShopPage() {
           여기서 사면 수익(이익)의 10%가 길고양이 케어에 쓰여요
         </p>
         <p className="text-[13px] text-text-sub leading-relaxed mt-1.5">
-          중성화(TNR)와 구조된 아이의 쉼터 입소 등에 쓰여요. 협약 쉼터 <b className="text-text-main">길냥이쉼터 묘연</b>에 구조한 아이를 맡길 수 있도록 입소를 지원해요. 어차피 사는 사료·용품이잖아요. 얼마가 모였고 얼마를 썼는지는 아래에 그대로 공개돼요.
+          중성화(TNR)와 구조된 아이의 쉼터 입소 등에 쓰여요. 협약 쉼터 <b className="text-text-main">길냥이쉼터 묘연</b>에 구조한 아이의 입소를 연결해 드려요(입소는 쉼터 심사로 결정돼요). 어차피 사는 사료·용품이잖아요. 얼마가 모였고 얼마를 썼는지는 아래에 그대로 공개돼요.
         </p>
         <p className="text-[13px] text-text-sub leading-relaxed mt-1">
           도시공존은 특정 단체·정당과 무관하게, 오직 길집사님들과 함께 만들어가요.
