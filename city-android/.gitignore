@@ -12,3 +12,6 @@ local.properties
 
 # 릴리스 산출물은 필요 시 수동으로 add (기본은 무시 — bubblewrap build로 재생성)
 # app-release-bundle.aab / app-release-signed.apk 는 루트에 이미 추적 중이라 유지됨
+
+# Play 스토어 스크린샷 — capture-screenshots.mjs·capture-tablet-screenshots.mjs로 재생성 가능
+screenshots/
