@@ -54,6 +54,15 @@ export async function POST(req: Request) {
     const amount = orderRow.payment_amount - (orderRow.refund_amount ?? 0);
     if (amount <= 0) return NextResponse.json({ error: "환불할 잔액이 없어요." }, { status: 409 });
 
+    // 토스 호출이 실패(failed)한 건이 있으면 새 키로 또 내지 않는다 — 네트워크 단절 건은 토스에 이미
+    // 나갔을 수 있어, 새 키 전액취소가 겹치면 반품비 차감 등 첫 시도의 금액 결정이 사라진다(2026-10-02).
+    // 그 건은 목록에서 승인(같은 멱등키 재시도)으로 처리.
+    const { count: failedCount } = await svc
+      .from("order_refunds").select("id", { count: "exact", head: true })
+      .eq("order_id", orderRow.id).eq("status", "failed");
+    if ((failedCount ?? 0) > 0) {
+      return NextResponse.json({ error: "토스 호출이 실패한 환불 건이 있어요. 위 목록에서 그 건을 승인(재시도)해 주세요." }, { status: 409 });
+    }
     const { count: prior } = await svc
       .from("order_refunds").select("id", { count: "exact", head: true }).eq("order_id", orderRow.id);
     const note = typeof body.note === "string" ? body.note.trim().slice(0, 500) : null;
