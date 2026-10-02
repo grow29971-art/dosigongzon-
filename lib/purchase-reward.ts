@@ -78,19 +78,29 @@ export async function revokePurchaseReward(
   const earned = (granted as { amount?: number } | null)?.amount ?? 0;
   if (earned <= 0) return;
 
-  const { data: wallet } = await svc.from("user_points").select("balance").eq("user_id", memberId).maybeSingle();
-  const take = Math.min(earned, (wallet as { balance?: number } | null)?.balance ?? 0);
-  if (take < earned) {
-    console.error(`[purchase-reward] revoke shortfall ${earned - take}P (already spent) order=${order.id}`);
+  // 잔액 조회와 차감 사이에 다른 결제가 포인트를 쓰면 spend_points가 false(잔액 부족)를 돌려준다.
+  // 예전엔 그 false를 안 봐서 회수가 통째로 조용히 빠졌다(2026-10-02) — 최신 잔액으로 다시 시도.
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const { data: wallet } = await svc.from("user_points").select("balance").eq("user_id", memberId).maybeSingle();
+    const take = Math.min(earned, (wallet as { balance?: number } | null)?.balance ?? 0);
+    if (take < earned) {
+      console.error(`[purchase-reward] revoke shortfall ${earned - take}P (already spent) order=${order.id}`);
+    }
+    if (take <= 0) return;
+    const { data: ok, error } = await svc.rpc("spend_points", {
+      p_user_id: memberId,
+      p_amount: take,
+      p_reason: `purchase-reward-revoke:${order.id}`,
+      p_note: `주문 ${order.order_number} 취소·환불로 구매 적립 회수`,
+    });
+    if (error) {
+      // 유니크 위반 = 이미 회수됨(정상). 그 외만 로그.
+      if (!String(error.message || "").toLowerCase().includes("duplicate")) {
+        console.error("[purchase-reward] revoke failed:", error.code ?? error.message, order.id);
+      }
+      return;
+    }
+    if (ok === true) return;
   }
-  if (take <= 0) return;
-  const { error } = await svc.rpc("spend_points", {
-    p_user_id: memberId,
-    p_amount: take,
-    p_reason: `purchase-reward-revoke:${order.id}`,
-    p_note: `주문 ${order.order_number} 취소·환불로 구매 적립 회수`,
-  });
-  if (error && !String(error.message || "").toLowerCase().includes("duplicate")) {
-    console.error("[purchase-reward] revoke failed:", error.code ?? error.message, order.id);
-  }
+  console.error("[purchase-reward] revoke gave up after retries (manual check):", order.id);
 }
