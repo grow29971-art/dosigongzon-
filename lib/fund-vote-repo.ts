@@ -5,34 +5,8 @@
 
 import { createClient } from "@/lib/supabase/client";
 
-// 비로그인 투표 식별자 — 브라우저/기기 단위(1기기 1표, 캐주얼 중복만 방지).
-// 2026-07-22 보안 회의: 계측용 dosigongzon_anon_id 와 키 분리(신뢰경계 혼용 금지).
-// 한계: 클라이언트 제어 식별자라 localStorage 삭제로 재투표 가능 —
-// 표 무결성이 중요한 투표는 로그인 투표(cast_fund_vote)만 신뢰할 것.
-const ANON_ID_KEY = "dosigongzon_fund_anon_id";
-const LEGACY_SHARED_KEY = "dosigongzon_anon_id"; // 분리 전 공용 키 — 기존 투표 기기 승계용
+// 비로그인 투표는 2026-10-02 폐지(로그인 1인 1표만). 예전 비로그인 기기의 선택 표시용 키만 남김.
 const ANON_VOTE_KEY = "dosigongzon_fund_vote"; // 비로그인 내 선택(표시용)
-
-function randomId(): string {
-  try {
-    if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
-  } catch { /* 폴백 */ }
-  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
-
-function getAnonId(): string {
-  try {
-    let id = localStorage.getItem(ANON_ID_KEY);
-    if (!id) {
-      // 과거 공용 키로 이미 투표한 기기는 그 id를 승계해 중복 투표를 만들지 않는다
-      id = localStorage.getItem(LEGACY_SHARED_KEY) || randomId();
-      localStorage.setItem(ANON_ID_KEY, id);
-    }
-    return id;
-  } catch {
-    return randomId();
-  }
-}
 
 export interface FundVoteOption {
   id: string;
@@ -82,7 +56,7 @@ export async function loadFundVote(): Promise<FundVoteState> {
   return { options, counts, total, myVote };
 }
 
-// 투표(변경 포함). 로그인 유저는 cast_fund_vote, 비로그인은 cast_fund_vote_anon(기기 단위). 오류 시 예외.
+// 투표(변경 포함). 로그인 유저만 — 비로그인 투표는 기기 식별자를 클라이언트가 정해 무제한 투표가 됐다(2026-10-02).
 export async function castFundVote(optionId: string): Promise<void> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -91,11 +65,5 @@ export async function castFundVote(optionId: string): Promise<void> {
     if (error) throw new Error(error.message);
     return;
   }
-  // 비로그인 — 기기 식별자 기준 1표
-  const { error } = await supabase.rpc("cast_fund_vote_anon", {
-    p_option_id: optionId,
-    p_anon_id: getAnonId(),
-  });
-  if (error) throw new Error(error.message);
-  try { localStorage.setItem(ANON_VOTE_KEY, optionId); } catch { /* 무시 */ }
+  throw new Error("로그인이 필요해요.");
 }
