@@ -7,6 +7,11 @@
 
 ## 완료 (프로덕션 동작·검증됨)
 
+- **결제 악용 경로 감사·수리 (2026-10-02)**: 코드 4커밋(6bf9b37e 승인 중 order_items 끼워넣기 차단, 73bbfb6d ALREADY_PROCESSED 원장 대조,
+  94c2108c 구매 적립을 구매확정으로 이동, 5950ea65 preparing 심사) 배포 성공. DB `box/supabase_payment_audit_20261002.sql`
+  (부모 주문 잠금 트리거·payment_key 유니크·주문 INSERT 가드·care_logs 시각 범위·삭제/INSERT 정책) 10/2 SQL Editor 실행,
+  pg_trigger·pg_indexes·pg_policies 대조 + 롤백 전용 DO 블록으로 "선점 후 품목 INSERT 거부" 실측 확인.
+
 - **성장 계측·신규 여정 (2026-09-29~30)**: 설계 `city-marketing/reports/2026-09-29_growth-design.md`(북극성 = 주간 돌봄 기록자).
   가입 출처를 가입 콜백이 쿠키 `dsg_src`로 서버 기록(7b31d930), 관리자 전체 푸시 동의자만(2300f947), 봇 지표 API `/api/bot/marketing/metrics`(8a53aa1f),
   카톡 공유 링크 `utm_source=kakao_share`(4dd8f356), 신규 7일 여정 A + 10% 대조군 크론(7c0124d4, `journey_sends` SQL 9/30 실행 "Success" — 첫 09시 실행으로 확인 예정).
