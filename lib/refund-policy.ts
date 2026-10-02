@@ -30,6 +30,21 @@ export function returnShippingFeeFor(orderShippingFee: number): number {
   return orderShippingFee > 0 ? orderShippingFee : RETURN_SHIPPING_FEE_BASE * 2;
 }
 
+// 발주 다이제스트 시각(KST) — /api/cron/order-dispatch가 매일 이 시각(vercel.json "0 4 * * *" = 04:00 UTC)에
+// paid 주문을 운영자에게 올리고, 운영자는 그걸 보고 공급처(대즐)에 넘긴다. 바꾸면 여기도 같이.
+export const DISPATCH_HOUR_KST = 13;
+
+/** 결제 후 처음 발주 다이제스트에 실리는 시각(epoch ms). 그 뒤엔 공급처에 넘어갔을 수 있다. */
+export function firstDispatchAt(paidAt: string): number | null {
+  const t = new Date(paidAt).getTime();
+  if (!Number.isFinite(t)) return null;
+  const KST = 9 * 3_600_000;
+  const kst = t + KST;
+  let cutoff = Math.floor(kst / 86_400_000) * 86_400_000 + DISPATCH_HOUR_KST * 3_600_000;
+  if (kst >= cutoff) cutoff += 86_400_000;
+  return cutoff - KST;
+}
+
 export type RefundReasonCode =
   | "change_of_mind"    // 단순변심
   | "defect"            // 상품 하자
@@ -193,6 +208,15 @@ export function decideRefund(
       return {
         allowed: true, mode: "review", shippingFeeBearer: bearer, returnShippingFee: returnFee,
         note: "이미 발송된 상품이에요 — 회수 확인 후 환불해요",
+      };
+    }
+    // paid라도 발주 다이제스트가 한 번 나간 뒤면 운영자가 공급처에 넘기고 '준비중' 전환만 안 했을 수 있다
+    // (전환은 수동). 그때 즉시환불하면 물건은 나가고 돈은 돌려주게 된다 — 다이제스트 전까지만 즉시환불(2026-10-02).
+    const dispatchAt = order.paidAt ? firstDispatchAt(order.paidAt) : null;
+    if (order.status === "paid" && (dispatchAt === null || now >= dispatchAt)) {
+      return {
+        allowed: true, mode: "review", shippingFeeBearer: "none", returnShippingFee: 0,
+        note: "발주가 넘어갔을 수 있어요 — 발주 취소를 확인한 뒤 전액 환불해요",
       };
     }
     // preparing = 운영자가 대즐에 발주를 넘긴 상태(송장 전). 즉시환불하면 공급처가 그대로 발송해

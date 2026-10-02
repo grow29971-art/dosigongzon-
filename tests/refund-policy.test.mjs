@@ -16,13 +16,14 @@ import {
 
 const NOW = Date.UTC(2026, 6, 31, 0, 0, 0); // 2026-07-31
 const daysAgo = (d) => new Date(NOW - d * 86_400_000).toISOString();
+const hoursAgo = (h) => new Date(NOW - h * 3_600_000).toISOString();
 
 const base = {
   status: "paid",
   refundStatus: "none",
   paymentAmount: 30000,
   refundAmount: 0,
-  paidAt: daysAgo(1),
+  paidAt: hoursAgo(1), // NOW = 7/31 09:00 KST → 8시 결제, 당일 13시 발주 다이제스트 전(즉시환불 창)
   shippedAt: null,
   deliveredAt: null,
   hasPhysicalItem: true,
@@ -69,6 +70,25 @@ test("배송 전(paid)은 즉시 전액 환불 · 반품비 없음", () => {
   assert.equal(r.mode, "auto");
   assert.equal(r.returnShippingFee, 0);
   assert.equal(r.shippingFeeBearer, "none");
+});
+
+// 2026-10-02: 발주 다이제스트(매일 13:00 KST)가 나간 뒤의 paid는 공급처에 넘어갔을 수 있다
+test("paid라도 결제 후 첫 발주 다이제스트(13시 KST)가 지났으면 심사", () => {
+  // 7/30 08:00 KST 결제 → 7/30 13:00 다이제스트 → NOW(7/31 09:00)엔 이미 지남
+  const r = decideRefund(order({ paidAt: hoursAgo(25) }), "change_of_mind", NOW);
+  assert.equal(r.mode, "review");
+  assert.equal(r.returnShippingFee, 0);
+});
+
+test("전날 13시 이후 결제는 다음날 13시 다이제스트 전까지 즉시환불", () => {
+  // 7/30 14:00 KST 결제(NOW 19시간 전) → 첫 다이제스트 7/31 13:00 → NOW(09:00)엔 아직 전
+  const r = decideRefund(order({ paidAt: hoursAgo(19) }), "change_of_mind", NOW);
+  assert.equal(r.mode, "auto");
+});
+
+test("결제 시각을 모르면 즉시환불하지 않는다", () => {
+  const r = decideRefund(order({ paidAt: null }), "change_of_mind", NOW);
+  assert.equal(r.mode, "review");
 });
 
 // 2026-10-02: preparing = 공급처 발주 후 — 즉시환불하면 발송된 물건을 못 막는다

@@ -160,10 +160,9 @@ export default function OrderDetailPage() {
   // 배송 전(즉시 전액 취소)과 배송 후(사유 선택 + 심사)는 문구가 다르다.
   // 송장이 이미 나갔으면 상태가 preparing이어도 즉시취소가 아니라 심사다(H-2) —
   // "즉시 취소돼요" 안내 후 실제로는 심사로 접수되면 유저가 속았다고 느낀다.
-  // preparing(발주 후)은 심사라 즉시취소 문구 대상이 아니다(refund-policy.ts 2절, 2026-10-02)
-  const preShipment =
-    order?.status === "paid" &&
-    !order?.tracking_number?.trim() && !order?.shipped_at;
+  // 즉시취소 문구는 정책 판정이 auto일 때만 — 발주 다이제스트 후·준비중·송장 발급은 심사(refund-policy.ts 2절)
+  const autoCheck = refundInput ? decideRefund(refundInput, "change_of_mind") : null;
+  const preShipment = !!autoCheck && autoCheck.allowed && autoCheck.mode === "auto";
   const modalDecision = refundInput ? decideRefund(refundInput, reason) : null;
   const remaining = order ? order.payment_amount - (order.refund_amount ?? 0) : 0;
   // 어떤 사유로든 요청 가능하면 버튼 노출 (기한은 사유별로 다르니 둘 다 확인)
