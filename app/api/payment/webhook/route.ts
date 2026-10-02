@@ -248,6 +248,28 @@ export async function POST(req: Request) {
       .select("id");
 
     if (claimed && claimed.length > 0) {
+      // 선점 후 품목 재확인 — 금액 검증(주문 조회)과 선점 사이에 끼워 넣은 order_items 차단.
+      // 선점 뒤엔 DB 트리거가 추가 INSERT를 거부하므로 여기서 본 목록이 최종(confirm 5.5와 같은 규칙).
+      const sig = (rows: { id: string; quantity: number }[] | null | undefined) =>
+        (rows ?? []).map((r) => `${r.id}:${r.quantity}`).sort().join(",");
+      const { data: lockedItems, error: lockedError } = await svc
+        .from("order_items").select("id, quantity").eq("order_id", order.id);
+      if (lockedError || sig(lockedItems) !== sig(items)) {
+        console.error("[payment/webhook] order_items changed after integrity check — auto refund:", order.id);
+        try {
+          await fetch(`https://api.tosspayments.com/v1/payments/${encodeURIComponent(paymentKey)}/cancel`, {
+            method: "POST",
+            headers: { Authorization: `Basic ${basicAuth}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ cancelReason: "주문 상품 변경 감지 자동 환불" }),
+          });
+        } catch (e) {
+          console.error("[payment/webhook] auto refund failed (manual refund needed):", safeErrorMessage(e, [paymentKey]), maskPaymentKey(paymentKey));
+        }
+        await svc.from("orders")
+          .update({ status: "cancelled", updated_at: new Date().toISOString() })
+          .eq("id", order.id);
+        return NextResponse.json({ ok: true, action: "refunded_items_changed" });
+      }
       // 조작된 후원액 교정 — 선점 성공(이 웹훅이 확정 주체)한 뒤에만 스냅샷을 바로잡는다.
       for (const fix of donationFixes) {
         const { error: fixError } = await svc

@@ -49,6 +49,11 @@ function tokenEquals(stored: string, provided: string): boolean {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+// 품목 구성 지문(id:수량) — 금액 검증 때 본 목록과 선점 후 목록이 같은지 대조용
+function itemsSignature(rows: { id: string; quantity: number }[] | null | undefined): string {
+  return (rows ?? []).map((r) => `${r.id}:${r.quantity}`).sort().join(",");
+}
+
 // 확보해둔 재고 원복 (부분 실패/승인 실패 롤백용)
 async function restoreStock(svc: SupabaseClient, reserved: OrderItem[]): Promise<void> {
   for (const item of reserved) {
@@ -256,6 +261,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true, orderId: recheck.id, orderNumber: recheck.order_number, donation: donationTotal(items) });
     }
     return NextResponse.json({ error: "이미 결제가 진행 중인 주문이에요." }, { status: 409 });
+  }
+
+  // 5.5 선점 후 품목 재확인 — 4.5 검증(주문 조회)과 5 선점 사이에 브라우저가 order_items를 끼워 넣으면
+  //     1개 값으로 N개가 발주된다(2026-10-02 감사). 선점 뒤엔 DB 트리거(order_items_lock_parent)가
+  //     추가 INSERT를 거부하므로 여기서 다시 읽은 목록이 최종 — 검증한 목록과 다르면 승인 전에 취소.
+  const { data: lockedItems, error: lockedError } = await svc
+    .from("order_items").select("id, quantity").eq("order_id", order.id);
+  if (lockedError || itemsSignature(lockedItems) !== itemsSignature(items)) {
+    console.error("[payment/confirm] order_items changed after integrity check — cancelling:", order.id);
+    await svc.from("orders")
+      .update({ status: "cancelled", updated_at: new Date().toISOString() })
+      .eq("id", order.id);
+    return NextResponse.json(
+      { error: "주문 상품이 변경돼 결제를 진행할 수 없어요. 결제 금액은 청구되지 않았어요." },
+      { status: 409 },
+    );
   }
 
   // 6. 선(先) 재고 확보 — 원자적 차감 (stock >= qty일 때만 성공)
