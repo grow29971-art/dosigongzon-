@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "invalid json" }, { status: 400 });
   }
   const circleId = body.circleId?.trim();
-  const preview = body.messagePreview?.trim() || "새 메시지";
+  const preview = (body.messagePreview?.trim() || "새 메시지").slice(0, 200);
   if (!circleId) {
     return NextResponse.json({ ok: false, error: "circleId required" }, { status: 400 });
   }
@@ -82,6 +82,12 @@ export async function POST(req: Request) {
   // 보낼 수 있었음(스팸/사회공학 벡터).
   if (senderId !== ownerId && !memberIds.includes(senderId)) {
     return NextResponse.json({ ok: false, error: "not_a_member" }, { status: 403 });
+  }
+
+  // 정지 계정은 발송 불가 — push/send와 같은 기준(2026-10-02)
+  const { data: notSuspended } = await admin.rpc("is_user_not_suspended", { uid: senderId });
+  if (notSuspended === false) {
+    return NextResponse.json({ ok: false, error: "suspended" }, { status: 403 });
   }
 
   const allUserIds = Array.from(new Set([ownerId, ...memberIds])).filter((id) => id !== senderId);
