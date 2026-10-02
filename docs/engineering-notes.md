@@ -18,6 +18,12 @@
   멀티라인 커밋은 `@'...'@` here-string, 메시지 안 따옴표는 피한다.
 
 ## Supabase 함정
+- **트리거 함수에서 `current_user`로 "클라이언트 직접 쓰기"를 가리려면 SECURITY INVOKER여야 한다.** DEFINER 안의
+  `current_user`는 소유자(postgres)라 `current_user <> 'authenticated'` 가드가 항상 통과해 아무것도 안 막는다
+  (2026-10-02 작성자 보호 트리거 3종이 이 상태로 방치돼 있었음). 가드가 다른 테이블을 읽어야 하면 RLS로 읽히는
+  범위(본인 행)인지 확인하고 INVOKER로 둔다.
+- **Chrome에서 SQL Editor 결과는 번역을 끄고(`translate=no`) 읽는다** — 번역이 React DOM을 깨 대시보드가 멈춘다.
+  Vercel Git 연동 배포가 안 뜨면 `box/vercel-hostpatch.cjs`로 CLI `deploy --prod`(10/2 실제로 필요했음).
 
 - **anon으로 base `cats`에 임의 컬럼 필터를 걸면 42501(permission denied).** anon은 컬럼 단위
   그랜트만 있다(좌표 잠금 계약). 증상: 서비스 키론 되는 쿼리가 프로덕션 SSR에서만 빈 결과.
