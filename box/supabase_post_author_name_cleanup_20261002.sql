@@ -6,7 +6,7 @@
 --    제외: 관리자 계정, 운영 봇 계정(staff 배지 행을 가진 작성자 전부) — 페르소나 이름은 의도된 것.
 --    원본은 private.author_name_backup_20261002에 보관(롤백용).
 -- ② shorts_admin_stats: shorts 테이블 삭제 후 남은 고아 함수인데 라이브에서 anon 실행권이 살아 있다 → 실행권 회수.
--- 실행: Supabase SQL Editor  ⚠ Chrome 번역 OFF
+-- 실행: Supabase SQL Editor  ⚠ Chrome 번역 OFF — 2026-10-02 실행·검증(백업 25행: 게시글 4·게시글 댓글 13·고양이 댓글 8, 불일치 0, shorts_admin_stats anon 실행권 false)
 -- ══════════════════════════════════════════
 
 -- ①

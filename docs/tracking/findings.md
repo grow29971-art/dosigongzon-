@@ -3,7 +3,7 @@
 ## 인프라·인가·anon 노출 점검 잔여 (2026-10-02)
 
 - 조치: Next 16.3.8·sharp 0.35.4(682e629d, next/og RCE 권고), 서클 채팅 푸시 정지 차단(2ee79aee),
-  게시글·댓글 실명 스냅샷 정리 SQL `box/supabase_post_author_name_cleanup_20261002.sql`(실행 게이트).
+  게시글·댓글 실명 스냅샷 정리 SQL `box/supabase_post_author_name_cleanup_20261002.sql`(10/2 실행·검증, 25행).
 - 중간: 커뮤니티 봇 시크릿 = CRON_SECRET(lib/community-bot.ts:42 폴백) → 봇 PC 유출 시 크론 30개 호출, engagement-push는 중복 방지 없음.
   분리 순서: Vercel `COMMUNITY_BOT_SECRET` 새 값 → 봇 PC .env 교체 → 코드 폴백 제거. 사장님 결정 대기.
 - 낮음: 탈퇴 시 circle-photos 미삭제(app/api/account/delete) / anon에 비활성 상품 17개·supplier 노출(products SELECT 정책) /
