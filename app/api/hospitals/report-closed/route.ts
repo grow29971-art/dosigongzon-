@@ -90,18 +90,8 @@ export async function POST(request: Request) {
     return Response.json({ error: "처리 실패" }, { status: 500 });
   }
 
-  // 누적 신고 수 확인 — 3건 이상이면 자동 숨김
-  const { count } = await supabase
-    .from("reports")
-    .select("*", { count: "exact", head: true })
-    .eq("target_type", "hospital_closed")
-    .eq("target_id", hospitalId)
-    .neq("status", "dismissed");
-
-  const HIDE_THRESHOLD = 3;
-  if ((count ?? 0) >= HIDE_THRESHOLD) {
-    await supabase.from("rescue_hospitals").update({ hidden: true }).eq("id", hospitalId);
-  }
+  // 자동 숨김 없음 — 관리자 받은함(admin/inbox)에서 확인 후 숨긴다. 예전엔 3계정 신고로 자동 숨김이라
+  // 계정 몇 개로 병원·약국 목록을 지울 수 있었다(2026-10-02).
 
   // 성공 → in-memory rate-limit 카운터 기록
   userLog.push(now);
@@ -109,9 +99,6 @@ export async function POST(request: Request) {
 
   return Response.json({
     ok: true,
-    message:
-      (count ?? 0) >= HIDE_THRESHOLD
-        ? "신고가 접수돼 자동으로 숨김 처리됐어요"
-        : `신고가 접수됐어요 (${count}/${HIDE_THRESHOLD}건 누적, ${HIDE_THRESHOLD}건부터 자동 숨김)`,
+    message: "신고가 접수됐어요. 관리자가 확인한 뒤 정리할게요.",
   });
 }
