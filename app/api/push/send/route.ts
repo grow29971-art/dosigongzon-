@@ -49,9 +49,24 @@ export async function POST(request: Request) {
   // 자기 자신에게 푸시는 OK (시스템/테스트)
   // 타인에게 푸시는 관계 검증 필수
   if (userId !== user.id) {
+    // 정지 계정·차단 관계는 발송 불가 — 예전엔 관계만 보고 보내 정지 후에도 푸시가 나갔다(2026-10-02)
+    const [{ data: notSuspended }, { count: blockCount }] = await Promise.all([
+      supabase.rpc("is_user_not_suspended", { uid: user.id }),
+      supabase.from("user_blocks").select("blocker_id", { count: "exact", head: true })
+        .or(`and(blocker_id.eq.${user.id},blocked_id.eq.${userId}),and(blocker_id.eq.${userId},blocked_id.eq.${user.id})`),
+    ]);
+    if (notSuspended === false || (blockCount ?? 0) > 0) {
+      return Response.json({ error: "권한 없음" }, { status: 403 });
+    }
     const allowed = await hasLegitRelation(supabase, user.id, userId);
     if (!allowed) {
       return Response.json({ error: "권한 없음" }, { status: 403 });
+    }
+    // 운영자 사칭 제목 차단 — 제목은 클라이언트가 정하므로 "도시공존 운영팀 계정 정지" 같은 피싱이 가능했다.
+    // 정상 제목(고양이 이름·닉네임님의 쪽지 등)엔 이 단어가 들어가지 않는다. 관리자는 예외.
+    if (typeof title === "string" && /도시공존|운영|관리자|공지|고객센터|정지/.test(title)) {
+      const { data: admin } = await supabase.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
+      if (!admin) return Response.json({ error: "사용할 수 없는 제목이에요" }, { status: 400 });
     }
   }
 
@@ -75,7 +90,7 @@ export async function POST(request: Request) {
     try {
       await webpush.sendNotification(
         { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-        JSON.stringify({ title: title || "도시공존", body, url: url || "/messages" }),
+        JSON.stringify({ title: String(title || "도시공존").slice(0, 60), body: String(body).slice(0, 200), url: url || "/messages" }),
       );
       sent++;
     } catch (err: unknown) {
