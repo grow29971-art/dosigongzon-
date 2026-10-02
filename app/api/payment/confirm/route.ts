@@ -352,10 +352,25 @@ export async function POST(req: Request) {
     });
     toss = (await res.json()) as TossPaymentResponse;
 
-    // 이전 시도에서 승인은 됐지만 응답을 못 받았던 경우(타임아웃 후 재시도) — 성공으로 처리
+    // 이전 시도에서 승인은 됐지만 응답을 못 받았던 경우(타임아웃 후 재시도) — 원장을 재조회해
+    // "이 주문·이 금액으로 완료된 결제"일 때만 성공 처리. 다른 주문에서 이미 승인된 paymentKey를
+    // 재사용해 이 주문을 공짜로 확정하는 경로 차단(토스 문서에 orderId 불일치 시 에러 코드 명시 없음).
+    let alreadyOk = false;
     if (!res.ok && toss.code === "ALREADY_PROCESSED_PAYMENT") {
-      console.warn("[payment/confirm] already processed — treating as success:", orderId);
-    } else if (!res.ok) {
+      const lookup = await fetch(
+        `https://api.tosspayments.com/v1/payments/${encodeURIComponent(paymentKey)}`,
+        { headers: { Authorization: `Basic ${basicAuth}` } },
+      );
+      const paid = (await lookup.json().catch(() => ({}))) as { orderId?: string; status?: string; totalAmount?: number; method?: string; easyPay?: { provider?: string } | null };
+      alreadyOk = lookup.ok && paid.orderId === orderId && paid.status === "DONE" && paid.totalAmount === amount;
+      if (alreadyOk) {
+        console.warn("[payment/confirm] already processed — verified, treating as success:", orderId);
+        toss = { ...toss, method: paid.method, easyPay: paid.easyPay };
+      } else {
+        console.error("[payment/confirm] ALREADY_PROCESSED but ledger mismatch — rejecting:", orderId, maskPaymentKey(paymentKey));
+      }
+    }
+    if (!res.ok && !alreadyOk) {
       // 승인 실패 → 재고 원복 + 포인트 환급 + 주문 취소 (오류는 allowlist 필드만 기록)
       console.error("[payment/confirm] toss confirm failed:", safeTossError(toss));
       await restoreStock(svc, reserved);
