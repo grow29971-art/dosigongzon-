@@ -1,5 +1,16 @@
 # 미해결 문제
 
+## 인프라·인가·anon 노출 점검 잔여 (2026-10-02)
+
+- 조치: Next 16.3.8·sharp 0.35.4(682e629d, next/og RCE 권고), 서클 채팅 푸시 정지 차단(2ee79aee),
+  게시글·댓글 실명 스냅샷 정리 SQL `box/supabase_post_author_name_cleanup_20261002.sql`(실행 게이트).
+- 중간: 커뮤니티 봇 시크릿 = CRON_SECRET(lib/community-bot.ts:42 폴백) → 봇 PC 유출 시 크론 30개 호출, engagement-push는 중복 방지 없음.
+  분리 순서: Vercel `COMMUNITY_BOT_SECRET` 새 값 → 봇 PC .env 교체 → 코드 폴백 제거. 사장님 결정 대기.
+- 낮음: 탈퇴 시 circle-photos 미삭제(app/api/account/delete) / anon에 비활성 상품 17개·supplier 노출(products SELECT 정책) /
+  찜·퍼널 게이트는 anonId 위조 가능 → 판정 시 user_id 있는 행만 / Turnstile 서버 미연결(Supabase Auth captcha로) /
+  post_view_inc anon 무제한 / 크론 시크릿 비교 비상수시간 / 빌드 전용 의존성 DoS 4건(brace-expansion 등).
+- 미확인: care_shifts INSERT RLS(테스트 계정 2개 프로브 필요), 라이브 함수 anon EXECUTE 일괄 조회(`has_function_privilege`) — box/ 기록과 라이브가 어긋난 사례(shorts_admin_stats) 있음.
+
 ## 법적 리스크 3관점 감사 (2026-09-30)
 
 - **9/30 조치 완료**: 학대경보 필터·미검증 고지(904df8e5), Resend 고지(09c84735), track 동의 게이트(040c0535), 총계 더미 제외(bf2ce725),
