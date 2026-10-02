@@ -17,6 +17,7 @@ function getRateLimit(level: number): number {
   return 10;
 }
 
+const AI_CHAT_DAILY_LIMIT = 30; // 유저당 하루(KST) — check_ai_chat_daily RPC
 const RATE_WINDOW_MS = 60_000; // 1분
 const RATE_WINDOW_SEC = 60;
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
@@ -209,6 +210,16 @@ export async function POST(request: Request) {
       { error: `잠시 후 다시 시도해주세요. (${rl.retryAfter}초) 레벨을 올리면 더 많이 대화할 수 있어요!` },
       { status: 429, headers: { "Retry-After": String(rl.retryAfter) } },
     );
+  }
+
+  // 유저당 일일 상한 — 분당 한도만 있어 한 계정이 공유 Gemini 쿼터(봇·팁 크론과 공용)를 몇 분 만에
+  // 소진할 수 있었다(2026-10-02). RPC 오류(미배포)면 막지 않는다.
+  {
+    const { data: dailyOk, error: dailyErr } = await createServiceClient()
+      .rpc("check_ai_chat_daily", { p_user_id: user.id, p_limit: AI_CHAT_DAILY_LIMIT });
+    if (!dailyErr && dailyOk === false) {
+      return Response.json({ error: `오늘 AI 집사와의 대화 한도(${AI_CHAT_DAILY_LIMIT}회)를 다 썼어요. 내일 다시 이야기해요!` }, { status: 429 });
+    }
   }
 
   const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
