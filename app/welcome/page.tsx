@@ -35,11 +35,19 @@ export default function WelcomePage() {
   );
 }
 
+// 브라우저 URL 파서로 실제 이동처를 확인한다 — 접두 검사만으론 "/\t/evil.com" 같은 탭·개행 섞인
+// 경로가 외부 호스트로 해석돼 온보딩 끝에 외부 사이트로 튕겼다(2026-10-02).
 function safeNext(raw: string | null): string {
-  if (!raw) return "/";
-  if (!raw.startsWith("/")) return "/";
-  if (raw.startsWith("//") || raw.startsWith("/\\")) return "/";
-  return raw;
+  if (!raw || !raw.startsWith("/")) return "/";
+  try {
+    // 가상 기준 origin — 서버 렌더에도 window 없이 동작
+    const base = "https://self.invalid";
+    const u = new URL(raw, base);
+    if (u.origin !== base) return "/";
+    return u.pathname + u.search + u.hash;
+  } catch {
+    return "/";
+  }
 }
 
 // 마지막 슬라이드 CTA — next가 어디로 가는지에 따라 라벨 변경
