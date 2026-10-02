@@ -49,12 +49,15 @@ export async function POST(request: Request) {
   }
 
   // 구매확정 적립 — 배송완료 후 7일 지난 회원 주문. 환불·취소된 주문은 status로 빠진다.
+  // 환불 심사 중(requested)·부분환불 주문은 제외 — 7일째 요청을 넣고 심사가 밀리는 사이 적립받아
+  // 써 버리면 환불 승인 때 회수가 모자란다(2026-10-02). 거부(rejected)되면 다음 실행에서 지급.
   const confirmBefore = new Date(Date.now() - REWARD_CONFIRM_DAYS * 86_400_000).toISOString();
   const confirmAfter = new Date(Date.now() - REWARD_LOOKBACK_DAYS * 86_400_000).toISOString();
   const { data: confirmed, error: confirmedError } = await supabase
     .from("orders")
     .select("id, order_number, payment_amount, user_id")
     .eq("status", "delivered")
+    .or("refund_status.is.null,refund_status.in.(none,rejected)")
     .not("user_id", "is", null)
     .lte("delivered_at", confirmBefore)
     .gte("delivered_at", confirmAfter);
