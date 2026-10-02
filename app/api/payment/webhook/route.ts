@@ -329,6 +329,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true, action: "partial_cancel_manual" });
     }
 
+    // 환불 실행기(lib/refund-executor.ts)가 토스 취소를 낸 건이면 주문 확정·후처리는 그쪽 몫이다.
+    // 토스가 취소 직후 웹훅을 쏘면 실행기의 주문 확정(→refunded)보다 먼저 여기서 cancelled로 바꿔
+    // 환불액·후원 차감 기록이 빠졌다(2026-10-02). 실행기가 중간에 죽은 건은 reconcile이 신고한다.
+    const { data: inflight } = await svc
+      .from("order_refunds").select("id")
+      .eq("order_id", order.id).in("status", ["approved", "completed"]).limit(1);
+    if (inflight && inflight.length > 0) {
+      return NextResponse.json({ ok: true, action: "refund_executor_owns" });
+    }
+
     // 조건부 전환(paid→cancelled) — 실제로 행을 바꾼(이 웹훅이 이긴) 경우에만 후처리.
     // 토스 웹훅 중복 재전송 시 재고·포인트 이중 환원 차단 (cancel 라우트와 동일 패턴).
     const { data: cancelled } = await svc.from("orders")
