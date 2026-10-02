@@ -17,7 +17,6 @@ function SuccessContent() {
   const [orderNumber, setOrderNumber] = useState("");
   const [orderId, setOrderId] = useState("");
   const [donation, setDonation] = useState(0);
-  const [rewardPoints, setRewardPoints] = useState(0); // 구매 적립 (2026-08-30)
   const [isGuest, setIsGuest] = useState(false); // 비회원 — 주문 상세는 주문번호 + 이 기기 토큰으로 연다
   const requested = useRef(false);
 
@@ -64,7 +63,6 @@ function SuccessContent() {
         setOrderNumber(json.orderNumber ?? tossOrderId);
         setOrderId(json.orderId ?? "");
         setDonation(typeof json.donation === "number" ? json.donation : 0);
-        setRewardPoints(typeof json.rewardPoints === "number" ? json.rewardPoints : 0);
         setIsGuest(!!guestToken);
         setState("done");
       })
@@ -109,12 +107,6 @@ function SuccessContent() {
       <p className="text-[13px] text-text-sub leading-relaxed mb-3">
         주문번호 <span className="font-semibold text-text-main">{orderNumber}</span>
       </p>
-      {rewardPoints > 0 && (
-        <div className="mb-2 px-4 py-3 w-full max-w-[280px]" style={noticeStyle}>
-          <p className="text-[15px] font-semibold text-text-main">{rewardPoints.toLocaleString()}P 적립됐어요</p>
-          <p className="text-[11px] text-text-sub mt-0.5">다음 구매 때 1P = 1원으로 쓸 수 있어요</p>
-        </div>
-      )}
       {donation > 0 && (
         <div className="mb-2 px-4 py-3 w-full max-w-[280px]" style={noticeStyle}>
           <p className="text-[13px] font-semibold text-text-main">

@@ -101,7 +101,7 @@ export default function PointsGuideSheet() {
             <br />
             많이 구매한 단골일수록 적립률이 올라가요 — <b>기본 {basePct}% · 단골 {basePct + 1}% · VIP {maxPct}%</b>.
             <br />
-            <span className="text-text-light">결제 완료 화면에서 바로 적립돼요.</span>
+            <span className="text-text-light">상품을 받고 7일이 지나면(구매확정) 자동으로 적립돼요.</span>
           </p>
         </div>
 

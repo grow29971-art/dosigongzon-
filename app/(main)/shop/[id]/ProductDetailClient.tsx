@@ -94,7 +94,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     ...(!isVirtual
       ? [{
           Icon: Gift,
-          text: `구매 시 ${formatWon(Math.floor(unitPrice * PURCHASE_REWARD_BASE_RATE))} 적립 (기본 ${Math.round(PURCHASE_REWARD_BASE_RATE * 100)}% · 단골 최대 ${Math.round(PURCHASE_REWARD_MAX_RATE * 100)}%)`,
+          text: `구매확정 시 ${formatWon(Math.floor(unitPrice * PURCHASE_REWARD_BASE_RATE))} 적립 (기본 ${Math.round(PURCHASE_REWARD_BASE_RATE * 100)}% · 단골 최대 ${Math.round(PURCHASE_REWARD_MAX_RATE * 100)}%)`,
         }]
       : []),
     ...(product.is_donation

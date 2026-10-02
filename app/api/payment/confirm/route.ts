@@ -20,7 +20,6 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
 import { maxPointsUsable } from "@/lib/points-config";
-import { grantPurchaseReward } from "@/lib/purchase-reward";
 import { donationForItem, embeddedCostPrice, type EmbeddedCost } from "@/lib/donation-calc";
 import { safePgError, maskPaymentKey, safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
 
@@ -458,15 +457,6 @@ export async function POST(req: Request) {
     if (cartError) console.error("[payment/confirm] cart clear failed:", safePgError(cartError));
   }
 
-  // 10. 구매 적립 — 깨끗한 paid 전환일 때만(paidRows>0). 멱등(webhook과 중복 방지). fire-and-forget.
-  let rewardPoints = 0;
-  if (paidRows && paidRows.length > 0 && memberId) {
-    try {
-      rewardPoints = await grantPurchaseReward(svc, order, memberId);
-    } catch (e) {
-      console.error("[payment/confirm] purchase reward failed:", safeErrorMessage(e, []));
-    }
-  }
-
-  return NextResponse.json({ ok: true, orderId: order.id, orderNumber: order.order_number, donation: donationTotal(items), rewardPoints });
+  // 구매 적립은 결제 시점이 아니라 구매확정(수령 7일 후) 크론에서 — lib/purchase-reward.ts 상단 참고
+  return NextResponse.json({ ok: true, orderId: order.id, orderNumber: order.order_number, donation: donationTotal(items) });
 }

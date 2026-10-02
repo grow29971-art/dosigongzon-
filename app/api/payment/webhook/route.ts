@@ -20,7 +20,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { safePgError, maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { maxPointsUsable } from "@/lib/points-config";
-import { grantPurchaseReward, revokePurchaseReward } from "@/lib/purchase-reward";
+import { revokePurchaseReward } from "@/lib/purchase-reward";
 import { donationForItem, embeddedCostPrice, type EmbeddedCost } from "@/lib/donation-calc";
 
 export const maxDuration = 60;
@@ -93,13 +93,7 @@ async function finalizePaid(
   if (ids.length > 0) {
     await svc.from("cart_items").delete().eq("user_id", order.user_id).in("product_id", ids);
   }
-
-  // 구매 적립 — confirm과 동일 reason(purchase-reward:order.id)이라 이중 지급 없음. (2026-08-30)
-  try {
-    await grantPurchaseReward(svc, order, order.user_id);
-  } catch (e) {
-    console.error("[payment/webhook] purchase reward failed:", safeErrorMessage(e, []), order.id);
-  }
+  // 구매 적립은 결제 시점이 아니라 구매확정(수령 7일 후) 크론에서 — lib/purchase-reward.ts 상단 참고
 }
 
 export async function POST(req: Request) {

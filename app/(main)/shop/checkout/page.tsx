@@ -582,7 +582,7 @@ export default function CheckoutPage() {
             {/* 구매 적립 안내 — 회원만(게스트는 지갑 없음). 요율은 points-config에서 관리 (2026-08-30) */}
             {user && finalAmount > 0 && (
               <p className="text-[11px] mt-1" style={{ color: "var(--color-sage)" }}>
-                구매 시 <b>{Math.floor(finalAmount * PURCHASE_REWARD_BASE_RATE).toLocaleString()}P</b> 적립 예정
+                구매확정(받고 7일 후) 시 <b>{Math.floor(finalAmount * PURCHASE_REWARD_BASE_RATE).toLocaleString()}P</b> 적립 예정
                 (기본 {Math.round(PURCHASE_REWARD_BASE_RATE * 100)}% · 단골 최대 {Math.round(PURCHASE_REWARD_MAX_RATE * 100)}%)
               </p>
             )}
