@@ -63,14 +63,20 @@ test("환불 잔액이 0이면 불가 (부분환불 누적으로 소진된 경�
 // ══════════════════════════════════════════
 // 2. 배송 단계별 판정
 // ══════════════════════════════════════════
-test("배송 전(paid/preparing)은 즉시 전액 환불 · 반품비 없음", () => {
-  for (const status of ["paid", "preparing"]) {
-    const r = decideRefund(order({ status }), "change_of_mind", NOW);
-    assert.equal(r.allowed, true);
-    assert.equal(r.mode, "auto");
-    assert.equal(r.returnShippingFee, 0);
-    assert.equal(r.shippingFeeBearer, "none");
-  }
+test("배송 전(paid)은 즉시 전액 환불 · 반품비 없음", () => {
+  const r = decideRefund(order({ status: "paid" }), "change_of_mind", NOW);
+  assert.equal(r.allowed, true);
+  assert.equal(r.mode, "auto");
+  assert.equal(r.returnShippingFee, 0);
+  assert.equal(r.shippingFeeBearer, "none");
+});
+
+// 2026-10-02: preparing = 공급처 발주 후 — 즉시환불하면 발송된 물건을 못 막는다
+test("상품 준비 중(preparing)은 송장 없어도 심사 · 반품비 없음", () => {
+  const r = decideRefund(order({ status: "preparing" }), "change_of_mind", NOW);
+  assert.equal(r.allowed, true);
+  assert.equal(r.mode, "review");
+  assert.equal(r.returnShippingFee, 0);
 });
 
 // H-2 (2026-08-04): 상태는 배송 전인데 실물이 이미 나간 주문 — 즉시환불하면 상품 편취
@@ -88,7 +94,7 @@ test("shipped_at만 있고 상태가 paid여도 자동환불 금지 (H-2)", () =
 
 test("송장 공백 문자열은 발송으로 보지 않는다 — 정상 즉시환불 유지 (H-2 오탐 방지)", () => {
   // hasTracking은 호출측에서 trim해 넘긴다(빈 문자열 → false). 정책은 boolean만 신뢰.
-  const r = decideRefund(order({ status: "preparing", hasTracking: false }), "change_of_mind", NOW);
+  const r = decideRefund(order({ status: "paid", hasTracking: false }), "change_of_mind", NOW);
   assert.equal(r.mode, "auto");
 });
 

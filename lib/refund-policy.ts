@@ -195,6 +195,15 @@ export function decideRefund(
         note: "이미 발송된 상품이에요 — 회수 확인 후 환불해요",
       };
     }
+    // preparing = 운영자가 대즐에 발주를 넘긴 상태(송장 전). 즉시환불하면 공급처가 그대로 발송해
+    // 물건은 나가고 돈은 돌려주게 된다(2026-10-02 감사). 발주 취소를 확인한 뒤 환불하도록 심사로.
+    // 반품비는 없다 — 실물이 아직 출발 전이고 취소는 무위약이 원칙.
+    if (order.status === "preparing") {
+      return {
+        allowed: true, mode: "review", shippingFeeBearer: "none", returnShippingFee: 0,
+        note: "상품 준비 중 — 발주 취소를 확인한 뒤 전액 환불해요",
+      };
+    }
     return {
       allowed: true, mode: "auto", shippingFeeBearer: "none", returnShippingFee: 0,
       note: "배송 전 — 전액 환불, 반품 배송비 없음",
