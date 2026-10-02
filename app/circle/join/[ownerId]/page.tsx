@@ -6,7 +6,7 @@
 // 본인이 owner면 안내 메시지.
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Loader2, ShieldCheck, Check, X, User } from "lucide-react";
@@ -18,6 +18,8 @@ import { thumbnailUrl } from "@/lib/cats-repo";
 export default function CircleJoinPage() {
   const params = useParams<{ ownerId: string }>();
   const ownerId = decodeURIComponent(params.ownerId ?? "");
+  // 서클 비밀 토큰 — 없거나 틀리면 RPC가 거부한다(owner id만으로 가입되던 구멍, 2026-10-02)
+  const token = useSearchParams().get("t") ?? "";
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
 
@@ -56,6 +58,7 @@ export default function CircleJoinPage() {
       // security definer RPC로 RLS 우회 + auth.uid() 본인 검증
       const { data, error: rpcErr } = await supabase.rpc("join_circle_by_owner", {
         p_owner_id: ownerId,
+        p_token: token,
       });
       if (rpcErr) throw new Error(rpcErr.message);
       if (data === "already") setResult("already");
@@ -87,7 +90,7 @@ export default function CircleJoinPage() {
         <p className="text-[15px] font-bold text-text-main mb-2">서클 초대 받기</p>
         <p className="text-[13px] text-text-sub mb-5">로그인하시면 초대를 수락할 수 있어요.</p>
         <Link
-          href={`/login?next=${encodeURIComponent(`/circle/join/${ownerId}`)}`}
+          href={`/login?next=${encodeURIComponent(`/circle/join/${ownerId}${token ? `?t=${token}` : ""}`)}`}
           className="inline-flex items-center px-6 h-10 rounded-lg bg-primary text-surface font-semibold text-[13px] press-strong"
         >
           로그인하고 수락하기

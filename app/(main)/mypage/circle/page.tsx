@@ -19,6 +19,7 @@ import {
   Clock3,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 import {
   CARE_SHIFT_MAX_FUTURE_MS,
   describeCareShiftError,
@@ -85,7 +86,14 @@ export default function CirclePage() {
   // 영구히 잠기므로, 로그아웃·계정 전환만 구분하는 id를 기준으로 삼는다.
   const userId = user?.id ?? null;
 
-  const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
+  // 초대 링크 = 내 id + 서클 비밀 토큰. id만으로는 공개 정보라 누구나 가입할 수 있었다(2026-10-02) —
+  // 토큰은 서버 RPC(my_circle_invite_token)가 서클과 함께 만들어 돌려준다.
+  const [inviteToken, setInviteToken] = useState<string | null>(null);
+  useEffect(() => {
+    if (!userId) return;
+    createSupabaseClient().rpc("my_circle_invite_token").then(({ data }: { data: string | null }) => setInviteToken(data ?? null));
+  }, [userId]);
+  const inviteUrl = user && inviteToken ? `https://dosigongzon.com/circle/join/${user.id}?t=${inviteToken}` : "";
 
   const handleCopyInviteUrl = async () => {
     if (!inviteUrl) return;
