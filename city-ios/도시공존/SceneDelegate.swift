@@ -43,10 +43,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             var comps = URLComponents(url: scheme, resolvingAgainstBaseURL: false)
             comps?.scheme = "https"
 
-            if let url = comps?.url {
-                // Handle it inside our web view in a SPA-friendly way.
-                gWebView.evaluateJavaScript("location.href = '\(url)'")
-            }
+            if let url = comps?.url { openInApp(url) }
         }
     }
 
@@ -62,8 +59,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
-        // Handle it inside our web view in a SPA-friendly way.
-        gWebView.evaluateJavaScript("location.href = '\(universalLink)'")
+        openInApp(universalLink)
     }
 
     // This function is called if our app is already loaded and the user activates the app via shortcut
@@ -71,8 +67,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                      performActionFor shortcutItem: UIApplicationShortcutItem,
                      completionHandler: @escaping (Bool) -> Void) {
         if let shortcutUrl = URL.init(string: shortcutItem.type) {
-            gWebView.evaluateJavaScript("location.href = '\(shortcutUrl)'");
+            openInApp(shortcutUrl)
         }
+    }
+
+    // 외부 링크(커스텀 스킴·유니버설 링크) 진입 — 우리 도메인만, JS 문자열 조립 없이 로드한다.
+    // 예전엔 location.href = '\(url)' 로 넣어 URL 속 작은따옴표로 로그인된 페이지에 스크립트 주입이 가능했다(2026-10-03).
+    private func openInApp(_ url: URL) {
+        guard url.scheme == "https", let host = url.host?.lowercased(),
+              host == "dosigongzon.com" || host == "www.dosigongzon.com" else { return }
+        gWebView.load(URLRequest(url: url))
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
