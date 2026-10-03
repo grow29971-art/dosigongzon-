@@ -48,7 +48,7 @@
 
 - 소비자: 데스크톱 앱「도시공존 커뮤니티봇」(`C:\Users\grow2\community-bot`, Electron 포터블).
 - 인증: `Authorization: Bearer <COMMUNITY_BOT_SECRET>` 전용(2026-10-03 분리 — CRON_SECRET 겸용 폐지, 변수가 없으면 전부 401).
-  봇 PC 값은 `%APPDATA%\community-botot\.env`(DPAPI 암호화), 주간 보고 스크립트는 `city/.env.local` 첫 줄에서 읽는다.
+  봇 PC 값은 `%APPDATA%/community-bot/bot/.env`(DPAPI 암호화), 주간 보고 스크립트는 `city/.env.local` 첫 줄에서 읽는다.
 - **닉네임 규칙(사장님 2026-09-16)**: 글·댓글 닉네임은 `NICKNAME_POOL`(`lib/community-personas.ts`, 40개)에서
   매번 랜덤. 말투는 닉네임 해시로 고정(`voiceFor`). 봇 글에 달린 이용자 댓글에 답할 때는 **그 글의 작성자 닉네임**을
   서버가 강제한다(`reply`). 봇 판정은 이름이 아니라 `author_title='staff'`(+구 명의).

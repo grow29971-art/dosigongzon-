@@ -26,8 +26,7 @@
 
 - 조치: Next 16.3.8·sharp 0.35.4(682e629d, next/og RCE 권고), 서클 채팅 푸시 정지 차단(2ee79aee),
   게시글·댓글 실명 스냅샷 정리 SQL `box/supabase_post_author_name_cleanup_20261002.sql`(10/2 실행·검증, 25행).
-- 중간: 커뮤니티 봇 시크릿 = CRON_SECRET(lib/community-bot.ts:42 폴백) → 봇 PC 유출 시 크론 30개 호출, engagement-push는 중복 방지 없음.
-  분리 순서: Vercel `COMMUNITY_BOT_SECRET` 새 값 → 봇 PC .env 교체 → 코드 폴백 제거. 사장님 결정 대기.
+- (해결 10/3, f6048e58) 커뮤니티 봇 시크릿 = CRON_SECRET 겸용 → Vercel `COMMUNITY_BOT_SECRET` 신설·봇 PC .env·city/.env.local 교체 후 폴백 제거. 실측: 새 키 200, 크론 시크릿 401.
 - 낮음: 탈퇴 시 circle-photos 미삭제(app/api/account/delete) / anon에 비활성 상품 17개·supplier 노출(products SELECT 정책) /
   찜·퍼널 게이트는 anonId 위조 가능 → 판정 시 user_id 있는 행만 / Turnstile 서버 미연결(Supabase Auth captcha로) /
   post_view_inc anon 무제한 / 크론 시크릿 비교 비상수시간 / 빌드 전용 의존성 DoS 4건(brace-expansion 등).
