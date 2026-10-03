@@ -1,5 +1,5 @@
 // 커뮤니티봇 exe → 운영 페르소나 글 등록. 자유게시판 고정, 운영 배지 강제, 하루 상한은 lib/community-bot.
-// 본문: { nickname, title, content } (구: personaId). 인증: Bearer <COMMUNITY_BOT_SECRET | CRON_SECRET>. 계약: docs/contracts.md 5절.
+// 본문: { nickname, title, content } (구: personaId). 인증: Bearer <COMMUNITY_BOT_SECRET>. 계약: docs/contracts.md 5절.
 import { checkBotSecret, insertPersonaPost, resolvePersona, serverReady } from "@/lib/community-bot";
 
 export async function POST(request: Request) {

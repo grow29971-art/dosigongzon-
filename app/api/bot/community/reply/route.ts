@@ -1,5 +1,5 @@
 // 커뮤니티봇 exe → 운영 글의 이용자 댓글에 답글. 닉네임은 요청값과 상관없이 그 글의 작성자 닉네임으로 고정.
-// 본문: { postId, parentId, body }. 인증: Bearer <COMMUNITY_BOT_SECRET | CRON_SECRET>. 계약: docs/contracts.md 5절.
+// 본문: { postId, parentId, body }. 인증: Bearer <COMMUNITY_BOT_SECRET>. 계약: docs/contracts.md 5절.
 import { checkBotSecret, insertPersonaReply, serverReady } from "@/lib/community-bot";
 
 export async function POST(request: Request) {

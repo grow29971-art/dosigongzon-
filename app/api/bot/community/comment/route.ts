@@ -1,5 +1,5 @@
 // 커뮤니티봇 exe → 이용자 글에 운영 페르소나 첫 댓글 + 글쓴이 푸시. 대상 검증·하루 상한은 lib/community-bot.
-// 본문: { nickname, postId, body } (구: personaId). 인증: Bearer <COMMUNITY_BOT_SECRET | CRON_SECRET>. 계약: docs/contracts.md 5절.
+// 본문: { nickname, postId, body } (구: personaId). 인증: Bearer <COMMUNITY_BOT_SECRET>. 계약: docs/contracts.md 5절.
 import { checkBotSecret, insertPersonaComment, resolvePersona, serverReady } from "@/lib/community-bot";
 
 export async function POST(request: Request) {

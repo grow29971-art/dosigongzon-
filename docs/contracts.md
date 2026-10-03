@@ -47,8 +47,8 @@
 ## 5. 커뮤니티봇 exe → `/api/bot/community/*` (2026-09-16)
 
 - 소비자: 데스크톱 앱「도시공존 커뮤니티봇」(`C:\Users\grow2\community-bot`, Electron 포터블).
-- 인증: `Authorization: Bearer <COMMUNITY_BOT_SECRET>` — Vercel 에 그 변수가 없으면 `CRON_SECRET` 을
-  겸용한다(도입 초기). 전용 시크릿을 넣으면 크론 시크릿과 분리된다.
+- 인증: `Authorization: Bearer <COMMUNITY_BOT_SECRET>` 전용(2026-10-03 분리 — CRON_SECRET 겸용 폐지, 변수가 없으면 전부 401).
+  봇 PC 값은 `%APPDATA%\community-botot\.env`(DPAPI 암호화), 주간 보고 스크립트는 `city/.env.local` 첫 줄에서 읽는다.
 - **닉네임 규칙(사장님 2026-09-16)**: 글·댓글 닉네임은 `NICKNAME_POOL`(`lib/community-personas.ts`, 40개)에서
   매번 랜덤. 말투는 닉네임 해시로 고정(`voiceFor`). 봇 글에 달린 이용자 댓글에 답할 때는 **그 글의 작성자 닉네임**을
   서버가 강제한다(`reply`). 봇 판정은 이름이 아니라 `author_title='staff'`(+구 명의).
@@ -71,7 +71,7 @@
 ## 6. 마케팅봇 → `/api/bot/marketing/*` (2026-09-26)
 
 - 소비자: 네이버 블로그 자동 발행(`C:\Users\grow2\city-marketing\blog`)·스레드봇의 주간 보고.
-- 인증: 5절과 같은 `Bearer <COMMUNITY_BOT_SECRET | CRON_SECRET>`.
+- 인증: 5절과 같은 `Bearer <COMMUNITY_BOT_SECRET>`.
 - `GET signups?since=<ISO>` (기본 7일 전) → `{ ok, since, total, bySource:{ naverblog:n, threads:n, instagram:n, naver:n, direct:n, unknown:n, ... } }`
   `profiles.created_at >= since` 인 가입을 `signup_source` 별로 센다(없으면 `unknown`). 개인정보 없음.
   출처 기록 경로(2026-09-29~): ① 가입 콜백(`api/auth/callback`)이 쿠키 `dsg_src`(`captureSource` 가 심음)를 읽어 만든 지 24시간 안 된 계정에 서버에서 기록 ② 못 잡으면 기존 클라 동기화(`syncSignupSourceOnce`)가 다음 방문 때 기록.

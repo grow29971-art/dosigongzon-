@@ -1,6 +1,6 @@
 // 커뮤니티봇 exe → 운영 댓글을 달 만한 유저 글 후보.
 // 자유게시판·숨김 아님·봇 글 아님·아직 운영 댓글 없음·올라온 지 minAgeHours(기본 1시간)~7일.
-// 인증: Authorization: Bearer <COMMUNITY_BOT_SECRET | CRON_SECRET>. 계약: docs/contracts.md 5절.
+// 인증: Authorization: Bearer <COMMUNITY_BOT_SECRET>. 계약: docs/contracts.md 5절.
 import { checkBotSecret, listCommentCandidates, serverReady } from "@/lib/community-bot";
 import { createServiceClient } from "@/lib/supabase/service";
 

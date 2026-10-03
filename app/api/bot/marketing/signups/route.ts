@@ -1,5 +1,5 @@
 // 마케팅봇 → 기간 내 가입 수를 유입 출처(profiles.signup_source)별로. 개인정보 없이 숫자만 돌려준다.
-// 쿼리: since=<ISO 날짜> (기본 7일 전). 인증: Bearer <COMMUNITY_BOT_SECRET | CRON_SECRET>. 계약: docs/contracts.md 6절.
+// 쿼리: since=<ISO 날짜> (기본 7일 전). 인증: Bearer <COMMUNITY_BOT_SECRET>. 계약: docs/contracts.md 6절.
 import { checkBotSecret, serverReady } from "@/lib/community-bot";
 import { createServiceClient } from "@/lib/supabase/service";
 

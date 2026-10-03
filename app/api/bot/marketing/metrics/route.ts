@@ -1,5 +1,5 @@
 // 마케팅봇 → 성장 지표(북극성 + 입력 지표). 개인정보 없이 숫자만 돌려준다. 설계: city-marketing/reports/2026-09-29_growth-design.md
-// 쿼리: since=<ISO 날짜> (가입 코호트 시작, 기본 7일 전). 인증: Bearer <COMMUNITY_BOT_SECRET | CRON_SECRET>.
+// 쿼리: since=<ISO 날짜> (가입 코호트 시작, 기본 7일 전). 인증: Bearer <COMMUNITY_BOT_SECRET>.
 //  · wac        지난 7일 돌봄 기록(care_logs)을 1건+ 남긴 사람 수 — 북극성 지표. wacPrev 는 그 전 7일
 //  · retention  지난주 기록한 사람 중 이번 주에도 기록한 비율
 //  · cohort     since 이후 가입자 수, 그중 가입 7일 안 첫 기록(활성화) 수 — 출처(signup_source)별로도

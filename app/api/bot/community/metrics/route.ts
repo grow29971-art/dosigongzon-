@@ -1,5 +1,5 @@
 // 커뮤니티봇 exe → 올린 글·댓글의 반응 수치 (조회·좋아요·댓글 수, 이용자 댓글 샘플, 운영 댓글 뒤 반응).
-// 쿼리: postIds=a,b&commentIds=x,y (각 50개까지). 인증: Bearer <COMMUNITY_BOT_SECRET | CRON_SECRET>. 계약: docs/contracts.md 5절.
+// 쿼리: postIds=a,b&commentIds=x,y (각 50개까지). 인증: Bearer <COMMUNITY_BOT_SECRET>. 계약: docs/contracts.md 5절.
 import { checkBotSecret, collectMetrics, serverReady } from "@/lib/community-bot";
 import { createServiceClient } from "@/lib/supabase/service";
 

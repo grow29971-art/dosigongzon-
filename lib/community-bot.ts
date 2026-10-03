@@ -11,6 +11,7 @@
 // ══════════════════════════════════════════
 
 import "server-only";
+import { timingSafeEqual } from "node:crypto";
 import webpush from "web-push";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -37,12 +38,13 @@ export const POST_CONTENT_MAX = 1000;
 export const COMMENT_MIN = 10;
 export const COMMENT_MAX = 300;
 
-/** 봇 exe 인증 — COMMUNITY_BOT_SECRET 이 있으면 그것, 없으면 CRON_SECRET 을 겸용(도입 초기). */
+/** 봇 exe·마케팅봇 인증 — COMMUNITY_BOT_SECRET 전용. 2026-10-03 CRON_SECRET 겸용 폐지: 봇 PC가 털리면 크론 30개까지 호출되던 구조. */
 export function checkBotSecret(request: Request): boolean {
-  const secret = process.env.COMMUNITY_BOT_SECRET || process.env.CRON_SECRET;
+  const secret = process.env.COMMUNITY_BOT_SECRET;
   if (!secret) return false;
-  const header = request.headers.get("authorization") ?? "";
-  return header === `Bearer ${secret}`;
+  const expected = Buffer.from(`Bearer ${secret}`);
+  const actual = Buffer.from(request.headers.get("authorization") ?? "");
+  return expected.length === actual.length && timingSafeEqual(expected, actual);
 }
 
 export function serverReady(): boolean {
