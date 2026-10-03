@@ -6,6 +6,12 @@ func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect {
     return CGRect(x: 0, y: 0, width: webviewView.frame.width, height: webviewView.frame.height)
 }
 
+// 정확한 도메인 또는 그 하위 도메인만 — 예전 contains 판정은 dosigongzon.com.evil.kr·evilapple.com도 통과시켰다(2026-10-03)
+func isInAppHost(_ host: String?, _ domains: [String]) -> Bool {
+    guard let h = host?.lowercased() else { return false }
+    return domains.contains { h == $0 || h.hasSuffix("." + $0) }
+}
+
 extension ViewController: WKUIDelegate {
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
                  for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
@@ -22,7 +28,8 @@ extension ViewController: WKUIDelegate {
                  initiatedByFrame frame: WKFrameInfo,
                  type: WKMediaCaptureType,
                  decisionHandler: @escaping (WKPermissionDecision) -> Void) {
-        decisionHandler(.grant)
+        // 우리 도메인만 자동 승인, 나머지 출처는 사용자에게 묻는다(2026-10-03)
+        decisionHandler(isInAppHost(origin.host, ["dosigongzon.com"]) ? .grant : .prompt)
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
@@ -41,7 +48,7 @@ extension ViewController: WKUIDelegate {
         let inAppHosts = ["dosigongzon.com", "supabase.co",
                           "accounts.google.com", "kauth.kakao.com", "accounts.kakao.com",
                           "appleid.apple.com", "idmsa.apple.com", "auth.apple.com", "apple.com"]
-        if url.scheme == "about" || inAppHosts.contains(where: { url.host?.contains($0) == true }) {
+        if url.scheme == "about" || isInAppHost(url.host, inAppHosts) {
             decisionHandler(.allow)
             return
         }
