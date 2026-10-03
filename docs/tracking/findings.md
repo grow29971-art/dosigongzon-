@@ -1,5 +1,15 @@
 # 미해결 문제
 
+## iOS 래퍼·클라이언트 감사 (2026-10-03)
+
+- 높음(수정, **앱 미반영**): 커스텀 스킴 URL을 `location.href = '\(url)'`로 주입 → 작은따옴표로 로그인 페이지 스크립트 실행·세션 탈취(961b869b).
+  중간: 앱 내 도메인 contains 판정·카메라/마이크 무조건 승인(9b78ab14), Apple 로그인 브리지 출처 미검증(eb883643).
+  CI 아카이브·서명 검증 통과(run 37089662500, upload=false). **App Store 1.0.3 업로드·심사 전까지 사용자 폰엔 구버전.**
+- 낮음: report-evidence·circle-photos MIME 무제한 → `box/supabase_private_bucket_mime_20261003.sql`(실행 게이트) /
+  세션 쿠키 Secure 없음(HSTS로 완화) / iOS `NSAllowsArbitraryLoads=true` / 토스 내부 이메일 선점은 Supabase 이메일 가입 설정 확인 필요.
+- 라이브 권한 전수 조회 `box/check_db_privileges.sql`(읽기 전용) 미실행 — 감사 때마다 돌릴 것.
+- 웹 XSS(JSON-LD·지도 마커·꿀팁)·업로드 경로·토스 브릿지·SW 캐시·리다이렉트·TWA·git 이력 비밀키: 이상 없음. care_shifts RLS 코드상 정상.
+
 ## 인프라·인가·anon 노출 점검 잔여 (2026-10-02)
 
 - 조치: Next 16.3.8·sharp 0.35.4(682e629d, next/og RCE 권고), 서클 채팅 푸시 정지 차단(2ee79aee),
