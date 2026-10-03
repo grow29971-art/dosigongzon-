@@ -1,5 +1,16 @@
 # 미해결 문제
 
+## 쇼핑 악용·터트리기 감사 (2026-10-03)
+
+- 조치: confirm에서 shipping_fee·total_amount 대조(7f92c11c, 반품비 1원 회피), 키링 CSV 수식 주입 차단.
+- **SQL 실행 게이트 2건**: `box/supabase_order_server_columns_guard_20261003.sql`(직접 INSERT 시 delivered_at·refund_*·refunded_quantity 초기화 —
+  반품 기한 무력화·재고 영구 품절), `box/supabase_shop_dos_limits_20261003.sql`(주문당 품목 20·수량 99·회원 시간당 30 — **결제 꺼진 지금도 가능한 DB 팽창**).
+- 결정 대기: 상품당 주문 수량 상한(즉시환불 창 반복으로 품절 유도) / 비회원 전역 속도제한이 정상 비회원 주문 DoS(분당 20) → IP별·Turnstile.
+- 결제 오픈 D-day 게이트로: payment-reconcile 고정 50건 창(정크 주문으로 밀어내기, 페이지네이션 필요), cleanup-stale-orders 취소 실패 시 적립 단계 결행,
+  관리자 주문 목록 200건 고정·품목 통째 임베드, 결제 실패 페이지 `?message=` 문구 위조·`?orderId=` 자동 취소.
+- 기타: admin/notify-inquiry가 문의 행 확인 없이 메일 발송(Resend 쿼터 소진), 웹훅 EXPIRED가 paymentKey 소유 미확인, 적립 회수 부족분 소멸, 웹훅 재고 차감 실패 시 과판매.
+- 정상: 포인트 이중 사용·음수 잔액, 금액 위변조, 웹훅 재조회, 게스트 토큰 열거, 환불 멱등, 발주 텔레그램 주입, 관리자 화면 XSS, 재고 선점(pending은 재고 미점유).
+
 ## iOS 래퍼·클라이언트 감사 (2026-10-03)
 
 - 높음(수정, **앱 미반영**): 커스텀 스킴 URL을 `location.href = '\(url)'`로 주입 → 작은따옴표로 로그인 페이지 스크립트 실행·세션 탈취(961b869b).
