@@ -66,7 +66,10 @@ class ViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHan
     // WKWebView 안에서 Apple OAuth 리다이렉트를 돌리면 무한 로딩(App Store 반려 2.1(a), 2026-07-05)이라
     // 네이티브 ASAuthorizationController로 identityToken을 받아 JS로 넘기고, JS가 Supabase signInWithIdToken을 한다.
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard message.name == "nativeAppleSignIn" else { return }
+        // 우리 도메인의 메인 프레임에서 온 호출만 — 사칭 페이지가 identityToken을 받아가지 못하게(2026-10-03)
+        guard message.name == "nativeAppleSignIn",
+              message.frameInfo.isMainFrame,
+              isInAppHost(message.frameInfo.securityOrigin.host, ["dosigongzon.com"]) else { return }
         DispatchQueue.main.async { [weak self] in
             self?.startNativeAppleSignIn()
         }
