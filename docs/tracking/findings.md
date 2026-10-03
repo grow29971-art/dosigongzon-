@@ -15,7 +15,7 @@
 
 - 높음(수정, **앱 미반영**): 커스텀 스킴 URL을 `location.href = '\(url)'`로 주입 → 작은따옴표로 로그인 페이지 스크립트 실행·세션 탈취(961b869b).
   중간: 앱 내 도메인 contains 판정·카메라/마이크 무조건 승인(9b78ab14), Apple 로그인 브리지 출처 미검증(eb883643).
-  CI 아카이브·서명 검증 통과(run 37089662500, upload=false). **App Store 1.0.3 업로드·심사 전까지 사용자 폰엔 구버전.**
+  **10/3 1.0.3(빌드 8, run 37105700661) 업로드·심사 제출 완료(심사 대기)** — 승인·출시 전까지 사용자 폰엔 구버전.
 - 낮음: report-evidence·circle-photos MIME 무제한 → `box/supabase_private_bucket_mime_20261003.sql`(10/3 실행·검증) /
   세션 쿠키 Secure 없음(HSTS로 완화) / iOS `NSAllowsArbitraryLoads=true` / 토스 내부 이메일 선점은 Supabase 이메일 가입 설정 확인 필요.
 - 라이브 권한 전수 조회 `box/check_db_privileges.sql` 10/3 실행: RLS 꺼진 테이블 0. **profiles_public 비로그인 쓰기(RLS 우회) 발견 → 같은 날 회수**
