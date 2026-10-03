@@ -10,7 +10,7 @@
 --   서버(service_role)·definer RPC(create_guest_order 등)는 current_user가 달라 통과 — 기존 경로 무변화.
 --   (DEFINER×current_user 함정: engineering-notes 10/2 — invoker 함수라 current_user가 호출 역할 그대로다.)
 -- 결제 게이트가 꺼져 있어 현재 실피해 0. 결제 오픈 전 필수.
--- 실행: Supabase SQL Editor  ⚠ Chrome 번역 OFF
+-- 실행: Supabase SQL Editor  ⚠ Chrome 번역 OFF — 2026-10-03 실행·검증(롤백 전용 실측: delivered_at 2099→NULL, refund_amount 999→0, refunded_quantity 1→0)
 -- ══════════════════════════════════════════
 
 create or replace function public.orders_reset_server_columns()

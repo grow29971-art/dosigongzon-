@@ -8,7 +8,7 @@
 --       orders BEFORE INSERT에서 회원 직접 쓰기(current_user=authenticated)만 시간당 30건 상한.
 --       같은 문장 안의 앞선 행은 row-level BEFORE 트리거의 조회에 보이므로 배열 bulk insert도 같은 상한에 걸린다.
 -- 실수요: 장바구니는 unique(user_id, product_id)라 품목 수 = 상품 종류 수(현재 판매 상품 2종), 주문 시간당 수 건 미만.
--- 실행: Supabase SQL Editor  ⚠ Chrome 번역 OFF
+-- 실행: Supabase SQL Editor  ⚠ Chrome 번역 OFF — 2026-10-03 실행·검증(트리거 2개, 롤백 전용 실측에서 21번째 품목 차단)
 -- ══════════════════════════════════════════
 
 create or replace function public.order_items_limits()

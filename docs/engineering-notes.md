@@ -22,6 +22,13 @@
   `current_user`는 소유자(postgres)라 `current_user <> 'authenticated'` 가드가 항상 통과해 아무것도 안 막는다
   (2026-10-02 작성자 보호 트리거 3종이 이 상태로 방치돼 있었음). 가드가 다른 테이블을 읽어야 하면 RLS로 읽히는
   범위(본인 행)인지 확인하고 INVOKER로 둔다.
+- **뷰를 drop·create로 다시 만들면 예전에 회수한 권한이 되살아난다.** Supabase 기본 권한이 새 객체에 anon·authenticated
+  ALL을 준다. 8/6에 회수한 `profiles_public` 쓰기 권한이 8/27 카드 폐지의 뷰 재생성으로 부활 → 소유자 postgres·자동 수정 가능
+  뷰라 비로그인이 RLS 없이 profiles를 수정·삭제할 수 있는 구멍이 10/3까지 열려 있었다. 뷰(또는 테이블)를 다시 만드는
+  마이그레이션은 같은 파일에 `revoke insert, update, delete ... from anon, authenticated`를 넣고, 감사 때마다
+  `box/check_db_privileges.sql`(읽기 전용)로 라이브를 전수 대조한다 — box/ 기록만 보면 이런 회귀를 못 잡는다.
+- **row-level BEFORE 트리거에서 쓰기 값을 덮어쓸 때 `new.col := ...` 대신 `new := jsonb_populate_record(new, jsonb_build_object(...))`.**
+  라이브에 컬럼 하나가 빠져 있으면 직접 대입은 그 테이블의 모든 INSERT를 죽이지만, populate는 없는 키를 무시한다.
 - **Chrome에서 SQL Editor 결과는 번역을 끄고(`translate=no`) 읽는다** — 번역이 React DOM을 깨 대시보드가 멈춘다.
   Vercel Git 연동 배포가 안 뜨면 `box/vercel-hostpatch.cjs`로 CLI `deploy --prod`(10/2 실제로 필요했음).
 

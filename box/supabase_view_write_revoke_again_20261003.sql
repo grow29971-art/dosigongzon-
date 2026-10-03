@@ -7,7 +7,7 @@
 --   뷰를 drop·create로 다시 만들면서 Supabase 기본 권한(새 객체에 anon·authenticated ALL)이 되살아났다.
 --   → 뷰를 다시 만드는 마이그레이션은 반드시 revoke를 같은 파일에 넣을 것(engineering-notes 기록).
 -- 나머지 4개 뷰는 집계·조인이라 수정 불가(is_updatable=NO)지만 같은 원칙으로 함께 회수. 앱 코드의 뷰 쓰기 0건(grep 확인).
--- 실행: Supabase SQL Editor  ⚠ Chrome 번역 OFF
+-- 실행: Supabase SQL Editor  ⚠ Chrome 번역 OFF — 2026-10-03 실행·검증(뷰 5개 anon·authenticated 쓰기 false, select 유지)
 -- ══════════════════════════════════════════
 
 revoke insert, update, delete, truncate on public.profiles_public from public, anon, authenticated;

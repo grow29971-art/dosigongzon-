@@ -3,7 +3,7 @@
 ## 쇼핑 악용·터트리기 감사 (2026-10-03)
 
 - 조치: confirm에서 shipping_fee·total_amount 대조(7f92c11c, 반품비 1원 회피), 키링 CSV 수식 주입 차단.
-- **SQL 실행 게이트 2건**: `box/supabase_order_server_columns_guard_20261003.sql`(직접 INSERT 시 delivered_at·refund_*·refunded_quantity 초기화 —
+- **SQL 2건 10/3 실행·실측 완료**: `box/supabase_order_server_columns_guard_20261003.sql`(직접 INSERT 시 delivered_at·refund_*·refunded_quantity 초기화 —
   반품 기한 무력화·재고 영구 품절), `box/supabase_shop_dos_limits_20261003.sql`(주문당 품목 20·수량 99·회원 시간당 30 — **결제 꺼진 지금도 가능한 DB 팽창**).
 - 결정 대기: 상품당 주문 수량 상한(즉시환불 창 반복으로 품절 유도) / 비회원 전역 속도제한이 정상 비회원 주문 DoS(분당 20) → IP별·Turnstile.
 - 결제 오픈 D-day 게이트로: payment-reconcile 고정 50건 창(정크 주문으로 밀어내기, 페이지네이션 필요), cleanup-stale-orders 취소 실패 시 적립 단계 결행,
@@ -16,9 +16,10 @@
 - 높음(수정, **앱 미반영**): 커스텀 스킴 URL을 `location.href = '\(url)'`로 주입 → 작은따옴표로 로그인 페이지 스크립트 실행·세션 탈취(961b869b).
   중간: 앱 내 도메인 contains 판정·카메라/마이크 무조건 승인(9b78ab14), Apple 로그인 브리지 출처 미검증(eb883643).
   CI 아카이브·서명 검증 통과(run 37089662500, upload=false). **App Store 1.0.3 업로드·심사 전까지 사용자 폰엔 구버전.**
-- 낮음: report-evidence·circle-photos MIME 무제한 → `box/supabase_private_bucket_mime_20261003.sql`(실행 게이트) /
+- 낮음: report-evidence·circle-photos MIME 무제한 → `box/supabase_private_bucket_mime_20261003.sql`(10/3 실행·검증) /
   세션 쿠키 Secure 없음(HSTS로 완화) / iOS `NSAllowsArbitraryLoads=true` / 토스 내부 이메일 선점은 Supabase 이메일 가입 설정 확인 필요.
-- 라이브 권한 전수 조회 `box/check_db_privileges.sql`(읽기 전용) 미실행 — 감사 때마다 돌릴 것.
+- 라이브 권한 전수 조회 `box/check_db_privileges.sql` 10/3 실행: RLS 꺼진 테이블 0. **profiles_public 비로그인 쓰기(RLS 우회) 발견 → 같은 날 회수**
+  (`box/supabase_view_write_revoke_again_20261003.sql`, 원인=8/27 뷰 재생성). auth_error_logs 누구나 INSERT 정책은 의도(53행). 감사 때마다 재실행.
 - 웹 XSS(JSON-LD·지도 마커·꿀팁)·업로드 경로·토스 브릿지·SW 캐시·리다이렉트·TWA·git 이력 비밀키: 이상 없음. care_shifts RLS 코드상 정상.
 
 ## 인프라·인가·anon 노출 점검 잔여 (2026-10-02)

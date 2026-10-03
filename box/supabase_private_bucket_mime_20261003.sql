@@ -3,7 +3,7 @@
 -- 증상: report-evidence·circle-photos는 MIME 제한이 없어 본인 폴더에 text/html·svg를 올릴 수 있었다
 --       (관리자·서클원이 서명 URL을 열면 *.supabase.co 출처에서 렌더). cat-photos는 10/2에 제한함.
 -- 앱 업로드는 전부 image/webp(lib/evidence-repo.ts:61, lib/circle-chat-repo.ts:52) — 기존 파일엔 영향 없음.
--- 실행: Supabase SQL Editor  ⚠ Chrome 번역 OFF
+-- 실행: Supabase SQL Editor  ⚠ Chrome 번역 OFF — 2026-10-03 실행·검증(cat-photos·circle-photos·report-evidence 모두 webp/jpeg/png·10MB)
 -- ══════════════════════════════════════════
 
 update storage.buckets
