@@ -220,10 +220,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "포인트 사용 한도를 초과했어요. 다시 주문해주세요." }, { status: 409 });
     }
     const expected = expectedProducts + expectedShipping - pointsUsed;
-    if (expected !== order.payment_amount) {
+    // shipping_fee·total_amount도 대조 — 반품비가 orders.shipping_fee로 산정돼, 1원으로 넣으면 반품비를 피할 수 있었다(2026-10-03)
+    if (
+      expected !== order.payment_amount ||
+      order.shipping_fee !== expectedShipping ||
+      order.total_amount !== expectedProducts
+    ) {
       // 조작 시도 또는 주문 후 가격 변경 — 승인 거부 + 주문 취소 (결제 청구 없음)
       console.error(
-        `[payment/confirm] integrity mismatch: expected=${expected} order=${order.payment_amount} (${orderId})`,
+        `[payment/confirm] integrity mismatch: expected=${expected}/${expectedProducts}+${expectedShipping} order=${order.payment_amount}/${order.total_amount}+${order.shipping_fee} (${orderId})`,
       );
       await svc.from("orders")
         .update({ status: "cancelled", updated_at: new Date().toISOString() })
