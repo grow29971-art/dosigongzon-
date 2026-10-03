@@ -137,7 +137,8 @@ export default function AdminEventKeyringPage() {
 
   const exportCsv = () => {
     const visible = filter === "all" ? entries : entries.filter((e) => e.status === filter);
-    const esc = (v: string | null) => `"${(v ?? "").replace(/"/g, '""')}"`;
+    // = + - @ 로 시작하면 엑셀이 수식으로 실행한다(=HYPERLINK로 다른 칸 유출) — 앞에 '를 붙여 글자로 고정
+    const esc = (v: string | null) => `"${(v ?? "").replace(/^[=+\-@\t\r]/, "'$&").replace(/"/g, '""')}"`;
     const header = ["응모자", "이름(구)", "전화", "주소", "상태", "메모", "응모일시"].join(",");
     const rows = visible.map((e) => [
       esc(profiles[e.user_id]?.nickname ?? null),
